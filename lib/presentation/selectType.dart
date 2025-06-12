@@ -1,7 +1,9 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../Components/CustomAppButton.dart';
+import '../Components/CutomAppBar.dart';
 
 enum PropertyType { residential, commercial, industrial }
 
@@ -27,26 +29,25 @@ class _SelectTypeScreenState extends State<SelectType> {
                 height: 80,
                 decoration: BoxDecoration(
                   color: Colors.grey[850],
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                child: Center(
-                  child: Icon(icon, size: 36, color: Colors.white),
-                ),
+                child: Center(child: Icon(icon, size: 36, color: Colors.white)),
               ),
               if (isSelected)
                 Positioned(
                   top: -4,
                   right: -4,
-                  child: Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  child: Icon(
+                    Icons.check_circle,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
             ],
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(color: Colors.white),
-        ),
+        Text(label, style: TextStyle(color: Colors.white)),
       ],
     );
   }
@@ -55,52 +56,50 @@ class _SelectTypeScreenState extends State<SelectType> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        leading: BackButton(color: Colors.white),
-        centerTitle: true,
-        title: Text('Select Type', style: TextStyle(color: Colors.white)),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            // Row of selectable cards
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildTypeCard(PropertyType.residential, Icons.home, 'Residential'),
-                _buildTypeCard(PropertyType.commercial, Icons.business, 'Commercial'),
-                _buildTypeCard(PropertyType.industrial, Icons.factory, 'Industrial'),
-              ],
-            ),
-            Spacer(),
-            // Only show button once something is selected
-            if (_selectedType != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: StadiumBorder(),
-                    ),
-                    child: Text(
-                      'Find Architects',
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                    ),
-                    onPressed: () {
-                     context.push('/select_architecture');
-                    },
+      appBar: CustomAppBar1(title: 'Select Type', actions: []),
+      body: Center(
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildTypeCard(
+                    PropertyType.residential,
+                    Icons.home,
+                    'Residential',
                   ),
-                ),
+                  _buildTypeCard(
+                    PropertyType.commercial,
+                    Icons.business,
+                    'Commercial',
+                  ),
+                  _buildTypeCard(
+                    PropertyType.industrial,
+                    Icons.factory,
+                    'Industrial',
+                  ),
+                ],
               ),
-          ],
+            ],
+          ),
         ),
       ),
+      bottomNavigationBar: _selectedType != null
+          ? SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: CustomAppButton1(
+                  text: 'Find Architects',
+                  onPlusTap: () {
+                    context.push('/select_architecture');
+                  },
+                ),
+              ),
+            )
+          : SizedBox.shrink(),
     );
   }
 }

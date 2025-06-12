@@ -1,3 +1,4 @@
+import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -13,46 +14,42 @@ class _EnterStateScreenState extends State<EnterState> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      backgroundColor: primarycolor,
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 3,
-              child: Center(
-                child: Image.asset('assets/india_map.png', fit: BoxFit.contain),
+            Center(
+              child: Image.asset(
+                'assets/india_map.png',
+                fit: BoxFit.contain,
+                height: 300,
               ),
             ),
-
-            // --- Middle: Label + TextField ---
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Enter Your State',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: _controller,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Enter state name',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ],
+            SizedBox(height: 48),
+            Text(
+              'Enter Your State',
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            SizedBox(height: 8),
+            TextField(
+              controller: _controller,
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: 'Enter state name',
+                hintStyle: TextStyle(color: Colors.grey[500]),
+                filled: true,
+                fillColor: Colors.grey[800],
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ],

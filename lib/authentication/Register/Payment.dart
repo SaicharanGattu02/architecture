@@ -1,5 +1,10 @@
+import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../Components/CustomAppButton.dart';
+import '../../Components/CutomAppBar.dart';
 
 class Payment extends StatefulWidget {
   const Payment({Key? key}) : super(key: key);
@@ -25,11 +30,18 @@ class _PaymentScreenState extends State<Payment> {
         child: Row(
           children: [
             Expanded(
-              child: Text(label, style: TextStyle(fontFamily: 'Inter', fontSize: 16)),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
             ),
             Icon(
               selected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: selected ? Colors.white : Colors.white38,
+              color: selected ?primarycolor: Colors.white38,
             ),
           ],
         ),
@@ -40,60 +52,62 @@ class _PaymentScreenState extends State<Payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        leading: CloseButton(color: Colors.white),
-        centerTitle: true,
-        title: Text('Payment', style: TextStyle(fontFamily: 'Inter')),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text('2 of 3', style: TextStyle(fontFamily: 'Inter', color: Colors.white70)),
-          ),
-          const SizedBox(height: 4),
-          LinearProgressIndicator(
-            value: 2 / 3,
-            backgroundColor: Colors.white24,
-            color: Colors.white,
-            minHeight: 4,
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'Select a payment method',
-              style: TextStyle(fontFamily: 'Inter', fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildOption('Credit Card'),
-          _buildOption('Paypal'),
-          _buildOption('Apple Pay'),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: const StadiumBorder(),
-                ),
-                onPressed: _method == null ? null : () {
-                  // TODO: Continue action
-                },
-                child: Text('Continue', style: TextStyle(fontFamily: 'Inter', color: Colors.black, fontSize: 16)),
+      backgroundColor: primarycolor,
+      appBar: CustomAppBar1(title: 'Payment', actions: []),
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.start
+          ,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                '2 of 3',
+                style: TextStyle(fontFamily: 'Inter', color: Colors.white70),
               ),
             ),
+            SizedBox(height: 8),
+            LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(4),
+              value: 2 / 3,
+              backgroundColor: Color(0xff4D4D4D),
+              color: Colors.white,
+              minHeight: 6,
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Select a payment method',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildOption('Credit Card'),
+            _buildOption('Paypal'),
+            _buildOption('Apple Pay'),
+
+          ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: CustomAppButton1(
+            text: 'Continue',
+            onPlusTap:_method == null
+                ? null
+                :  () {
+              context.push('/profile_created');
+            },
           ),
-        ],
+        ),
       ),
     );
   }
