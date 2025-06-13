@@ -8,6 +8,7 @@ import '../authentication/Register/AddProject.dart';
 import '../authentication/Register/Payment.dart';
 import '../authentication/Register/ProfileCreated.dart';
 import '../authentication/Register/SubScription.dart';
+import '../presentation/SplashScreen.dart';
 import '../presentation/onboarding.dart';
 import '../presentation/enterState.dart';
 import '../presentation/architectureDetails.dart';
@@ -19,15 +20,10 @@ import '../presentation/selectType.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
-    // GoRoute(
-    //   path: '/',
-    //   pageBuilder: (context, state) =>
-    //       buildSlideTransitionPage(const Splash(), state),
-    // ),
     GoRoute(
       path: '/',
       pageBuilder: (context, state) =>
-          buildSlideTransitionPage(const LoginScreen(), state),
+          buildSlideTransitionPage(Splash(), state),
     ),
     GoRoute(
       path: '/login',

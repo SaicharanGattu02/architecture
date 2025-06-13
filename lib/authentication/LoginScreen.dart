@@ -113,11 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: TextButton(
                       onPressed: () {
-                        // Navigate to Register screen here
+                        context.push('/company_details');
                       },
                       child: const Text(
                         'Don’t have an account? Register',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

@@ -46,21 +46,20 @@ class _OnboardingState extends State<Onboarding> {
                     context.push('/enter_state');
                   },
                 ),
-                CustomAppButton(textcolor: Colors.white,
+                CustomAppButton(
+                  textcolor: Colors.white,
                   color: Color(0xff363636),
                   text: 'Post Your Requirement',
-                  onPlusTap: () {
-
-                  },
+                  onPlusTap: () {},
                 ),
 
                 SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
-                    context.push('/company_details');
+                    context.push('/login');
                   },
                   child: Text(
-                    'Are you an architect? Register',
+                    'Are you an architect? Login',
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
