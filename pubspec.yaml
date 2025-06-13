@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^2.5.3
   dropdown_button2: ^2.3.9
   flutter_touch_ripple: ^2.7.1
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:

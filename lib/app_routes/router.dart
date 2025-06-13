@@ -3,13 +3,11 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../authentication/LoginScreen.dart';
 import '../authentication/Register/AddProject.dart';
 import '../authentication/Register/Payment.dart';
 import '../authentication/Register/ProfileCreated.dart';
 import '../authentication/Register/SubScription.dart';
-import '../presentation/SplashScreen.dart';
 import '../presentation/onboarding.dart';
 import '../presentation/enterState.dart';
 import '../presentation/architectureDetails.dart';
@@ -21,16 +19,21 @@ import '../presentation/selectType.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
+    // GoRoute(
+    //   path: '/',
+    //   pageBuilder: (context, state) =>
+    //       buildSlideTransitionPage(const Splash(), state),
+    // ),
     GoRoute(
       path: '/',
       pageBuilder: (context, state) =>
-          buildSlideTransitionPage(const Splash(), state),
+          buildSlideTransitionPage(const LoginScreen(), state),
     ),
-    // GoRoute(
-    //   path: '/login',
-    //   pageBuilder: (context, state) =>
-    //       buildSlideTransitionPage(const LoginScreen(), state),
-    // ),
+    GoRoute(
+      path: '/login',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(const LoginScreen(), state),
+    ),
     GoRoute(
       path: '/onboarding',
       pageBuilder: (context, state) =>
@@ -86,7 +89,6 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(Subscription(), state),
     ),
-
   ],
 );
 

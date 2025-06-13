@@ -21,6 +21,7 @@ class _EnterStateScreenState extends State<EnterState> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 20),
             Center(
               child: Image.asset(
                 'assets/india_map.png',
