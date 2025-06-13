@@ -1,24 +1,26 @@
 import 'package:architect/utils/color_constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import '../Components/CustomAppButton.dart';
 
-import '../../Components/CustomAppButton.dart';
-
-class ProfileCreated extends StatefulWidget {
-  const ProfileCreated({Key? key}) : super(key: key);
+class PostYourRequiremntSuccessfully extends StatefulWidget {
+  const PostYourRequiremntSuccessfully({super.key});
 
   @override
-  State<ProfileCreated> createState() => _ProfileCreatedState();
+  State<PostYourRequiremntSuccessfully> createState() =>
+      _PostYourRequiremntSuccessfullyState();
 }
 
-class _ProfileCreatedState extends State<ProfileCreated> {
+class _PostYourRequiremntSuccessfullyState
+    extends State<PostYourRequiremntSuccessfully> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Lottie.asset(
             'assets/lottie/successfully.json',
@@ -28,7 +30,7 @@ class _ProfileCreatedState extends State<ProfileCreated> {
           ),
           const SizedBox(height: 24),
           Text(
-            'Profile Created Successfully!',
+            'Thank you! Your requirement has been sent to the best architects. You will get a call back shortly.',
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 20,
@@ -37,23 +39,13 @@ class _ProfileCreatedState extends State<ProfileCreated> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Welcome to Arkitek.',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 14,
-              color: Colors.white70,
-            ),
-          ),
-          const SizedBox(height: 48),
         ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: CustomAppButton1(
-            text: 'Go to Profile',
+            text: 'Done',
             onPlusTap: () {
               // context.pushReplacement('/post_your_requirement_success');
             },

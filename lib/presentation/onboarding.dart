@@ -50,7 +50,9 @@ class _OnboardingState extends State<Onboarding> {
                   textcolor: Colors.white,
                   color: Color(0xff363636),
                   text: 'Post Your Requirement',
-                  onPlusTap: () {},
+                  onPlusTap: () {
+                    context.push('/post_your_requirement');
+                  },
                 ),
 
                 SizedBox(height: 20),

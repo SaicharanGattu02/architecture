@@ -1,3 +1,4 @@
+import 'package:architect/Components/CustomAppButton.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -156,36 +157,13 @@ class _EnterStateScreenState extends State<EnterState> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton(
-              onPressed: _selectState == null
-                  ? null
-                  : () {
-                      context.push('/select_city');
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _selectState == null
-                    ? Colors.grey.shade700
-                    : Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(
-                  color: _selectState == null
-                      ? Colors.grey.shade400
-                      : Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-            ),
+          child: CustomAppButton1(
+            text: 'Next',
+            onPlusTap: _selectState == null
+                ? null
+                : () {
+                    context.push('/select_city');
+                  },
           ),
         ),
       ),

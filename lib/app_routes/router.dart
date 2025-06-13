@@ -8,9 +8,11 @@ import '../authentication/Register/AddProject.dart';
 import '../authentication/Register/Payment.dart';
 import '../authentication/Register/ProfileCreated.dart';
 import '../authentication/Register/SubScription.dart';
+import '../presentation/PostYourRequirement.dart';
+import '../presentation/PostYourRequirementSuccessfully.dart';
 import '../presentation/SplashScreen.dart';
 import '../presentation/onboarding.dart';
-import '../presentation/enterState.dart';
+import '../presentation/selectState.dart';
 import '../presentation/architectureDetails.dart';
 import '../authentication/Register/companyDetails.dart';
 import '../presentation/selectArchitecture.dart';
@@ -84,6 +86,16 @@ final GoRouter appRouter = GoRouter(
       path: '/subscription',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(Subscription(), state),
+    ),
+    GoRoute(
+      path: '/post_your_requirement',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(PostRequirement(), state),
+    ),
+    GoRoute(
+      path: '/post_your_requirement_success',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(PostYourRequiremntSuccessfully(), state),
     ),
   ],
 );
