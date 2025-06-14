@@ -2,6 +2,7 @@ import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 
 import '../Components/CustomAppButton.dart';
+import '../Components/CutomAppBar.dart';
 
 class ArchitectureDetails extends StatefulWidget {
   const ArchitectureDetails({Key? key}) : super(key: key);
@@ -48,6 +49,7 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
+      appBar: CustomAppBar1(title: 'Architecture Details', actions: []),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

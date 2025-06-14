@@ -3,7 +3,7 @@ import 'package:flutter_touch_ripple/flutter_touch_ripple.dart';
 import 'package:go_router/go_router.dart';
 
 import '../Components/CutomAppBar.dart';
-import '../utils/color_constants.dart'; // Assuming this defines colors like `primarycolor`
+import '../utils/color_constants.dart';
 
 class SelectArchitecture extends StatefulWidget {
   const SelectArchitecture({Key? key}) : super(key: key);
@@ -16,16 +16,15 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: primarycolor,
       appBar: CustomAppBar1(title: 'Select Architecture', actions: []),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: ListView.builder(
-          itemCount: 5, // You can make this dynamic when you fetch data
+          itemCount: 5,
           itemBuilder: (context, index) {
-            return TouchRipple(
+            return GestureDetector(
               onTap: () {
                 context.push('/architecture_details');
               },
@@ -33,7 +32,7 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Colors.grey[900], // Replace with suitable color
+                  color: Colors.grey[900],
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -76,7 +75,11 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              Container(padding: EdgeInsets.symmetric(horizontal: 4,vertical: 2),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -91,7 +94,8 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
                                     SizedBox(width: 2),
                                     Text(
                                       '4.9',
-                                      style: TextStyle(fontWeight: FontWeight.w600,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.black,
                                         fontSize: 12,
                                       ),
