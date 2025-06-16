@@ -20,13 +20,13 @@ class _SplashState extends State<Splash> {
   }
 
   Future<void> _initialize() async {
-    // final token = await AuthService.getAccessToken();
+    final token = await AuthService.getAccessToken();
     Future.delayed(Duration(seconds: 2), () {
-      // if(token == null || token.isEmpty) {
+      if(token == null || token.isEmpty) {
       context.pushReplacement('/onboarding');
-      // }else{
-      //   context.pushReplacement('/assigned_hostels');
-      // }
+      }else{
+        context.pushReplacement('/architech_profile');
+      }
     });
   }
 

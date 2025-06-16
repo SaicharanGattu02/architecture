@@ -13,12 +13,8 @@ class CustomAppBar1 extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(centerTitle: true,
-      backgroundColor: primarycolor,
-      leading: IconButton.outlined(
-        style: ButtonStyle(
-          side: MaterialStateProperty.all(BorderSide(color: Colors.black)),
-          shape: MaterialStateProperty.all(CircleBorder()),
-        ),
+      backgroundColor: Color(0xff1A1A1A),
+      leading: IconButton(
         visualDensity: VisualDensity.compact,
         onPressed: () {
           context.pop(true);

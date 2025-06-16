@@ -3,6 +3,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../authentication/ArchitechProfile.dart';
 import '../authentication/LoginScreen.dart';
 import '../authentication/Register/AddProject.dart';
 import '../authentication/Register/Payment.dart';
@@ -27,6 +28,7 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(Splash(), state),
     ),
+
     GoRoute(
       path: '/login',
       pageBuilder: (context, state) =>
@@ -96,6 +98,11 @@ final GoRouter appRouter = GoRouter(
       path: '/post_your_requirement_success',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(PostYourRequiremntSuccessfully(), state),
+    ),
+    GoRoute(
+      path: '/architech_profile',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(ArchitechProfile(), state),
     ),
   ],
 );
