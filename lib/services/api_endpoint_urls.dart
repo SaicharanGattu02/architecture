@@ -6,6 +6,7 @@ class APIEndpointUrls {
   /// Auth URls
   static const String register = '${apiUrl}register';
   static const String login = '${apiUrl}login';
+  static const String refreshtoken = '${apiUrl}login';
   static const String addPost = '${apiUrl}create-post';
   static const String deletePost = '${apiUrl}delete-post';
   static const String editPost = '${apiUrl}edit-post';

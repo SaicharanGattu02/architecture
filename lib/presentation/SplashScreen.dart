@@ -2,6 +2,8 @@ import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../services/AuthService.dart';
+
 class Splash extends StatefulWidget {
   const Splash({super.key});
 
@@ -22,9 +24,9 @@ class _SplashState extends State<Splash> {
   Future<void> _initialize() async {
     final token = await AuthService.getAccessToken();
     Future.delayed(Duration(seconds: 2), () {
-      if(token == null || token.isEmpty) {
-      context.pushReplacement('/onboarding');
-      }else{
+      if (token == null || token.isEmpty) {
+        context.pushReplacement('/onboarding');
+      } else {
         context.pushReplacement('/architech_profile');
       }
     });
