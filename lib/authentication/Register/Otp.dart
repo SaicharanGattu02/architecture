@@ -11,10 +11,9 @@ import '../../services/AuthService.dart';
 import '../../utils/Preferances.dart';
 import '../../utils/media_query_helper.dart';
 
-
 class Otp extends StatefulWidget {
-  String mobile;
-  Otp({super.key, required this.mobile});
+  String mailId;
+  Otp({super.key, required this.mailId});
   @override
   State<Otp> createState() => _OtpState();
 }
@@ -29,10 +28,7 @@ class _OtpState extends State<Otp> {
   @override
   void initState() {
     super.initState();
-
   }
-
-
 
   String? _validateOtp(String otp) {
     if (otp.length < 6) {
@@ -56,7 +52,7 @@ class _OtpState extends State<Otp> {
 
   void _verifyOtp() {
     Map<String, dynamic> data = {
-      "mobile": widget.mobile,
+      "mail": widget.mailId,
       "otp": _otpController.text,
       if (Platform.isAndroid) ...{
         "token_type": "android_token",
@@ -66,13 +62,12 @@ class _OtpState extends State<Otp> {
         "fcm_token": fbToken,
       },
     };
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:primarycolor,
+      backgroundColor: primarycolor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -80,14 +75,14 @@ class _OtpState extends State<Otp> {
           children: [
             SizedBox(height: SizeConfig.screenHeight * 0.1),
 
-
             Text(
               'OTP Verification',
               style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Inter',fontSize: 20
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Inter',
+                fontSize: 20,
+              ),
             ),
             SizedBox(height: 16),
             RichText(
@@ -99,10 +94,11 @@ class _OtpState extends State<Otp> {
                 ),
                 children: [
                   TextSpan(
-                    text: 'Enter the 6-digit code sent to your registered Mail Id ',
+                    text:
+                        'Enter the 6-digit code sent to your registered Mail Id ',
                   ),
                   TextSpan(
-                    text: '+91 ${widget.mobile}',
+                    text: '+91 ${widget.mailId}',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
@@ -114,13 +110,15 @@ class _OtpState extends State<Otp> {
                       padding: const EdgeInsets.only(bottom: 4),
                       child: IconButton(
                         onPressed: () {
-                          context.pushReplacement('/login_mobile', extra: widget.mobile);
+                          context.pushReplacement(
+                            '/login_mobile',
+                            extra: widget.mailId,
+                          );
                         },
-                        icon: Image.asset("assets/edit1.png",scale: 35,),
+                        icon: Image.asset("assets/edit1.png", scale: 35),
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -187,18 +185,13 @@ class _OtpState extends State<Otp> {
               },
             ),
             SizedBox(height: 24),
-            CustomAppButton1(
+            CustomAppButton1(text: 'Log-In', onPlusTap: () {
 
-              text: 'Log-In',
-              onPlusTap: (){
 
-              },
-            )
-
+            }),
           ],
         ),
-      )
-
+      ),
     );
   }
 }

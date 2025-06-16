@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../authentication/ArchitechProfile.dart';
 import '../authentication/LoginScreen.dart';
 import '../authentication/Register/AddProject.dart';
+import '../authentication/Register/Otp.dart';
 import '../authentication/Register/Payment.dart';
 import '../authentication/Register/ProfileCreated.dart';
 import '../authentication/Register/SubScription.dart';
@@ -103,6 +104,13 @@ final GoRouter appRouter = GoRouter(
       path: '/architech_profile',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(ArchitechProfile(), state),
+    ),
+    GoRoute(
+      path: '/otp',
+      pageBuilder: (context, state) {
+        final mailId = state.uri.queryParameters['mailId'] ?? "";
+        return buildSlideTransitionPage(Otp(mailId: mailId), state);
+      },
     ),
   ],
 );

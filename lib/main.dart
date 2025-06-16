@@ -29,6 +29,19 @@ class MyApp extends StatelessWidget {
             cardColor: Colors.white,
             searchBarTheme: const SearchBarThemeData(),
             tabBarTheme: const TabBarThemeData(),
+            inputDecorationTheme: InputDecorationTheme(
+              hintStyle: const TextStyle(color: Colors.white38),
+              filled: true,
+              fillColor: const Color(0xff363636),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
             dialogTheme: const DialogThemeData(
               shadowColor: Colors.white,
               surfaceTintColor: Colors.white,

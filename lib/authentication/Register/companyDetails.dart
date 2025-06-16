@@ -87,7 +87,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         context,
       ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
     }
-    Navigator.pop(context); // Close bottom sheet
+    context.pop(context);
   }
 
   void _showImageSourceSelection() {
@@ -105,7 +105,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 50), // Add padding to avoid overlap
+                  const SizedBox(height: 50),
                   ListTile(
                     leading: const Icon(
                       Icons.photo_library,
@@ -176,23 +176,11 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         ),
         const SizedBox(height: 8),
         TextField(
+          cursorColor: Colors.white,
           controller: controller,
           keyboardType: keyboardType,
           style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(color: Colors.white38),
-            filled: true,
-            fillColor: const Color(0xff363636),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-          ),
+          decoration: InputDecoration(hintText: hint),
           onTap: () {
             setState(() {
               validate();
@@ -469,13 +457,14 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 text: 'Get OTP',
                 onPlusTap: () {
                   if (_validateForm()) {
-                    context.push('/add_project');
+                    context.push('/otp');
                   }
                 },
               ),
-              GestureDetector(onTap: (){
-                context.push('/login');
-              },
+              GestureDetector(
+                onTap: () {
+                  context.push('/login');
+                },
                 child: RichText(
                   text: TextSpan(
                     text: "Already have an account? ",
