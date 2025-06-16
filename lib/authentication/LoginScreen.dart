@@ -16,15 +16,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _validator = Validator();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
+  final Validator _validator = Validator();
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -32,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       final data = {
         'email': _emailController.text.trim(),
-        'password': _passwordController.text.trim(),
       };
       context.read<LoginCubit>().loginApi(data);
     }
@@ -50,100 +46,44 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment
-                    .center, // center vertically inside scroll view
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Remove these SizedBoxes or reduce if needed
-                  // const SizedBox(height: 20),
-                  // const SizedBox(height: 24),
                   TextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Enter email',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: _validator.validateEmail,
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      hintText: 'Enter password',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
-                    ),
-                    obscureText: _obscurePassword,
-                    validator: _validator.validatePassword,
+                  const SizedBox(height: 24),
+                  BlocConsumer<LoginCubit, LoginState>(
+                    listener: (context, state) {
+                      if (state is LoginSucess) {
+                        context.pushReplacement("/");
+                      }
+                    },
+                    builder: (context, state) {
+                      return CustomAppButton1(
+                        isLoading: state is LoginLoading,
+                        text: 'Get OTP',
+                        onPlusTap: _submitForm,
+                      );
+                    },
                   ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        context.push('/company_details');
-                      },
-                      child: const Text(
-                        'Don’t have an account? Register',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                  TextButton(
+                    onPressed: () {
+                      context.push('/company_details');
+                    },
+                    child: const Text(
+                      'Don’t have an account? Register',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: BlocConsumer<LoginCubit, LoginState>(
-            listener: (context, state) {
-              if (state is LoginSucess) {
-                context.pushReplacement("/");
-              }
-            },
-            builder: (context, state) {
-              return CustomAppButton1(
-                isLoading: state is LoginLoading,
-                text: 'Login',
-                onPlusTap: _submitForm,
-              );
-            },
           ),
         ),
       ),
