@@ -10,7 +10,7 @@ import 'ApiClient.dart';
 import 'api_endpoint_urls.dart';
 
 abstract class RemoteDataSource {
-  Future<ArchitectModel?> getArchetic();
+  Future<ArchitectModel?> getArchitect();
   Future<SuccessModel?> registerApi(Map<String, dynamic> data);
   Future<SuccessModel?> loginApi(Map<String, dynamic> data);
   Future<SuccessModel?> addPost(Map<String, dynamic> data);
@@ -18,6 +18,7 @@ abstract class RemoteDataSource {
   Future<SuccessModel?> deletePost(id);
   Future<SubscriptionModel?> getsubplans();
   Future<SuccessModel?> getStates();
+  Future<SuccessModel?> getCity();
   Future<Activesubscriptionmodel?> activesubplans(int Id);
 }
 
@@ -140,17 +141,17 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<ArchitectModel?> getArchetic() async {
+  Future<ArchitectModel?> getArchitect() async {
     try {
-      Response res = await ApiClient.get("${APIEndpointUrls.getarchetic}");
+      Response res = await ApiClient.get("${APIEndpointUrls.get_architect}");
       if (res.statusCode == 200) {
-        debugPrint('getArchetic:${res.data}');
+        debugPrint('getArchitect:${res.data}');
         return ArchitectModel.fromJson(res.data);
       } else {
         return null;
       }
     } catch (e) {
-      debugPrint('Error getArchetic::$e');
+      debugPrint('Error getArchitect::$e');
       return null;
     }
   }
@@ -183,6 +184,22 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error getStates::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> getCity() async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.get_city}/States");
+      if (res.statusCode == 200) {
+        debugPrint('get getCity:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getCity::$e');
       return null;
     }
   }

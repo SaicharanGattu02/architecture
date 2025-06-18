@@ -2,21 +2,21 @@ import 'package:equatable/equatable.dart';
 
 import '../../models/ArchitectModel.dart';
 
-abstract class Archeticstate extends Equatable {
+abstract class ArchitectState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class archeticIntailly extends Archeticstate {}
+class ArchitectIntailly extends ArchitectState {}
 
-class archeticLoading extends Archeticstate {}
+class ArchitectLoading extends ArchitectState {}
 
-class archeticLoaded extends Archeticstate {
+class ArchitectLoaded extends ArchitectState {
   final ArchitectModel architectModel;
-  archeticLoaded({required this.architectModel});
+  ArchitectLoaded({required this.architectModel});
 }
 
-class archeticError extends Archeticstate {
+class ArchitectError extends ArchitectState {
   final String message;
-  archeticError({required this.message});
+  ArchitectError({required this.message});
 }

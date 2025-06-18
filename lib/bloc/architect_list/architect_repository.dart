@@ -10,6 +10,6 @@ class ArchitectImpl implements ArchitectRepository {
   ArchitectImpl({required this.remoteDataSource});
 
   Future<ArchitectModel?> getArchitect() async {
-    return await remoteDataSource.getArchetic();
+    return await remoteDataSource.getArchitect();
   }
 }

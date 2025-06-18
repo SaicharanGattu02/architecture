@@ -3,22 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'architect_repository.dart';
 import 'architect_state.dart';
 
-class ArchitectCubit extends Cubit<Archeticstate> {
+class ArchitectCubit extends Cubit<ArchitectState> {
   final ArchitectRepository archeticrepository;
 
-  ArchitectCubit(this.archeticrepository) : super(archeticIntailly());
+  ArchitectCubit(this.archeticrepository) : super(ArchitectIntailly());
 
-  Future<void> getarchitecture() async {
-    emit(archeticLoading());
+  Future<void> getArchitect() async {
+    emit(ArchitectLoading());
     try {
       final res = await archeticrepository.getArchitect();
       if (res != null) {
-        emit(archeticLoaded(architectModel: res));
+        emit(ArchitectLoaded(architectModel: res));
       } else {
-        emit(archeticError(message: "No data available"));
+        emit(ArchitectError(message: "No data available"));
       }
     } catch (e) {
-      emit(archeticError(message: "An error occurred: $e"));
+      emit(ArchitectError(message: "An error occurred: $e"));
     }
   }
 }
