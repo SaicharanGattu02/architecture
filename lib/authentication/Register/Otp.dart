@@ -73,8 +73,7 @@ class _OtpState extends State<Otp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: SizeConfig.screenHeight * 0.1),
-
+            // SizedBox(height: SizeConfig.screenHeight * 0.1),
             Text(
               'OTP Verification',
               style: TextStyle(
@@ -87,21 +86,27 @@ class _OtpState extends State<Otp> {
             SizedBox(height: 16),
             RichText(
               text: TextSpan(
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: const Color(0xFF2C2F33),
+                style: TextStyle(
+                  color: Colors.white,
                   fontWeight: FontWeight.w400,
-                  fontFamily: 'lexend',
+                  fontFamily: 'Inter',
                 ),
                 children: [
                   TextSpan(
                     text:
                         'Enter the 6-digit code sent to your registered Mail Id ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      color: Color(0xff898989),
+                      fontSize: 14,
+                    ),
                   ),
                   TextSpan(
-                    text: '+91 ${widget.mailId}',
+                    text: '${widget.mailId}',
                     style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.white,
                     ),
                   ),
                   WidgetSpan(
@@ -140,16 +145,16 @@ class _OtpState extends State<Otp> {
               hapticFeedbackTypes: HapticFeedbackTypes.heavy,
               controller: _otpController,
               onTap: () {},
-              onChanged: _onOtpChanged, // Handle OTP changes
+              onChanged: _onOtpChanged,
               pinTheme: PinTheme(
                 shape: PinCodeFieldShape.box,
                 borderRadius: BorderRadius.circular(5),
                 fieldHeight: 48,
                 fieldWidth: 48,
                 fieldOuterPadding: EdgeInsets.only(left: 0, right: 3),
-                activeFillColor: Color(0xFFF4F4F4),
-                activeColor: Color(0xff110B0F),
-                selectedColor: Color(0xff110B0F),
+                activeFillColor: Color(0xFF636363),
+                activeColor: Color(0xFF636363),
+                selectedColor: Color(0xFF636363),
                 selectedFillColor: Color(0xFFF4F4F4),
                 inactiveFillColor: Color(0xFFF4F4F4),
                 inactiveColor: Color(0xFFD2D2D2),
@@ -158,11 +163,11 @@ class _OtpState extends State<Otp> {
                 activeBorderWidth: 1.5,
               ),
               textStyle: TextStyle(
-                fontFamily: "lexend",
+                fontFamily: "Inter",
                 fontSize: 17,
                 fontWeight: FontWeight.w400,
               ),
-              cursorColor: Colors.black,
+              cursorColor: Colors.white,
               enableActiveFill: true,
               keyboardType: TextInputType.numberWithOptions(),
               textInputAction: (Platform.isAndroid)
@@ -171,13 +176,6 @@ class _OtpState extends State<Otp> {
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly,
               ],
-              boxShadows: const [
-                BoxShadow(
-                  offset: Offset(0, 1),
-                  color: Colors.black12,
-                  blurRadius: 10,
-                ),
-              ],
               enablePinAutofill: true,
               useExternalAutoFillGroup: true,
               beforeTextPaste: (text) {
@@ -185,10 +183,7 @@ class _OtpState extends State<Otp> {
               },
             ),
             SizedBox(height: 24),
-            CustomAppButton1(text: 'Log-In', onPlusTap: () {
-
-
-            }),
+            CustomAppButton1(text: 'Log-In', onPlusTap: () {}),
           ],
         ),
       ),

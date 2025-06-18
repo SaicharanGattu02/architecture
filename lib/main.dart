@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
                 vertical: 14,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(4),
                 borderSide: BorderSide.none,
               ),
             ),

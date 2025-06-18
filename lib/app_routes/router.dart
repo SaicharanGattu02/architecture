@@ -16,7 +16,7 @@ import '../presentation/SplashScreen.dart';
 import '../presentation/onboarding.dart';
 import '../presentation/selectState.dart';
 import '../presentation/architectureDetails.dart';
-import '../authentication/Register/companyDetails.dart';
+import '../authentication/Register/createProfile.dart';
 import '../presentation/selectArchitecture.dart';
 import '../presentation/selectCity.dart';
 import '../presentation/selectType.dart';
