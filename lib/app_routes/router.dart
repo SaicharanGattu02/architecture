@@ -118,7 +118,7 @@ final GoRouter appRouter = GoRouter(
       path: '/otp',
       pageBuilder: (context, state) {
         final mailId = state.uri.queryParameters['mailId'] ?? "";
-        return buildSlideTransitionPage(OtpVerifyScreen(mailId: mailId), state);
+        return buildSlideTransitionPage(Otp(mailId: mailId), state);
       },
     ),
   ],

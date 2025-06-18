@@ -19,5 +19,7 @@ class ActiveplanidGetCubit extends Cubit<ActiveplanidGetState> {
     } catch (e) {
       emit(subscriptionplanError(message: "An error occurred: $e"));
     }
+
+
   }
 }
