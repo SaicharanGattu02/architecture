@@ -14,7 +14,6 @@ class OtpVerifyScreen extends StatefulWidget {
   @override
   State<OtpVerifyScreen> createState() => _OtpState();
 }
-
 class _OtpState extends State<OtpVerifyScreen> {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _otpFocusNode = FocusNode();
