@@ -1,5 +1,7 @@
 
+import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/SubscriptionPlans/subscription_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_repository.dart';
 import '../bloc/archeticlist/ArcheticCubit.dart';
@@ -31,6 +33,10 @@ class StateInjector {
       create: (context) => AddEditPostRepositoryImpl(
           remoteDataSource: context.read<RemoteDataSource>()),
     ),
+    RepositoryProvider<SubscriptionRepository>(
+      create: (context) => GetsubplansImpl(
+          remoteDataSource: context.read<RemoteDataSource>()),
+    ),
   ];
 
   static final blocProviders = <BlocProvider>[
@@ -46,6 +52,9 @@ class StateInjector {
     BlocProvider<AddEditPostCubit>(
       create: (context) =>
           AddEditPostCubit(context.read<AddEditPostRepository>()),
+    ),
+    BlocProvider<subscription_cubit>(
+      create: (context) => subscription_cubit(context.read<SubscriptionRepository>()),
     ),
   ];
 }

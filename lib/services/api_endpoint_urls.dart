@@ -10,14 +10,10 @@ class APIEndpointUrls {
   static const String addPost = '${apiUrl}create-post';
   static const String deletePost = '${apiUrl}delete-post';
   static const String editPost = '${apiUrl}edit-post';
-
-
-  ///Api Urls
+  ///Api Urls//////
   static const String getarchetic = '${apiUrl}get-architects';
-
-
-
-
+  static const String getsubplans = '${apiUrl}plans';
+  static const String activesubplans = '${apiUrl}selected-plan';
 
 
 }
