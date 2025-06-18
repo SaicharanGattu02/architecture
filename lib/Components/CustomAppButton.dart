@@ -45,6 +45,7 @@ class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
           style: TextStyle(
             color: textcolor ?? Colors.black,
             fontSize: 16,
+            fontFamily: "Inter",
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -107,6 +108,7 @@ class CustomAppButton1 extends StatelessWidget implements PreferredSizeWidget {
                 style: TextStyle(
                   color: textcolor ?? Colors.black,
                   fontWeight: FontWeight.w600,
+                  fontFamily: "Inter",
                   fontSize: 14,
                 ),
               ),

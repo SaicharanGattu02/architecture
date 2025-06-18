@@ -25,13 +25,11 @@ import '../presentation/selectType.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
-
     GoRoute(
       path: '/',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(Splash(), state),
     ),
-
     GoRoute(
       path: '/login',
       pageBuilder: (context, state) =>
@@ -112,7 +110,6 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(CompanyProfileSetupScreen(), state),
     ),
-
 
     GoRoute(
       path: '/otp',
