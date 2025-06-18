@@ -1,5 +1,6 @@
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import '../../Components/CustomAppButton.dart';
 
@@ -61,7 +62,7 @@ class _ProfileCreatedState extends State<ProfileCreated> {
           child: CustomAppButton1(
             text: 'Go to Profile',
             onPlusTap: () {
-              // context.pushReplacement('/post_your_requirement_success');
+              context.pushReplacement('/architech_profile');
             },
           ),
         ),

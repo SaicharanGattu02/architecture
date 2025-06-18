@@ -34,7 +34,7 @@ class _OtpVerificationScreenState extends State<Otp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: primarycolor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
@@ -58,7 +58,6 @@ class _OtpVerificationScreenState extends State<Otp> {
               const Text('2 of 4', style: TextStyle(color: Colors.white)),
               const SizedBox(height: 4),
               LinearProgressIndicator(
-
                 value: 0.5,
                 color: Colors.white,
                 backgroundColor: Colors.grey.shade800,
@@ -82,31 +81,36 @@ class _OtpVerificationScreenState extends State<Otp> {
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
               const SizedBox(height: 20),
-
               PinCodeTextField(
-                backgroundColor: Colors.black,
                 appContext: context,
                 length: 6,
                 controller: otpController,
                 autoFocus: true,
-                animationType: AnimationType.fade,
                 keyboardType: TextInputType.number,
+                animationType: AnimationType.fade,
+                animationDuration: const Duration(milliseconds: 300),
+                backgroundColor: primarycolor,
+                enableActiveFill: true,
+                textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: textPrimaryColor,
+                  fontFamily: "Inter",
+                  fontWeight: FontWeight.w400,
+                ),
+                onChanged: (value) {},
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
                   borderRadius: BorderRadius.circular(8),
                   fieldHeight: 50,
                   fieldWidth: 40,
-                  activeFillColor: Colors.white,
-                  inactiveFillColor: Colors.white,
-                  selectedFillColor: Colors.white,
-                  activeColor: Colors.white,
+                  activeColor: Colors.grey,
                   inactiveColor: Colors.grey,
                   selectedColor: Colors.white,
+                  activeFillColor: Colors.grey,
+                  inactiveFillColor: Colors.grey,
+                  selectedFillColor: Colors.grey,
                 ),
-                animationDuration: const Duration(milliseconds: 300),
-                enableActiveFill: true,
-                onChanged: (value) {},
               ),
+
               const SizedBox(height: 10),
 
               Row(

@@ -41,7 +41,7 @@ class _PaymentScreenState extends State<Payment> {
             ),
             Icon(
               selected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: selected ?primarycolor: Colors.white38,
+              color: selected ? Colors.white:Colors.white38,
             ),
           ],
         ),

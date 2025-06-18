@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       context.push('/company_details');
                     },
-                    child:   Align(
+                    child: Align(
                       alignment: Alignment.center,
                       child: Text(
                         'Don’t have an account? Register',

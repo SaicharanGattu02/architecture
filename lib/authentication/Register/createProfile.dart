@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +22,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   final _addressController = TextEditingController();
   final _emailController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-
   String? _selectedYear;
   File? _logoImage;
   bool _showCompanyError = false;
@@ -308,46 +308,56 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  menuMaxHeight: 200,
+                DropdownButtonFormField2<String>(
                   value: _selectedYear,
-                  hint: const Text(
-                    'Select year',
-                    style: TextStyle(color: Colors.white38),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  dropdownColor: const Color(0xff363636),
+                  isExpanded: true,
                   decoration: InputDecoration(
+                    isDense: true,
                     filled: true,
                     fillColor: const Color(0xff363636),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  items:
-                      List.generate(
-                            100,
-                            (index) => (DateTime.now().year - index).toString(),
-                          )
-                          .map(
-                            (year) => DropdownMenuItem(
-                              value: year,
-                              child: Text(year),
-                            ),
-                          )
-                          .toList(),
+                  hint: const Text(
+                    'Select year',
+                    style: TextStyle(color: Colors.white38),
+                  ),
+                  items: List.generate(
+                    100,
+                        (index) => (DateTime.now().year - index).toString(),
+                  ).map((year) {
+                    return DropdownMenuItem<String>(
+                      value: year,
+                      child: Text(
+                        year,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }).toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedYear = value;
                       _showYearError = !_validateYear();
                     });
                   },
+                  dropdownStyleData: DropdownStyleData(
+                    maxHeight: 200,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff363636),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  iconStyleData: const IconStyleData(
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                  ),
+                  menuItemStyleData: const MenuItemStyleData(
+                    overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                  ),
                 ),
+
                 if (_showYearError)
                   Padding(
                     padding: const EdgeInsets.only(top: 5),
