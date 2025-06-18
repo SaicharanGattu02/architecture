@@ -92,9 +92,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
 
   void _showImageSourceSelection() {
     showModalBottomSheet(
-      isDismissible: false,
       context: context,
-      backgroundColor: const Color(0xff363636),
+      isScrollControlled: false,
+      isDismissible: true,
+      backgroundColor: const Color(0xff2E2E2E),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -102,48 +103,54 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         return SafeArea(
           child: Stack(
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 50),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.photo_library,
-                      color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white30,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
-                    title: const Text(
-                      'Choose from Gallery',
-                      style: TextStyle(color: Colors.white),
+                    const SizedBox(height: 20),
+                    ListTile(
+                      leading: const Icon(Icons.photo_library, color: Colors.white),
+                      title: const Text(
+                        'Choose from Gallery',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      onTap: () => _pickImage(ImageSource.gallery),
                     ),
-                    onTap: () => _pickImage(ImageSource.gallery),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.camera_alt, color: Colors.white),
-                    title: const Text(
-                      'Take Photo',
-                      style: TextStyle(color: Colors.white),
+                    ListTile(
+                      leading: const Icon(Icons.camera_alt, color: Colors.white),
+                      title: const Text(
+                        'Take Photo',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      onTap: () => _pickImage(ImageSource.camera),
                     ),
-                    onTap: () => _pickImage(ImageSource.camera),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Positioned(
-                top: 5,
+                top: 10,
                 right: 10,
-                child: IconButton.outlined(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {
-                    context.pop();
-                  },
-                  icon: const Icon(Icons.close, color: Colors.white, size: 18),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(CircleBorder()),
-                    side: MaterialStateProperty.all(
-                      BorderSide(color: Colors.white),
-                    ),
-                    // Optionally, you can adjust padding to make it more compact
-                    padding: MaterialStateProperty.all(EdgeInsets.all(8)),
-                  ),
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  tooltip: 'Close',
                 ),
               ),
             ],
@@ -152,6 +159,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       },
     );
   }
+
 
   Widget _buildTextField({
     required String label,
@@ -233,10 +241,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             const Text(
               '1 of 4',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
                 fontFamily: 'Inter',
+                color: Colors.white,
                 fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
             ),
             const SizedBox(height: 12),
@@ -245,7 +253,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               value: 0.25,
               backgroundColor: const Color(0xff4D4D4D),
               valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(8),
             ),
             const SizedBox(height: 16),
             _buildTextField(
@@ -343,7 +351,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                       _showYearError = !_validateYear();
                     });
                   },
-                  dropdownStyleData: DropdownStyleData(
+                  dropdownStyleData: DropdownStyleData(useSafeArea: true,
+                    offset: const Offset(0,-8),
                     maxHeight: 200,
                     decoration: BoxDecoration(
                       color: const Color(0xff363636),
@@ -384,64 +393,87 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 const Text(
                   'Logo',
                   style: TextStyle(
-                    color: Color(0xffD8D8D8),
+                    color: Color(0xFFD8D8D8),
                     fontSize: 16,
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
+
+                // Upload Container
                 GestureDetector(
                   onTap: _showImageSourceSelection,
                   child: Container(
                     width: double.infinity,
-                    height: 60,
+                    height: 120,
                     decoration: BoxDecoration(
-                      color: const Color(0xff363636),
+                      color: const Color(0xFF2E2E2E),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _logoImage != null ? Colors.green : Colors.grey.withOpacity(0.4),
+                        width: 1.5,
+                      ),
                     ),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    child: _logoImage == null
+                        ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          _logoImage != null
-                              ? Icons.check_circle
-                              : Icons.upload_file,
-                          color: _logoImage != null
-                              ? Colors.green
-                              : Colors.white54,
+                        const Icon(Icons.upload_file_rounded, color: Colors.white70),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'Tap to Upload Logo',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _logoImage != null ? 'Logo Selected' : 'Upload Logo',
-                          style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 14,
+                      ],
+                    )
+                        : Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _logoImage!,
+                            width: double.infinity,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _logoImage = null;
+                                _showLogoError = false; // Optional reset
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black54,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                if (_logoImage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        image: DecorationImage(
-                          image: FileImage(_logoImage!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
+
+                // Error Text
                 if (_showLogoError)
                   Padding(
-                    padding: const EdgeInsets.only(top: 5),
+                    padding: const EdgeInsets.only(top: 6),
                     child: ShakeWidget(
                       key: const Key('logo_error'),
                       duration: const Duration(milliseconds: 700),
@@ -450,7 +482,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 12,
-                          color: Colors.red,
+                          color: Colors.redAccent,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -458,6 +490,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   ),
               ],
             ),
+
+
           ],
         ),
       ),

@@ -3,21 +3,21 @@ import 'package:equatable/equatable.dart';
 
 
 
-abstract class subscription_state extends Equatable {
+abstract class SubscriptionState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class subscriprionIntailly extends subscription_state {}
+class SubscriptionIntailly extends SubscriptionState {}
 
-class subscriprionLoading extends subscription_state {}
+class SubscriptionLoading extends SubscriptionState {}
 
-class subscriprionLoaded extends subscription_state {
+class SubscriptionLoaded extends SubscriptionState {
   final SubscriptionModel subscriptionModel;
-  subscriprionLoaded({required this.subscriptionModel});
+  SubscriptionLoaded({required this.subscriptionModel});
 }
 
-class subscriprionError extends subscription_state {
+class SubscriptionError extends SubscriptionState {
   final String message;
-  subscriprionError({required this.message});
+  SubscriptionError({required this.message});
 }

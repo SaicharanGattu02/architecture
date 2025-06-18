@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../Components/CutomAppBar.dart';
+
 class Otp extends StatefulWidget {
   final String mailId;
   const Otp({Key? key, required this.mailId}) : super(key: key);
@@ -35,36 +37,29 @@ class _OtpVerificationScreenState extends State<Otp> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
+      appBar: CustomAppBar1(title: 'Create Profile', actions: []),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back arrow and title
-              Row(
-                children: [
-                  const Icon(Icons.arrow_back, color: Colors.white),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Create Profile',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Step progress
-              const Text('2 of 4', style: TextStyle(color: Colors.white)),
+              const Text('2 of 4',  style: TextStyle(
+                fontFamily: 'Inter',
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+              ),),
               const SizedBox(height: 4),
               LinearProgressIndicator(
+                minHeight: 8,
                 value: 0.5,
-                color: Colors.white,
-                backgroundColor: Colors.grey.shade800,
+                backgroundColor: const Color(0xff4D4D4D),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                borderRadius: BorderRadius.circular(8),
               ),
               const SizedBox(height: 30),
 
-              // OTP verification title
               const Text(
                 'OTP verification',
                 style: TextStyle(

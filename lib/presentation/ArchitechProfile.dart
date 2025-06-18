@@ -1,6 +1,7 @@
 import 'package:architect/Components/CutomAppBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ArchitechProfile extends StatefulWidget {
   const ArchitechProfile({super.key});
@@ -145,29 +146,37 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.remove_red_eye,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          'View Profile',
-                          style: TextStyle(
+                        TextButton.icon(
+                          onPressed: () {
+                         context.push('/architecture_details');
+                          },
+                          icon: Icon(
+                            Icons.remove_red_eye,
                             color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
+                            size: 20,
+                          ),
+                          label: Text(
+                            'View Profile',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                         Spacer(),
-                        Icon(Icons.edit, color: Colors.white, size: 20),
-                        SizedBox(width: 12),
-                        Text(
-                          'View Profile',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
+                        TextButton.icon(
+                          onPressed: () {
+                            // Handle Edit Profile tap
+                          },
+                          icon: Icon(Icons.edit, color: Colors.white, size: 20),
+                          label: Text(
+                            'Edit Profile',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ],
@@ -176,7 +185,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                 ],
               ),
             ),
-            SizedBox(height: 50),
+            SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
               child: Row(

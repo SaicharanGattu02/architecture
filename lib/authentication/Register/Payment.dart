@@ -41,7 +41,7 @@ class _PaymentScreenState extends State<Payment> {
             ),
             Icon(
               selected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: selected ? Colors.white:Colors.white38,
+              color: selected ? Colors.white : Colors.white38,
             ),
           ],
         ),
@@ -57,25 +57,9 @@ class _PaymentScreenState extends State<Payment> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,mainAxisAlignment: MainAxisAlignment.start
-          ,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                '2 of 3',
-                style: TextStyle(fontFamily: 'Inter', color: Colors.white70),
-              ),
-            ),
-            SizedBox(height: 8),
-            LinearProgressIndicator(
-              borderRadius: BorderRadius.circular(4),
-              value: 2 / 3,
-              backgroundColor: Color(0xff4D4D4D),
-              color: Colors.white,
-              minHeight: 6,
-            ),
-            const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -92,7 +76,6 @@ class _PaymentScreenState extends State<Payment> {
             _buildOption('Credit Card'),
             _buildOption('Paypal'),
             _buildOption('Apple Pay'),
-
           ],
         ),
       ),
@@ -101,11 +84,11 @@ class _PaymentScreenState extends State<Payment> {
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: CustomAppButton1(
             text: 'Continue',
-            onPlusTap:_method == null
+            onPlusTap: _method == null
                 ? null
-                :  () {
-              context.push('/profile_created');
-            },
+                : () {
+                    context.push('/company_profile_setup');
+                  },
           ),
         ),
       ),

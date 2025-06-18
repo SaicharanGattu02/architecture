@@ -53,8 +53,8 @@ class StateInjector {
       create: (context) =>
           AddEditPostCubit(context.read<AddEditPostRepository>()),
     ),
-    BlocProvider<subscription_cubit>(
-      create: (context) => subscription_cubit(context.read<SubscriptionRepository>()),
+    BlocProvider<SubscriptionCubit>(
+      create: (context) => SubscriptionCubit(context.read<SubscriptionRepository>()),
     ),
   ];
 }

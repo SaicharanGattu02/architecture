@@ -2,22 +2,22 @@ import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
 import 'package:architect/bloc/SubscriptionPlans/subscription_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class subscription_cubit extends Cubit<subscription_state> {
+class SubscriptionCubit extends Cubit<SubscriptionState> {
   final SubscriptionRepository subscriptionRepository;
 
-  subscription_cubit(this.subscriptionRepository) : super(subscriprionIntailly());
+  SubscriptionCubit(this.subscriptionRepository) : super(SubscriptionIntailly());
 
   Future<void> getsubscriptionplans() async {
-    emit(subscriprionLoading());
+    emit(SubscriptionLoading());
     try {
       final res = await subscriptionRepository.getSubplans();
       if (res != null) {
-        emit(subscriprionLoaded(subscriptionModel: res));
+        emit(SubscriptionLoaded(subscriptionModel: res));
       } else {
-        emit(subscriprionError(message: "No data available"));
+        emit(SubscriptionError(message: "No data available"));
       }
     } catch (e) {
-      emit(subscriprionError(message: "An error occurred: $e"));
+      emit(SubscriptionError(message: "An error occurred: $e"));
     }
   }
 }
