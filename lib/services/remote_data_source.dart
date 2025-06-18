@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:architect/models/ActiveSubscriptionmodel.dart';
+import 'package:architect/models/SubscriptionModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/ArchitectModel.dart';
@@ -14,6 +16,8 @@ abstract class RemoteDataSource {
   Future<SuccessModel?> addPost(Map<String,dynamic> data);
   Future<SuccessModel?> editPost(Map<String,dynamic> data,id);
   Future<SuccessModel?> deletePost(id);
+  Future<SubscriptionModel?> getsubplans();
+  Future<Activesubscriptionmodel?> activesubplans(int Id);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -137,4 +141,40 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       return null;
     }
   }
+
+
+  @override
+  Future<SubscriptionModel?> getsubplans() async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.getsubplans}");
+      if (res.statusCode == 200) {
+        debugPrint('get Subscription plans:${res.data}');
+        return SubscriptionModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error Subscription plans::$e');
+      return null;
+    }
+  }
+  @override
+  Future<Activesubscriptionmodel?> activesubplans(int Id) async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.activesubplans}/Id");
+      if (res.statusCode == 200) {
+        debugPrint('get Active Subscription plans:${res.data}');
+        return Activesubscriptionmodel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error Subscription plans::$e');
+      return null;
+    }
+  }
+
+
+
+
 }

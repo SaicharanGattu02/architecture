@@ -1,8 +1,6 @@
 import 'package:architect/utils/color_constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
 import '../../Components/CustomAppButton.dart';
 
 class ProfileCreated extends StatefulWidget {
@@ -17,37 +15,45 @@ class _ProfileCreatedState extends State<ProfileCreated> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Lottie.asset(
-            'assets/lottie/successfully.json',
-            height: 150,
-            width: 150,
-            repeat: true,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Profile Created Successfully!',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Lottie.asset(
+                  'assets/lottie/successfully.json',
+                  height: 150,
+                  width: 150,
+                  repeat: true,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Profile Created Successfully!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Welcome to Arkitek.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Welcome to Arkitek.',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 14,
-              color: Colors.white70,
-            ),
-          ),
-          const SizedBox(height: 48),
-        ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(

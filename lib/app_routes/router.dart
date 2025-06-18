@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../authentication/ArchitechProfile.dart';
 import '../authentication/LoginScreen.dart';
 import '../authentication/Register/AddProject.dart';
+import '../authentication/Register/CompanyProfileSetupScreen.dart';
 import '../authentication/Register/Otp.dart';
 import '../authentication/Register/Payment.dart';
 import '../authentication/Register/ProfileCreated.dart';
@@ -24,10 +25,17 @@ import '../presentation/selectType.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
+
+    // GoRoute(
+    //   path: '/',
+    //   pageBuilder: (context, state) =>
+    //       buildSlideTransitionPage(Splash(), state),
+    // ),
+
     GoRoute(
       path: '/',
       pageBuilder: (context, state) =>
-          buildSlideTransitionPage(Splash(), state),
+          buildSlideTransitionPage(CompanyProfileSetupScreen(), state),
     ),
 
     GoRoute(
@@ -105,6 +113,13 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(ArchitechProfile(), state),
     ),
+    GoRoute(
+      path: '/company_profile_setup',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(CompanyProfileSetupScreen(), state),
+    ),
+
+
     GoRoute(
       path: '/otp',
       pageBuilder: (context, state) {
