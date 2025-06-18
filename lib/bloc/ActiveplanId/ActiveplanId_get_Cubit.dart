@@ -1,6 +1,6 @@
-import 'package:architect/authentication/Register/ActiveplanId/ActiveplanId_get_Repository.dart';
-import 'package:architect/authentication/Register/ActiveplanId/ActiveplanId_get_State.dart';
+import 'package:architect/bloc/ActiveplanId/ActiveplanId_get_State.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'ActiveplanId_get_Repository.dart';
 
 class ActiveplanidGetCubit extends Cubit<ActiveplanidGetState> {
   final ActiveplanidGetRepository activeplanidGetRepository;

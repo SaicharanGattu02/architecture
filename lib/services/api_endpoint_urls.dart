@@ -7,13 +7,14 @@ class APIEndpointUrls {
   static const String register = '${apiUrl}register';
   static const String login = '${apiUrl}login';
   static const String refreshtoken = '${apiUrl}login';
+
   static const String addPost = '${apiUrl}create-post';
   static const String deletePost = '${apiUrl}delete-post';
   static const String editPost = '${apiUrl}edit-post';
-  ///Api Urls//////
-  static const String getarchetic = '${apiUrl}get-architects';
+
+  static const String get_architect = '${apiUrl}get-architects';
   static const String getsubplans = '${apiUrl}plans';
   static const String activesubplans = '${apiUrl}selected-plan';
-
-
+  static const String get_states = '${apiUrl}get-states';
+  static const String get_city = '${apiUrl}get-city';
 }

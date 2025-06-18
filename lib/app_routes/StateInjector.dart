@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/SubscriptionPlans/subscription_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_repository.dart';
-import '../bloc/archeticlist/ArcheticCubit.dart';
-import '../bloc/archeticlist/ArcheticRepository.dart';
+import '../bloc/architect_list/architect_cubit.dart';
+import '../bloc/architect_list/architect_repository.dart';
 import '../bloc/login/login_cubit.dart';
 import '../bloc/login/login_repository.dart';
 import '../bloc/register/register_cubit.dart';
@@ -17,9 +17,9 @@ class StateInjector {
     RepositoryProvider<RemoteDataSource>(
       create: (context) => RemoteDataSourceImpl(),
     ),
-    RepositoryProvider<Archeticrepository>(
+    RepositoryProvider<ArchitectRepository>(
       create: (context) =>
-          GetcategoryImpl(remoteDataSource: context.read<RemoteDataSource>()),
+          ArchitectImpl(remoteDataSource: context.read<RemoteDataSource>()),
     ),
     RepositoryProvider<RegisterRepository>(
       create: (context) => RegisterRepositoryImpl(
@@ -46,8 +46,8 @@ class StateInjector {
     BlocProvider<RegisterCubit>(
       create: (context) => RegisterCubit(context.read<RegisterRepository>()),
     ),
-    BlocProvider<ArcheticCubit>(
-      create: (context) => ArcheticCubit(context.read<Archeticrepository>()),
+    BlocProvider<ArchitectCubit>(
+      create: (context) => ArchitectCubit(context.read<ArchitectRepository>()),
     ),
     BlocProvider<AddEditPostCubit>(
       create: (context) =>
