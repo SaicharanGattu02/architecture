@@ -1,163 +1,189 @@
+import 'dart:io';
+
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import '../../Components/CustomAppButton.dart';
+import '../../utils/media_query_helper.dart';
 
-class Otp extends StatefulWidget {
-  final String mailId;
-const Otp({Key? key, required this.mailId}) : super(key: key);
+class OtpVerifyScreen extends StatefulWidget {
+  String mailId;
+  OtpVerifyScreen({super.key, required this.mailId});
   @override
-  State<Otp> createState() => _OtpVerificationScreenState();
+  State<OtpVerifyScreen> createState() => _OtpState();
 }
 
-class _OtpVerificationScreenState extends State<Otp> {
-  TextEditingController otpController = TextEditingController();
-  int countdown = 30;
+class _OtpState extends State<OtpVerifyScreen> {
+  final TextEditingController _otpController = TextEditingController();
+  final FocusNode _otpFocusNode = FocusNode();
+
+  bool _isOtpValid = false;
+  String fbToken = "";
 
   @override
   void initState() {
     super.initState();
-    startCountdown();
   }
 
-  void startCountdown() {
-    Future.delayed(const Duration(seconds: 1), () {
-      if (countdown > 0) {
-        setState(() {
-          countdown--;
-        });
-        startCountdown();
-      }
+  String? _validateOtp(String otp) {
+    if (otp.length < 6) {
+      return 'Please enter a 6-digit OTP';
+    }
+    if (!RegExp(r'^\d{6}$').hasMatch(otp)) {
+      return 'OTP must contain only digits';
+    }
+    return null;
+  }
+
+  void _onOtpChanged(String otp) {
+    bool isValid = _validateOtp(otp) == null;
+    if (isValid) {
+      _otpFocusNode.unfocus();
+    }
+    setState(() {
+      _isOtpValid = isValid;
     });
+  }
+
+  void _verifyOtp() {
+    Map<String, dynamic> data = {
+      "mail": widget.mailId,
+      "otp": _otpController.text,
+      if (Platform.isAndroid) ...{
+        "token_type": "android_token",
+        "fcm_token": fbToken,
+      } else ...{
+        "token_type": " ios_token",
+        "fcm_token": fbToken,
+      },
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Back arrow and title
-              Row(
-                children: [
-                  const Icon(Icons.arrow_back, color: Colors.white),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Create Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+      backgroundColor: primarycolor,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: SizeConfig.screenHeight * 0.1),
 
-              // Step progress
-              const Text(
-                '2 of 4',
-                style: TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 4),
-              LinearProgressIndicator(
-                value: 0.5,
+            Text(
+              'OTP Verification',
+              style: TextStyle(
                 color: Colors.white,
-                backgroundColor: Colors.grey.shade800,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Inter',
+                fontSize: 20,
               ),
-              const SizedBox(height: 30),
-
-              // OTP verification title
-              const Text(
-                'OTP verification',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+            ),
+            SizedBox(height: 16),
+            RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: const Color(0xFF2C2F33),
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'lexend',
                 ),
-              ),
-              const SizedBox(height: 10),
-
-              // Subtext
-              const Text(
-                'Enter the 6-digit code sent to your registered\nMail id Company@gmail.com',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 20),
-
-
-              PinCodeTextField(backgroundColor:Colors.black ,
-                appContext: context,
-                length: 6,
-                controller: otpController,
-                autoFocus: true,
-                animationType: AnimationType.fade,
-                keyboardType: TextInputType.number,
-                pinTheme: PinTheme(
-                  shape: PinCodeFieldShape.box,
-                  borderRadius: BorderRadius.circular(8),
-                  fieldHeight: 50,
-                  fieldWidth: 40,
-                  activeFillColor: Colors.white,
-                  inactiveFillColor: Colors.white,
-                  selectedFillColor: Colors.white,
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey,
-                  selectedColor: Colors.white,
-                ),
-                animationDuration: const Duration(milliseconds: 300),
-                enableActiveFill: true,
-                onChanged: (value) {},
-              ),
-              const SizedBox(height: 10),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Resend OTP in $countdown sec",
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
+                  TextSpan(
+                    text:
+                        'Enter the 6-digit code sent to your registered Mail Id ',
+                  ),
+                  TextSpan(
+                    text: '+91 ${widget.mailId}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: IconButton(
+                        onPressed: () {
+                          context.pushReplacement(
+                            '/login_mobile',
+                            extra: widget.mailId,
+                          );
+                        },
+                        icon: Image.asset("assets/edit1.png", scale: 35),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-
-              // Verify button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                      context.push('/subscription');
-
-                  },
-
-                  child: const Text(
-                    "Verify & View Plans",
-                    style: TextStyle(color: Colors.black),
-
-
-
-                  ),
-                ),
+            ),
+            const SizedBox(height: 32),
+            PinCodeTextField(
+              autoUnfocus: true,
+              appContext: context,
+              pastedTextStyle: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
-            ],
-          ),
+              length: 6,
+              blinkWhenObscuring: true,
+              autoFocus: true,
+              autoDismissKeyboard: false,
+              showCursor: true,
+              animationType: AnimationType.fade,
+              focusNode: _otpFocusNode,
+              hapticFeedbackTypes: HapticFeedbackTypes.heavy,
+              controller: _otpController,
+              onTap: () {},
+              onChanged: _onOtpChanged, // Handle OTP changes
+              pinTheme: PinTheme(
+                shape: PinCodeFieldShape.box,
+                borderRadius: BorderRadius.circular(5),
+                fieldHeight: 48,
+                fieldWidth: 48,
+                fieldOuterPadding: EdgeInsets.only(left: 0, right: 3),
+                activeFillColor: Color(0xFFF4F4F4),
+                activeColor: Color(0xff110B0F),
+                selectedColor: Color(0xff110B0F),
+                selectedFillColor: Color(0xFFF4F4F4),
+                inactiveFillColor: Color(0xFFF4F4F4),
+                inactiveColor: Color(0xFFD2D2D2),
+                inactiveBorderWidth: 1,
+                selectedBorderWidth: 1.5,
+                activeBorderWidth: 1.5,
+              ),
+              textStyle: TextStyle(
+                fontFamily: "lexend",
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+              ),
+              cursorColor: Colors.black,
+              enableActiveFill: true,
+              keyboardType: TextInputType.numberWithOptions(),
+              textInputAction: (Platform.isAndroid)
+                  ? TextInputAction.none
+                  : TextInputAction.done,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              boxShadows: const [
+                BoxShadow(
+                  offset: Offset(0, 1),
+                  color: Colors.black12,
+                  blurRadius: 10,
+                ),
+              ],
+              enablePinAutofill: true,
+              useExternalAutoFillGroup: true,
+              beforeTextPaste: (text) {
+                return true;
+              },
+            ),
+            SizedBox(height: 24),
+            CustomAppButton1(text: 'Log-In', onPlusTap: () {}),
+          ],
         ),
       ),
     );

@@ -179,7 +179,12 @@ class _CompanyDetailsState extends State<CompanyDetails> {
           cursorColor: Colors.white,
           controller: controller,
           keyboardType: keyboardType,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            fontFamily: "Inter",
+          ),
           decoration: InputDecoration(hintText: hint),
           onTap: () {
             setState(() {

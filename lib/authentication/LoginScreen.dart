@@ -51,6 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextFormField(
                     controller: _emailController,
+                    style: TextStyle(
+
+                    ),
                     decoration: const InputDecoration(
                       hintText: 'Enter email',
                     ),

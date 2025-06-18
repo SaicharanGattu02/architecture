@@ -1,15 +1,19 @@
 import 'package:architect/services/api_endpoint_urls.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/constants.dart';
 import 'ApiClient.dart';
 import 'api_endpoint_urls.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/widgets.dart';
 
 class AuthService {
   static const String _accessTokenKey = "access_token";
   static const String _refreshTokenKey = "refresh_token";
   static const String _tokenExpiryKey = "token_expiry";
+
+  static final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   /// Check if the user is a guest (no token or empty token)
   static Future<bool> get isGuest async {
@@ -19,37 +23,33 @@ class AuthService {
 
   /// Get stored access token
   static Future<String?> getAccessToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_accessTokenKey);
+    return await _storage.read(key: _accessTokenKey);
   }
 
   /// Get stored refresh token
   static Future<String?> getRefreshToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_refreshTokenKey);
+    return await _storage.read(key: _refreshTokenKey);
   }
-
 
   /// Check if token is expired
   static Future<bool> isTokenExpired() async {
-    final prefs = await SharedPreferences.getInstance();
-    final expiryTimestamp = prefs.getInt(_tokenExpiryKey);
-    if (expiryTimestamp == null) {
+    final expiryTimestampStr = await _storage.read(key: _tokenExpiryKey);
+    if (expiryTimestampStr == null) {
       debugPrint('No expiry timestamp found, considering token expired');
       return true;
     }
+    final expiryTimestamp = int.tryParse(expiryTimestampStr);
     final now = DateTime.now().millisecondsSinceEpoch;
-    final isExpired = now >= (expiryTimestamp);
+    final isExpired = expiryTimestamp == null || now >= expiryTimestamp;
     debugPrint('Token expiry check: now=$now, expiry=$expiryTimestamp, isExpired=$isExpired');
     return isExpired;
   }
 
   /// Save tokens and expiry time
   static Future<void> saveTokens(String accessToken, String refreshToken, int expiresIn) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_accessTokenKey, accessToken);
-    await prefs.setString(_refreshTokenKey, refreshToken);
-    await prefs.setInt(_tokenExpiryKey, expiresIn);
+    await _storage.write(key: _accessTokenKey, value: accessToken);
+    await _storage.write(key: _refreshTokenKey, value: refreshToken);
+    await _storage.write(key: _tokenExpiryKey, value: expiresIn.toString());
     debugPrint('Tokens saved: accessToken=$accessToken, expiryTime=$expiresIn');
   }
 
@@ -60,11 +60,13 @@ class AuthService {
       debugPrint('❌ No refresh token available');
       return false;
     }
+
     try {
       final response = await ApiClient.post(
         APIEndpointUrls.refreshtoken,
         data: {"refresh": refreshToken},
       );
+
       if (response.statusCode == 200) {
         final tokenData = response.data["data"];
         final newAccessToken = tokenData["access"];
@@ -75,11 +77,8 @@ class AuthService {
           debugPrint("❌ Missing token data in response: $tokenData");
           return false;
         }
-        // Save the tokens with expiryTime (assuming expiry_time is in milliseconds)
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(_accessTokenKey, newAccessToken);
-        await prefs.setString(_refreshTokenKey, newRefreshToken);
-        await prefs.setInt(_tokenExpiryKey, expiryTime);
+
+        await saveTokens(newAccessToken, newRefreshToken, expiryTime);
         debugPrint("✅ Token refreshed and saved successfully");
         return true;
       } else {
@@ -94,11 +93,11 @@ class AuthService {
 
   /// Logout and clear tokens, redirect to sign-in screen
   static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_accessTokenKey);
-    await prefs.remove(_refreshTokenKey);
-    await prefs.remove(_tokenExpiryKey);
+    await _storage.delete(key: _accessTokenKey);
+    await _storage.delete(key: _refreshTokenKey);
+    await _storage.delete(key: _tokenExpiryKey);
     debugPrint('Tokens cleared, user logged out');
+
     if (navigatorKey.currentContext != null) {
       navigatorKey.currentContext!.go('/login_mobile');
     } else {
@@ -111,3 +110,4 @@ class AuthService {
     }
   }
 }
+

@@ -7,7 +7,6 @@ import '../utils/color_constants.dart';
 
 class SelectArchitecture extends StatefulWidget {
   const SelectArchitecture({Key? key}) : super(key: key);
-
   @override
   State<SelectArchitecture> createState() => _SelectArchitectureScreenState();
 }
