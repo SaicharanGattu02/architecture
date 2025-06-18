@@ -5,7 +5,8 @@ class SecureStorageService {
   SecureStorageService._privateConstructor();
 
   // Singleton instance
-  static final SecureStorageService _instance = SecureStorageService._privateConstructor();
+  static final SecureStorageService _instance =
+      SecureStorageService._privateConstructor();
 
   // Public getter to access the singleton
   static SecureStorageService get instance => _instance;

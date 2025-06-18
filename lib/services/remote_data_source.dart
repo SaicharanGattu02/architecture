@@ -11,12 +11,13 @@ import 'api_endpoint_urls.dart';
 
 abstract class RemoteDataSource {
   Future<ArchitectModel?> getArchetic();
-  Future<SuccessModel?> registerApi(Map<String,dynamic> data);
-  Future<SuccessModel?> loginApi(Map<String,dynamic> data);
-  Future<SuccessModel?> addPost(Map<String,dynamic> data);
-  Future<SuccessModel?> editPost(Map<String,dynamic> data,id);
+  Future<SuccessModel?> registerApi(Map<String, dynamic> data);
+  Future<SuccessModel?> loginApi(Map<String, dynamic> data);
+  Future<SuccessModel?> addPost(Map<String, dynamic> data);
+  Future<SuccessModel?> editPost(Map<String, dynamic> data, id);
   Future<SuccessModel?> deletePost(id);
   Future<SubscriptionModel?> getsubplans();
+  Future<SuccessModel?> getStates();
   Future<Activesubscriptionmodel?> activesubplans(int Id);
 }
 
@@ -63,9 +64,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> editPost(Map<String,dynamic> data,id) async {
+  Future<SuccessModel?> editPost(Map<String, dynamic> data, id) async {
     try {
-      Response res = await ApiClient.post("${APIEndpointUrls.editPost}/$id",data: data);
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.editPost}/$id",
+        data: data,
+      );
       if (res.statusCode == 200) {
         debugPrint('editPost:${res.data}');
         return SuccessModel.fromJson(res.data);
@@ -79,9 +83,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> addPost(Map<String,dynamic> data) async {
+  Future<SuccessModel?> addPost(Map<String, dynamic> data) async {
     try {
-      Response res = await ApiClient.post("${APIEndpointUrls.addPost}",data: data);
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.addPost}",
+        data: data,
+      );
       if (res.statusCode == 200) {
         debugPrint('addPost:${res.data}');
         return SuccessModel.fromJson(res.data);
@@ -95,9 +102,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> loginApi(Map<String,dynamic> data) async {
+  Future<SuccessModel?> loginApi(Map<String, dynamic> data) async {
     try {
-      Response res = await ApiClient.post("${APIEndpointUrls.login}",data: data);
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.login}",
+        data: data,
+      );
       if (res.statusCode == 200) {
         debugPrint('loginApi:${res.data}');
         return SuccessModel.fromJson(res.data);
@@ -111,9 +121,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> registerApi(Map<String,dynamic> data) async {
+  Future<SuccessModel?> registerApi(Map<String, dynamic> data) async {
     try {
-      Response res = await ApiClient.post("${APIEndpointUrls.register}",data: data);
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.register}",
+        data: data,
+      );
       if (res.statusCode == 200) {
         debugPrint('registerApi:${res.data}');
         return SuccessModel.fromJson(res.data);
@@ -142,7 +155,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
   }
 
-
   @override
   Future<SubscriptionModel?> getsubplans() async {
     try {
@@ -158,10 +170,29 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       return null;
     }
   }
+
+  @override
+  Future<SuccessModel?> getStates() async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.get_states}");
+      if (res.statusCode == 200) {
+        debugPrint('get getStates:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getStates::$e');
+      return null;
+    }
+  }
+
   @override
   Future<Activesubscriptionmodel?> activesubplans(int Id) async {
     try {
-      Response res = await ApiClient.get("${APIEndpointUrls.activesubplans}/Id");
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.activesubplans}/Id",
+      );
       if (res.statusCode == 200) {
         debugPrint('get Active Subscription plans:${res.data}');
         return Activesubscriptionmodel.fromJson(res.data);
@@ -173,8 +204,4 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       return null;
     }
   }
-
-
-
-
 }

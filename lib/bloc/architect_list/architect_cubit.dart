@@ -1,17 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'ArcheticRepository.dart';
-import 'ArcheticState.dart';
+import 'architect_repository.dart';
+import 'architect_state.dart';
 
-class ArcheticCubit extends Cubit<Archeticstate> {
-  final Archeticrepository archeticrepository;
+class ArchitectCubit extends Cubit<Archeticstate> {
+  final ArchitectRepository archeticrepository;
 
-  ArcheticCubit(this.archeticrepository) : super(archeticIntailly());
+  ArchitectCubit(this.archeticrepository) : super(archeticIntailly());
 
   Future<void> getarchitecture() async {
     emit(archeticLoading());
     try {
-      final res = await archeticrepository.getArchetic();
+      final res = await archeticrepository.getArchitect();
       if (res != null) {
         emit(archeticLoaded(architectModel: res));
       } else {

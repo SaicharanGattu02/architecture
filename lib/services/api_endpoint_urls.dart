@@ -14,6 +14,7 @@ class APIEndpointUrls {
   static const String getarchetic = '${apiUrl}get-architects';
   static const String getsubplans = '${apiUrl}plans';
   static const String activesubplans = '${apiUrl}selected-plan';
+  static const String get_states = '${apiUrl}get-states';
 
 
 }
