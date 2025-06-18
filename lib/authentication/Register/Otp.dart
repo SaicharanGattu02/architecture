@@ -58,6 +58,7 @@ class _OtpVerificationScreenState extends State<Otp> {
               const Text('2 of 4', style: TextStyle(color: Colors.white)),
               const SizedBox(height: 4),
               LinearProgressIndicator(
+
                 value: 0.5,
                 color: Colors.white,
                 backgroundColor: Colors.grey.shade800,
