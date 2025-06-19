@@ -87,7 +87,7 @@ class _PaymentScreenState extends State<Payment> {
             onPlusTap: _method == null
                 ? null
                 : () {
-                    context.push('/company_profile_setup');
+                    context.push('/architect_profile_setup');
                   },
           ),
         ),

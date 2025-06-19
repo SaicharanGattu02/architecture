@@ -6,19 +6,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as path;
-import '../../Components/CustomAppButton.dart';
-import '../../Components/CutomAppBar.dart';
-import '../../Components/ShakeWidget.dart';
+import '../Components/CustomAppButton.dart';
+import '../Components/CutomAppBar.dart';
+import '../Components/ShakeWidget.dart';
 
-class CompanyProfileSetupScreen extends StatefulWidget {
-  const CompanyProfileSetupScreen({super.key});
+class ArchitectProfileSetup extends StatefulWidget {
+  const ArchitectProfileSetup({super.key});
 
   @override
-  State<CompanyProfileSetupScreen> createState() =>
-      _CompanyProfileSetupScreenState();
+  State<ArchitectProfileSetup> createState() => _ArchitectProfileSetupState();
 }
 
-class _CompanyProfileSetupScreenState extends State<CompanyProfileSetupScreen> {
+class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _experienceController = TextEditingController();
   final TextEditingController _projectsController = TextEditingController();

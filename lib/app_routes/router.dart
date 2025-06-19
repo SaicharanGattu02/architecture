@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../presentation/ArchitechProfile.dart';
 import '../authentication/LoginScreen.dart';
 import '../authentication/Register/AddProject.dart';
-import '../authentication/Register/CompanyProfileSetupScreen.dart';
+import '../presentation/ArchitectProfileSetup.dart';
 import '../authentication/Register/Otp.dart';
 import '../authentication/Register/Payment.dart';
 import '../authentication/Register/ProfileCreated.dart';
@@ -14,9 +14,11 @@ import '../authentication/Register/SubScription.dart';
 import '../presentation/PostYourRequirement.dart';
 import '../presentation/PostYourRequirementSuccessfully.dart';
 import '../presentation/SplashScreen.dart';
+import '../presentation/UserPosted.dart';
+import '../presentation/UserPostedDetails.dart';
 import '../presentation/onboarding.dart';
 import '../presentation/selectState.dart';
-import '../presentation/architectureDetails.dart';
+import '../presentation/ArchitectureDetails.dart';
 import '../authentication/Register/createProfile.dart';
 import '../presentation/selectArchitecture.dart';
 import '../presentation/selectCity.dart';
@@ -28,7 +30,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/',
       pageBuilder: (context, state) =>
-          buildSlideTransitionPage(Splash(), state),
+          buildSlideTransitionPage(UserPosted(), state),
     ),
     GoRoute(
       path: '/login',
@@ -39,6 +41,11 @@ final GoRouter appRouter = GoRouter(
       path: '/onboarding',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(Onboarding(), state),
+    ),
+    GoRoute(
+      path: '/user_posted_details',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(UserPostedDetails(), state),
     ),
     GoRoute(
       path: '/enter_state',
@@ -106,9 +113,9 @@ final GoRouter appRouter = GoRouter(
           buildSlideTransitionPage(ArchitechProfile(), state),
     ),
     GoRoute(
-      path: '/company_profile_setup',
+      path: '/architect_profile_setup',
       pageBuilder: (context, state) =>
-          buildSlideTransitionPage(CompanyProfileSetupScreen(), state),
+          buildSlideTransitionPage(ArchitectProfileSetup(), state),
     ),
 
     GoRoute(
@@ -117,6 +124,11 @@ final GoRouter appRouter = GoRouter(
         final mailId = state.uri.queryParameters['mailId'] ?? "";
         return buildSlideTransitionPage(Otp(mailId: mailId), state);
       },
+    ),
+    GoRoute(
+      path: '/user_created',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(UserPosted(), state),
     ),
   ],
 );

@@ -1,3 +1,4 @@
+import 'package:architect/Components/CustomAppButton.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -44,12 +45,15 @@ class _OtpVerificationScreenState extends State<Otp> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('2 of 4',  style: TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-              ),),
+              const Text(
+                '2 of 4',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
               const SizedBox(height: 4),
               LinearProgressIndicator(
                 minHeight: 8,
@@ -119,26 +123,11 @@ class _OtpVerificationScreenState extends State<Otp> {
               ),
               const SizedBox(height: 30),
 
-              // Verify button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    context.push('/subscription');
-                  },
-
-                  child: const Text(
-                    "Verify & View Plans",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
+              CustomAppButton1(
+                text: "Verify & View Plans",
+                onPlusTap: () {
+                  context.push('/subscription');
+                },
               ),
             ],
           ),

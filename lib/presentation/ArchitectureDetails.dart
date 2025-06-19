@@ -1,6 +1,6 @@
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
-
+import 'package:icons_plus/icons_plus.dart';
 import '../Components/CustomAppButton.dart';
 import '../Components/CutomAppBar.dart';
 
@@ -77,12 +77,45 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                   ),
                 ),
                 Positioned(
-                  right: 16,
-                  bottom: -30,
+                  right: 60,
+                  bottom: -50,
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.call, color: Colors.blue),
+                      IconButton.outlined(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            Color(0xff191919),
+                          ),
+                          shape: WidgetStateProperty.all(CircleBorder()),
+                        ),
+                        visualDensity: VisualDensity.compact,
+                        icon: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Icon(Icons.call, color: Colors.blue),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+
+                Positioned(
+                  right: 10,
+                  bottom: -50,
+                  child: Row(
+                    children: [
+                      IconButton.outlined(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            Color(0xff191919),
+                          ),
+                          shape: WidgetStateProperty.all(CircleBorder()),
+                        ),
+                        visualDensity: VisualDensity.compact,
+                        icon: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Icon(Bootstrap.whatsapp, color: Colors.green),
+                        ),
                         onPressed: () {},
                       ),
                     ],

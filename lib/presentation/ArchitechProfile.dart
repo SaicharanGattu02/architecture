@@ -167,7 +167,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                         Spacer(),
                         TextButton.icon(
                           onPressed: () {
-                            // Handle Edit Profile tap
+                            context.push('/architect_profile_setup');
                           },
                           icon: Icon(Icons.edit, color: Colors.white, size: 20),
                           label: Text(
