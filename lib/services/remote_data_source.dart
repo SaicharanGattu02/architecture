@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:architect/models/ActiveSubscriptionmodel.dart';
+import 'package:architect/models/CitiesModel.dart';
 import 'package:architect/models/SubscriptionModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/ArchitectModel.dart';
+import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
 import 'ApiClient.dart';
 import 'api_endpoint_urls.dart';
@@ -12,14 +14,15 @@ import 'api_endpoint_urls.dart';
 abstract class RemoteDataSource {
   Future<ArchitectModel?> getArchitect();
   Future<SuccessModel?> registerApi(Map<String, dynamic> data);
-  Future<SuccessModel?> loginApi(Map<String, dynamic> data);
+  // Future<SuccessModel?> loginApi(Map<String, dynamic> data);
   Future<SuccessModel?> addPost(Map<String, dynamic> data);
   Future<SuccessModel?> editPost(Map<String, dynamic> data, id);
   Future<SuccessModel?> deletePost(id);
   Future<SubscriptionModel?> getsubplans();
-  Future<SuccessModel?> getStates();
-  Future<SuccessModel?> getCity();
+  Future<Statesmodel?> getStates();
+  Future<Citiesmodel?> getCity();
   Future<Activesubscriptionmodel?> activesubplans(int Id);
+  Future<SuccessModel?> loginotp(Map<String, dynamic> data);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -102,24 +105,24 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
   }
 
-  @override
-  Future<SuccessModel?> loginApi(Map<String, dynamic> data) async {
-    try {
-      Response res = await ApiClient.post(
-        "${APIEndpointUrls.login}",
-        data: data,
-      );
-      if (res.statusCode == 200) {
-        debugPrint('loginApi:${res.data}');
-        return SuccessModel.fromJson(res.data);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      debugPrint('Error loginApi::$e');
-      return null;
-    }
-  }
+  // @override
+  // Future<SuccessModel?> loginApi(Map<String, dynamic> data) async {
+  //   try {
+  //     Response res = await ApiClient.post(
+  //       "${APIEndpointUrls.login}",
+  //       data: data,
+  //     );
+  //     if (res.statusCode == 200) {
+  //       debugPrint('loginApi:${res.data}');
+  //       return SuccessModel.fromJson(res.data);
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Error loginApi::$e');
+  //     return null;
+  //   }
+  // }
 
   @override
   Future<SuccessModel?> registerApi(Map<String, dynamic> data) async {
@@ -136,6 +139,24 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error registerApi::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> loginotp(Map<String, dynamic> data) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.loginotp}?company_email=${data}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('loginotp:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error loginotp::$e');
       return null;
     }
   }
@@ -173,12 +194,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> getStates() async {
+  Future<Statesmodel?> getStates() async {
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.get_states}");
       if (res.statusCode == 200) {
         debugPrint('get getStates:${res.data}');
-        return SuccessModel.fromJson(res.data);
+        return Statesmodel.fromJson(res.data);
       } else {
         return null;
       }
@@ -189,12 +210,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> getCity() async {
+  Future<Citiesmodel?> getCity() async {
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.get_city}/States");
       if (res.statusCode == 200) {
         debugPrint('get getCity:${res.data}');
-        return SuccessModel.fromJson(res.data);
+        return Citiesmodel.fromJson(res.data);
       } else {
         return null;
       }

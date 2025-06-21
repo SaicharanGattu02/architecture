@@ -85,15 +85,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: 24),
-                  BlocConsumer<LoginCubit, LoginState>(
+                  BlocConsumer<LoginOTPCubit, LoginOtpState>(
                     listener: (context, state) {
-                      if (state is LoginSucess) {
+                      if (state is LoginOtpSucess) {
                         context.pushReplacement("/otp");
                       }
                     },
                     builder: (context, state) {
                       return CustomAppButton1(
-                        isLoading: state is LoginLoading,
+                        isLoading: state is LoginOtpLoading,
                         text: 'Get OTP',
                         onPlusTap: _submitForm,
                       );

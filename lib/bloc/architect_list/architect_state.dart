@@ -7,16 +7,24 @@ abstract class ArchitectState extends Equatable {
   List<Object?> get props => [];
 }
 
-class ArchitectIntailly extends ArchitectState {}
+class ArchitectIntailly extends ArchitectState {
 
-class ArchitectLoading extends ArchitectState {}
+}
+
+class ArchitectLoading extends ArchitectState {
+
+}
 
 class ArchitectLoaded extends ArchitectState {
+
   final ArchitectModel architectModel;
   ArchitectLoaded({required this.architectModel});
+
 }
 
 class ArchitectError extends ArchitectState {
+
   final String message;
   ArchitectError({required this.message});
+
 }

@@ -1,15 +1,16 @@
+import 'package:architect/models/StatesModel.dart';
 import 'package:architect/models/SuccessModel.dart';
 import 'package:architect/services/remote_data_source.dart';
 
 abstract class StateRepo {
-  Future<SuccessModel?> getStateApi();
+  Future<Statesmodel?> getStateApi();
 }
 
 class StateImpl implements StateRepo {
   final RemoteDataSource remoteDataSource;
   StateImpl({required this.remoteDataSource});
 
-  Future<SuccessModel?> getStateApi() async {
+  Future<Statesmodel?> getStateApi() async {
     return await remoteDataSource.getStates();
   }
 }

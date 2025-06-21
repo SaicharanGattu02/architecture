@@ -2,8 +2,11 @@ import 'package:architect/Components/CustomAppButton.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+
+import '../bloc/state/state_cubit.dart';
 
 class EnterState extends StatefulWidget {
   @override
@@ -12,7 +15,11 @@ class EnterState extends StatefulWidget {
 
 class _EnterStateScreenState extends State<EnterState> {
   String? _selectState;
-
+@override
+  void initState() {
+   context.read<StateCubit>().getState();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

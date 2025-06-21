@@ -2,21 +2,21 @@ import 'package:equatable/equatable.dart';
 
 import '../../models/SuccessModel.dart';
 
-abstract class LoginState extends Equatable {
+abstract class LoginOtpState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class LoginIntially extends LoginState {}
+class LoginOtpIntially extends LoginOtpState {}
 
-class LoginLoading extends LoginState {}
+class LoginOtpLoading extends LoginOtpState {}
 
-class LoginSucess extends LoginState {
+class LoginOtpSucess extends LoginOtpState {
   final SuccessModel successModel;
-  LoginSucess({required this.successModel});
+  LoginOtpSucess({required this.successModel});
 }
 
-class LoginError extends LoginState {
+class LoginOtpError extends LoginOtpState {
   final String message;
-  LoginError({required this.message});
+  LoginOtpError({required this.message});
 }

@@ -14,7 +14,7 @@ class CityCubit extends Cubit<CityStates> {
       if (res != null) {
         emit(CityLoading());
       } else {
-        emit(CityFailure(msg: "An error occurred: ${res?.message ?? ""}"));
+        emit(CityFailure(msg: "An error occurred: ${res?.name ?? ""}"));
       }
     } catch (e) {
       emit(CityFailure(msg: "An error occurred: $e"));

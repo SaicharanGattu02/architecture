@@ -6,10 +6,16 @@ abstract class ArchitectRepository {
 }
 
 class ArchitectImpl implements ArchitectRepository {
+
+
+
+
   final RemoteDataSource remoteDataSource;
   ArchitectImpl({required this.remoteDataSource});
 
   Future<ArchitectModel?> getArchitect() async {
     return await remoteDataSource.getArchitect();
   }
+
+
 }

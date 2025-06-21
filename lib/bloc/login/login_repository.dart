@@ -2,15 +2,15 @@
 import '../../models/SuccessModel.dart';
 import '../../services/remote_data_source.dart';
 
-abstract class LoginRepository {
-  Future<SuccessModel?> loginApi(Map<String,dynamic> data);
+abstract class LoginOTPRepository {
+  Future<SuccessModel?> loginOtpApi(Map<String,dynamic> data);
 }
 
-class LoginRepositoryImpl implements LoginRepository {
+class LogInRepositoryImpl implements LoginOTPRepository {
   final RemoteDataSource remoteDataSource;
-  LoginRepositoryImpl({required this.remoteDataSource});
+  LogInRepositoryImpl({required this.remoteDataSource});
 
-  Future<SuccessModel?> loginApi(Map<String,dynamic> data) async {
-    return await remoteDataSource.loginApi(data);
+  Future<SuccessModel?> loginOtpApi(Map<String,dynamic> data) async {
+    return await remoteDataSource.loginotp(data);
   }
 }

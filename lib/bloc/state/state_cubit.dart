@@ -12,7 +12,7 @@ class StateCubit extends Cubit<StateStates> {
       if (res != null) {
         emit(StateLoading());
       } else {
-        emit(StateFailure(msg: "An error occurred: ${res?.message ?? ""}"));
+        emit(StateFailure(msg: "An error occurred: ${res?.name ?? ""}"));
       }
     } catch (e) {
       emit(StateFailure(msg: "An error occurred: $e"));

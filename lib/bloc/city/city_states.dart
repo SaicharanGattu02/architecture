@@ -1,4 +1,6 @@
-abstract class CityStates {}
+abstract class CityStates {
+  
+}
 
 class CityIntially extends CityStates {}
 

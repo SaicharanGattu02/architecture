@@ -1,24 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'login_repository.dart';
 import 'login_state.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  final LoginRepository loginRepository;
+class LoginOTPCubit extends Cubit<LoginOtpState> {
+  final LoginOTPRepository loginotpRepository;
 
-  LoginCubit(this.loginRepository) : super(LoginIntially());
+  LoginOTPCubit(this.loginotpRepository) : super(LoginOtpIntially());
 
-  Future<void> loginApi(Map<String, dynamic> data) async {
-    emit(LoginLoading());
+  Future<void> logInOtpApi(Map<String, dynamic> data) async {
+    emit(LoginOtpLoading());
     try {
-      final res = await loginRepository.loginApi(data);
+      final res = await loginotpRepository.loginOtpApi(data);
       if (res != null) {
-        emit(LoginSucess(successModel: res));
+        emit(LoginOtpSucess(successModel: res));
       } else {
-        emit(LoginError(message: "No data available"));
+        emit(LoginOtpError(message: "No data available"));
       }
     } catch (e) {
-      emit(LoginError(message: "An error occurred: $e"));
+      emit(LoginOtpError(message: "An error occurred: $e"));
     }
   }
 }

@@ -5,7 +5,7 @@ class APIEndpointUrls {
 
   /// Auth URls
   static const String register = '${apiUrl}register';
-  static const String login = '${apiUrl}login';
+  // static const String login = '${apiUrl}login-otp';
   static const String refreshtoken = '${apiUrl}login';
 
   static const String addPost = '${apiUrl}create-post';
@@ -15,6 +15,7 @@ class APIEndpointUrls {
   static const String get_architect = '${apiUrl}get-architects';
   static const String getsubplans = '${apiUrl}plans';
   static const String activesubplans = '${apiUrl}selected-plan';
-  static const String get_states = '${apiUrl}get-states';
+  static const String get_states = '${apiUrl}states';
   static const String get_city = '${apiUrl}get-city';
+  static const String loginotp = '${apiUrl}login-otp';
 }

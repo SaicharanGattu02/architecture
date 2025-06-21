@@ -18,6 +18,8 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       }
     } catch (e) {
       emit(SubscriptionError(message: "An error occurred: $e"));
+
     }
+
   }
 }

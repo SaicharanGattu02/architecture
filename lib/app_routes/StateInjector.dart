@@ -1,5 +1,5 @@
-
 import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
+import 'package:architect/bloc/state/state_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/SubscriptionPlans/subscription_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_cubit.dart';
@@ -10,6 +10,7 @@ import '../bloc/login/login_cubit.dart';
 import '../bloc/login/login_repository.dart';
 import '../bloc/register/register_cubit.dart';
 import '../bloc/register/register_repository.dart';
+import '../bloc/state/state_repository.dart';
 import '../services/remote_data_source.dart';
 
 class StateInjector {
@@ -23,25 +24,33 @@ class StateInjector {
     ),
     RepositoryProvider<RegisterRepository>(
       create: (context) => RegisterRepositoryImpl(
-          remoteDataSource: context.read<RemoteDataSource>()),
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
     ),
-    RepositoryProvider<LoginRepository>(
-      create: (context) => LoginRepositoryImpl(
-          remoteDataSource: context.read<RemoteDataSource>()),
+    RepositoryProvider<LoginOTPRepository>(
+      create: (context) => LogInRepositoryImpl(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
     ),
     RepositoryProvider<AddEditPostRepository>(
       create: (context) => AddEditPostRepositoryImpl(
-          remoteDataSource: context.read<RemoteDataSource>()),
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
     ),
     RepositoryProvider<SubscriptionRepository>(
-      create: (context) => GetsubplansImpl(
-          remoteDataSource: context.read<RemoteDataSource>()),
+      create: (context) =>
+          GetsubplansImpl(remoteDataSource: context.read<RemoteDataSource>()),
+    ),
+
+    RepositoryProvider<StateRepo>(
+      create: (context) =>
+          StateImpl(remoteDataSource: context.read<RemoteDataSource>()),
     ),
   ];
 
   static final blocProviders = <BlocProvider>[
-    BlocProvider<LoginCubit>(
-      create: (context) => LoginCubit(context.read<LoginRepository>()),
+    BlocProvider<LoginOTPCubit>(
+      create: (context) => LoginOTPCubit(context.read<LoginOTPRepository>()),
     ),
     BlocProvider<RegisterCubit>(
       create: (context) => RegisterCubit(context.read<RegisterRepository>()),
@@ -54,7 +63,11 @@ class StateInjector {
           AddEditPostCubit(context.read<AddEditPostRepository>()),
     ),
     BlocProvider<SubscriptionCubit>(
-      create: (context) => SubscriptionCubit(context.read<SubscriptionRepository>()),
+      create: (context) =>
+          SubscriptionCubit(context.read<SubscriptionRepository>()),
+    ),
+    BlocProvider<StateCubit>(
+      create: (context) => StateCubit(context.read<StateRepo>()),
     ),
   ];
 }
