@@ -16,6 +16,7 @@ class APIEndpointUrls {
   static const String getsubplans = '${apiUrl}plans';
   static const String activesubplans = '${apiUrl}selected-plan';
   static const String get_states = '${apiUrl}states';
-  static const String get_city = '${apiUrl}get-city';
+  static const String get_city = '${apiUrl}states';
   static const String loginotp = '${apiUrl}login-otp';
+  static const String create_profile = '${apiUrl}company/register';
 }

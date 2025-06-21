@@ -12,7 +12,12 @@ class LoginOTPCubit extends Cubit<LoginOtpState> {
     try {
       final res = await loginotpRepository.loginOtpApi(data);
       if (res != null) {
-        emit(LoginOtpSucess(successModel: res));
+        if(res.status==true){
+          emit(LoginOtpSucess(successModel: res));
+        }else{
+          emit(LoginOtpError(message: "${res.message}"));
+        }
+
       } else {
         emit(LoginOtpError(message: "No data available"));
       }

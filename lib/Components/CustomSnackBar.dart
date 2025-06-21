@@ -7,10 +7,10 @@ class CustomSnackBar {
       SnackBar(
         content: Text(
           message,
-          style: TextStyle(color: Colors.white, fontFamily: "Poppins",fontSize: 14 ),
+          style: TextStyle(color: primarycolor, fontFamily: "Poppins",fontSize: 14 ),
         ),
         duration: Duration(seconds: 2),
-        backgroundColor: primarycolor,
+        backgroundColor: Colors.white,
       ),
     );
   }

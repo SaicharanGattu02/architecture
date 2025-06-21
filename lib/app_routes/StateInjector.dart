@@ -1,6 +1,8 @@
 import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
 import 'package:architect/bloc/state/state_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/CreateProfile/create_profile_cubit.dart';
+import '../bloc/CreateProfile/create_profile_repository.dart';
 import '../bloc/SubscriptionPlans/subscription_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_repository.dart';
@@ -46,6 +48,10 @@ class StateInjector {
       create: (context) =>
           StateImpl(remoteDataSource: context.read<RemoteDataSource>()),
     ),
+    RepositoryProvider<CreateProfileRepository>(
+      create: (context) =>
+          CreateProfileImpl(remoteDataSource: context.read<RemoteDataSource>()),
+    ),
   ];
 
   static final blocProviders = <BlocProvider>[
@@ -68,6 +74,9 @@ class StateInjector {
     ),
     BlocProvider<StateCubit>(
       create: (context) => StateCubit(context.read<StateRepo>()),
+    ),
+    BlocProvider<CreateProfileCubit>(
+      create: (context) => CreateProfileCubit(context.read<CreateProfileRepository>()),
     ),
   ];
 }

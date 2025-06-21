@@ -1,4 +1,5 @@
 import 'package:architect/Components/CustomAppButton.dart';
+import 'package:architect/Components/CustomSnackBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,9 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (_formKey.currentState!.validate() && !_showEmailError) {
-      context.pushReplacement("/otp");
-      final data = {'email': _emailController.text.trim()};
-      // context.read<LoginCubit>().loginApi(data);
+      final data = {'company_email': _emailController.text.trim()};
+      context.read<LoginOTPCubit>().logInOtpApi(data);
     }
   }
 
@@ -89,6 +89,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     listener: (context, state) {
                       if (state is LoginOtpSucess) {
                         context.pushReplacement("/otp");
+                      } else if (state is LoginOtpError) {
+                        CustomSnackBar.show(context, "${state.message}");
                       }
                     },
                     builder: (context, state) {

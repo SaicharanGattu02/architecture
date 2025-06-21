@@ -99,7 +99,7 @@ class CustomAppButton1 extends StatelessWidget implements PreferredSizeWidget {
                 height: 24,
                 width: 24,
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(primarycolor),
                   strokeWidth: 2,
                 ),
               )

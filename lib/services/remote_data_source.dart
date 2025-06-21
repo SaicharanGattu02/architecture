@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:architect/models/ActiveSubscriptionmodel.dart';
-import 'package:architect/models/CitiesModel.dart';
 import 'package:architect/models/SubscriptionModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/ArchitectModel.dart';
+import '../models/CitiesModel.dart';
 import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
 import 'ApiClient.dart';
@@ -14,15 +14,15 @@ import 'api_endpoint_urls.dart';
 abstract class RemoteDataSource {
   Future<ArchitectModel?> getArchitect();
   Future<SuccessModel?> registerApi(Map<String, dynamic> data);
-  // Future<SuccessModel?> loginApi(Map<String, dynamic> data);
   Future<SuccessModel?> addPost(Map<String, dynamic> data);
   Future<SuccessModel?> editPost(Map<String, dynamic> data, id);
   Future<SuccessModel?> deletePost(id);
   Future<SubscriptionModel?> getsubplans();
   Future<Statesmodel?> getStates();
-  Future<Citiesmodel?> getCity();
+  Future<Citiesmodel?> getCity(String city);
   Future<Activesubscriptionmodel?> activesubplans(int Id);
   Future<SuccessModel?> loginotp(Map<String, dynamic> data);
+  Future<SuccessModel?> createProfile(Map<String, dynamic> data);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -162,6 +162,24 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<SuccessModel?> createProfile(Map<String, dynamic> data) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.create_profile}?company_name=${data["company_name"]}&company_email=${data["company_email"]}&contact_person_name=${data["contact_person_name"]}&state=${data["state"]}&location=${data["location"]}&established_year=${data["established_year"]}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('createProfile:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error createProfile::$e');
+      return null;
+    }
+  }
+
+  @override
   Future<ArchitectModel?> getArchitect() async {
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.get_architect}");
@@ -210,9 +228,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Citiesmodel?> getCity() async {
+  Future<Citiesmodel?> getCity(String city) async {
     try {
-      Response res = await ApiClient.get("${APIEndpointUrls.get_city}/States");
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.get_city}/${city}/cities",
+      );
       if (res.statusCode == 200) {
         debugPrint('get getCity:${res.data}');
         return Citiesmodel.fromJson(res.data);
