@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../models/SuccessModel.dart';
+import '../../models/VerifyLogInOtpModel.dart';
 
 abstract class LoginOtpState extends Equatable {
   @override
@@ -19,7 +20,7 @@ class LoginOtpSucess extends LoginOtpState {
 }
 
 class LoginVerifyOtpSucess extends LoginOtpState {
-  final SuccessModel successModel;
+  final VerifyLogInOtpModel successModel;
   LoginVerifyOtpSucess({required this.successModel});
 }
 

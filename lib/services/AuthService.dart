@@ -1,6 +1,7 @@
 import 'package:architect/services/api_endpoint_urls.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import '../app_routes/router.dart';
 import '../utils/constants.dart';
 import 'ApiClient.dart';
 import 'api_endpoint_urls.dart';
@@ -99,12 +100,12 @@ class AuthService {
     debugPrint('Tokens cleared, user logged out');
 
     if (navigatorKey.currentContext != null) {
-      navigatorKey.currentContext!.go('/login_mobile');
+      navigatorKey.currentContext!.go('/onboarding');
     } else {
       debugPrint('⚠️ Navigator context is null, scheduling navigation...');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (navigatorKey.currentContext != null) {
-          navigatorKey.currentContext!.go('/login_mobile');
+          navigatorKey.currentContext!.go('/onboarding');
         }
       });
     }

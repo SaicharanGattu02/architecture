@@ -3,6 +3,8 @@ import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../services/AuthService.dart';
+
 class ArchitechProfile extends StatefulWidget {
   const ArchitechProfile({super.key});
 
@@ -213,26 +215,30 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                     ],
                   ),
 
-                  Column(
-                    spacing: 12,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(26),
-                        decoration: BoxDecoration(
-                          color: Color(0xff363636),
-                          borderRadius: BorderRadius.circular(24),
+                  GestureDetector(onTap: (){
+                    showLogoutDialog(context);
+                  },
+                    child: Column(
+                      spacing: 12,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(26),
+                          decoration: BoxDecoration(
+                            color: Color(0xff363636),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Image.asset('assets/logout.png', scale: 5),
                         ),
-                        child: Image.asset('assets/logout.png', scale: 5),
-                      ),
-                      Text(
-                        'Log Out',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xffCCCCCC),
+                        Text(
+                          'Log Out',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffCCCCCC),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -242,4 +248,137 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
       ),
     );
   }
+  void showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          elevation: 4.0,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 14.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: SizedBox(
+            width: 300.0,
+            height: 200.0,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Power Icon Positioned Above Dialog
+                Positioned(
+                  top: -35.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Container(
+                    width: 70.0,
+                    height: 70.0,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 6.0, color: Colors.white),
+                      shape: BoxShape.circle,
+                      color: Colors.red.shade100, // Light red background
+                    ),
+                    child: const Icon(
+                      Icons.power_settings_new,
+                      size: 40.0,
+                      color: Colors.red, // Power icon color
+                    ),
+                  ),
+                ),
+
+                // Dialog Content
+                Positioned.fill(
+                  top: 30.0, // Moves content down
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 15.0),
+                        Text(
+                          "Logout",
+                          style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.w700,
+                              color: primarycolor,
+                              fontFamily: "Inter"),
+                        ),
+                        const SizedBox(height: 10.0),
+                        const Text(
+                          "Are you sure you want to logout?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black54,
+                              fontFamily: "Inter"),
+                        ),
+                        const SizedBox(height: 20.0),
+
+                        // Buttons Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // No Button (Filled)
+                            SizedBox(
+                              width: 100,
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                  primarycolor, // Filled button color
+                                  foregroundColor: Colors.white, // Text color
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                child: const Text(
+                                  "No",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "lexend"),
+                                ),
+                              ),
+                            ),
+
+                            // Yes Button (Outlined)
+                            SizedBox(
+                              width: 100,
+                              child: OutlinedButton(
+                                onPressed: () async{
+                                  await AuthService.logout();
+                                  context.push("/onboarding");
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: primarycolor, // Text color
+                                  side: BorderSide(
+                                    color: primarycolor,
+                                  ), // Border color
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "lexend"),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

@@ -12,6 +12,8 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../Components/CutomAppBar.dart';
 import '../../Components/ShakeWidget.dart';
+import '../../bloc/login/login_state.dart';
+import '../../services/AuthService.dart';
 
 class Otp extends StatefulWidget {
   final String mailId;
@@ -55,12 +57,11 @@ class _OtpVerificationScreenState extends State<Otp> {
         "company_email": widget.mailId,
         "otp": otp.toString(),
       };
-      if(widget.type=="LogInVerify"){
+      if (widget.type == "LogInVerify") {
         context.read<LoginOTPCubit>().logInVerifyOtpApi(data);
-      }else{
+      } else {
         context.read<CreateProfileCubit>().createProfileVerifyOtpApi(data);
       }
-
     }
   }
 
@@ -174,20 +175,27 @@ class _OtpVerificationScreenState extends State<Otp> {
                 ],
               ),
               const SizedBox(height: 30),
-              _buildBlocConsumer()
-
+              _buildBlocConsumer(),
             ],
           ),
         ),
       ),
     );
   }
+
   Widget _buildBlocConsumer() {
     if (widget.type == "LogInVerify") {
       return BlocConsumer<LoginOTPCubit, LoginOtpState>(
         listener: (context, state) {
           if (state is LoginVerifyOtpSucess) {
-            context.pushReplacement('/user_created');
+            AuthService.saveTokens(
+              state.successModel.accessToken ?? "",
+              state.successModel.refreshToken ?? "",
+              state.successModel.expiresIn ?? 0,
+            );
+
+
+            context.pushReplacement('/user_posts');
           } else if (state is LoginOtpError) {
             CustomSnackBar.show(context, state.message);
           }
@@ -204,7 +212,9 @@ class _OtpVerificationScreenState extends State<Otp> {
       return BlocConsumer<CreateProfileCubit, CreateProfileState>(
         listener: (context, state) {
           if (state is CreateProfileVerifyOTPSucess) {
-            context.pushReplacement('/subscription?id=${state.successModel.companyId}');
+            context.pushReplacement(
+              '/subscription?id=${state.successModel.companyId}',
+            );
           } else if (state is CreateProfileError) {
             CustomSnackBar.show(context, state.message);
           }

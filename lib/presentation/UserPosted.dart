@@ -15,32 +15,59 @@ class UserPosted extends StatefulWidget {
 }
 
 class _UserPostedState extends State<UserPosted> {
-
   @override
   void initState() {
-
-    context.read<UserPostsCubit>().getUserPosts();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserPostsCubit>().getUserPosts();
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'UserPosted', actions: []),
+      appBar: AppBar(automaticallyImplyLeading: true,centerTitle: true,
+        title: Text(
+          'User Posted',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push('/architech_profile');
+            },
+            icon: Icon(Icons.person, color: Colors.white),
+          ),
+        ],
+      ),
       body: BlocBuilder<UserPostsCubit, UserPostsState>(
         builder: (context, state) {
           if (state is UserPostsStateLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(color: Colors.white),
             );
           } else if (state is UserPostsStateLoaded) {
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            if (state.userPostedModel.data == null ||
+                state.userPostedModel.data!.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No posts available',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Posted Requirements',
                     style: TextStyle(
                       color: Color(0xff808080),
@@ -49,25 +76,24 @@ class _UserPostedState extends State<UserPosted> {
                       fontFamily: 'Inter',
                     ),
                   ),
-                  SingleChildScrollView(
+                  const SizedBox(height: 16),
+                  Expanded(
                     child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: 2,
+                      itemCount: state.userPostedModel.data!.length,
                       itemBuilder: (context, index) {
+                        final userPosts = state.userPostedModel.data![index];
                         return GestureDetector(
                           onTap: () {
                             context.push('/user_posted_details');
                           },
                           child: Container(
-                            margin: EdgeInsets.only(bottom: 12),
-                            padding: EdgeInsets.all(12),
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Color(0xff191919),
+                              color: const Color(0xff191919),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Column(
-                              spacing: 8,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
@@ -75,8 +101,8 @@ class _UserPostedState extends State<UserPosted> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Sarah Johnson',
-                                      style: TextStyle(
+                                      userPosts.name ?? "N/A",
+                                      style: const TextStyle(
                                         color: Color(0xffFAFAFA),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
@@ -84,9 +110,9 @@ class _UserPostedState extends State<UserPosted> {
                                       ),
                                     ),
                                     Text(
-                                      'In 1- 2 Months',
+                                      'In ${userPosts.timeFrame ?? "N/A"}',
                                       style: TextStyle(
-                                        color: Color(
+                                        color: const Color(
                                           0xffFAFAFA,
                                         ).withOpacity(0.8),
                                         fontSize: 12,
@@ -96,34 +122,34 @@ class _UserPostedState extends State<UserPosted> {
                                     ),
                                   ],
                                 ),
-
+                                const SizedBox(height: 8),
                                 Text(
-                                  'Land details typically include information about ownership, boundaries, area, and usage.....',
+                                  userPosts.landDetails ?? "No details",
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xffA3A2A2),
                                     fontSize: 13,
                                     fontWeight: FontWeight.w400,
                                     fontFamily: 'Inter',
                                   ),
                                 ),
-
+                                const SizedBox(height: 8),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.email,
                                           size: 16,
                                           color: Color(0xff888787),
                                         ),
-                                        SizedBox(width: 4),
+                                        const SizedBox(width: 4),
                                         Text(
-                                          'Charan@gmail.com',
-                                          style: TextStyle(
+                                          userPosts.email ?? "N/A",
+                                          style: const TextStyle(
                                             color: Color(0xff888787),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
@@ -134,15 +160,15 @@ class _UserPostedState extends State<UserPosted> {
                                     ),
                                     Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.phone,
                                           size: 16,
                                           color: Color(0xff888787),
                                         ),
-                                        SizedBox(width: 4),
+                                        const SizedBox(width: 4),
                                         Text(
-                                          '7674952516',
-                                          style: TextStyle(
+                                          userPosts.phone ?? "N/A",
+                                          style: const TextStyle(
                                             color: Color(0xff888787),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
@@ -153,17 +179,18 @@ class _UserPostedState extends State<UserPosted> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.location_pin,
                                       size: 16,
                                       color: Color(0xff888787),
                                     ),
-                                    SizedBox(width: 4),
+                                    const SizedBox(width: 4),
                                     Text(
-                                      'Hyderabad, India',
-                                      style: TextStyle(
+                                      userPosts.location ?? "N/A",
+                                      style: const TextStyle(
                                         color: Color(0xff888787),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400,
@@ -171,18 +198,6 @@ class _UserPostedState extends State<UserPosted> {
                                       ),
                                     ),
                                   ],
-                                ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Text(
-                                    '~ 2day’s ago',
-                                    style: TextStyle(
-                                      color: Color(0xff808080),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Inter',
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -198,12 +213,16 @@ class _UserPostedState extends State<UserPosted> {
             return Center(
               child: Text(
                 state.message,
-                style: TextStyle(color: Colors.redAccent),
+                style: const TextStyle(color: Colors.redAccent, fontSize: 16),
               ),
             );
-          } else {
-            return Center(child: Text("Something went wrong"));
           }
+          return const Center(
+            child: Text(
+              'Something went wrong',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          );
         },
       ),
     );

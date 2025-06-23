@@ -27,7 +27,7 @@ class _SplashState extends State<Splash> {
       if (token == null || token.isEmpty) {
         context.pushReplacement('/onboarding');
       } else {
-        context.pushReplacement('/architech_profile');
+        context.pushReplacement('/user_posts');
       }
     });
   }

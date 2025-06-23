@@ -6,7 +6,9 @@ import '../Components/CutomAppBar.dart';
 import '../utils/color_constants.dart';
 
 class SelectArchitecture extends StatefulWidget {
-  const SelectArchitecture({Key? key}) : super(key: key);
+  final String industryType;
+  final String location;
+  const SelectArchitecture({Key? key,required this.industryType,required this.location}) : super(key: key);
   @override
   State<SelectArchitecture> createState() => _SelectArchitectureScreenState();
 }
@@ -17,7 +19,7 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'Select Architecture', actions: []),
+      appBar: CustomAppBar1(title: 'Architecture', actions: []),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: ListView.builder(

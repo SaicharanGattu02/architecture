@@ -24,6 +24,8 @@ import '../presentation/selectArchitecture.dart';
 import '../presentation/selectCity.dart';
 import '../presentation/selectType.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
@@ -66,9 +68,16 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/select_architecture',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(SelectArchitecture(), state),
+      pageBuilder: (context, state) {
+        final industryType = state.uri.queryParameters['industryType'] ?? "";
+        final location = state.uri.queryParameters['location'] ?? "";
+        return buildSlideTransitionPage(
+          SelectArchitecture(industryType: industryType, location: location),
+          state,
+        );
+      },
     ),
+
     GoRoute(
       path: '/architecture_details',
       pageBuilder: (context, state) =>
@@ -134,7 +143,7 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/user_created',
+      path: '/user_posts',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(UserPosted(), state),
     ),

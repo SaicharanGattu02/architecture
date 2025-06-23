@@ -1,3 +1,4 @@
+import 'package:architect/services/AuthService.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'api_endpoint_urls.dart';
@@ -22,18 +23,30 @@ class ApiClient {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         debugPrint('Interceptor triggered for: ${options.uri}');
-        // Check if the request is for an unauthenticated endpoint
+
         final isUnauthenticated = _unauthenticatedEndpoints.any(
-          (endpoint) => options.uri.path.startsWith(endpoint),
+              (endpoint) => options.uri.path.startsWith(endpoint),
         );
+
         if (isUnauthenticated) {
-          debugPrint(
-              'Unauthenticated endpoint, skipping token check: ${options.uri}');
-          return handler.next(options); // Skip token check and proceed
+          debugPrint('Unauthenticated endpoint, skipping token check: ${options.uri}');
+          return handler.next(options); // Skip token check
         }
-        // Check if token is expired for authenticated endpoints
+
+        // Get access token from storage
+        final accessToken = await AuthService.getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty) {
+          debugPrint('❌ No access token found');
+        } else {
+          // Attach token to request headers
+          options.headers['Authorization'] = 'Bearer $accessToken';
+          debugPrint('✅ Access token added to headers');
+        }
+
         return handler.next(options);
       },
+
       onResponse: (response, handler) {
         return handler.next(response);
       },

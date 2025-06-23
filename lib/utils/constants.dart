@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'color_constants.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void showAnimatedTopSnackBar(BuildContext context, String message) {
   final overlay = Overlay.of(context);

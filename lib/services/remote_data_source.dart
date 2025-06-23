@@ -9,6 +9,7 @@ import '../models/CitiesModel.dart';
 import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
 import '../models/UserPostedModel.dart';
+import '../models/VerifyLogInOtpModel.dart';
 import '../models/VerifyOtpModel.dart';
 import 'ApiClient.dart';
 import 'api_endpoint_urls.dart';
@@ -28,7 +29,7 @@ abstract class RemoteDataSource {
   Future<Activesubscriptionmodel?> activesubplans(int Id);
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createProfile(Map<String, dynamic> data);
-  Future<SuccessModel?> verifyLoginOtp(Map<String, dynamic> data);
+  Future<VerifyLogInOtpModel?> verifyLoginOtp(Map<String, dynamic> data);
   Future<VerifyOtpModel?> companyVerifyOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createPost(Map<String, dynamic> data);
   Future<UserPostedModel?> getUserPosts();
@@ -171,14 +172,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> verifyLoginOtp(Map<String, dynamic> data) async {
+  Future<VerifyLogInOtpModel?> verifyLoginOtp(Map<String, dynamic> data) async {
     try {
       Response res = await ApiClient.post(
         "${APIEndpointUrls.verify_login_otp}?company_email=${data["company_email"]}&otp=${data["otp"]}",
       );
       if (res.statusCode == 200) {
         debugPrint('verifyLoginOtp:${res.data}');
-        return SuccessModel.fromJson(res.data);
+        return VerifyLogInOtpModel.fromJson(res.data);
       } else {
         return null;
       }
@@ -323,10 +324,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<UserPostedModel?> getUserPosts() async {
+    print('hii');
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.user_posts}");
-
-      if (res.statusCode == 200 && res.data is List) {
+      if (res.statusCode == 200 ) {
         debugPrint('get getUserPosts: ${res.data}');
         return UserPostedModel.fromJson(res.data);
       } else {

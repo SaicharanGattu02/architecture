@@ -1,3 +1,4 @@
+import 'package:architect/services/ApiClient.dart';
 import 'package:architect/utils/media_query_helper.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'app_routes/router.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  ApiClient.setupInterceptors();
   runApp(const MyApp());
 }
 
