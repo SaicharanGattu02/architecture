@@ -12,12 +12,29 @@ class LoginOTPCubit extends Cubit<LoginOtpState> {
     try {
       final res = await loginotpRepository.loginOtpApi(data);
       if (res != null) {
-        if(res.status==true){
+        if (res.status == true) {
           emit(LoginOtpSucess(successModel: res));
-        }else{
+        } else {
           emit(LoginOtpError(message: "${res.message}"));
         }
+      } else {
+        emit(LoginOtpError(message: "No data available"));
+      }
+    } catch (e) {
+      emit(LoginOtpError(message: "An error occurred: $e"));
+    }
+  }
 
+  Future<void> logInVerifyOtpApi(Map<String, dynamic> data) async {
+    emit(LoginVerifyOtpLoading());
+    try {
+      final res = await loginotpRepository.verifyLoginOtp(data);
+      if (res != null) {
+        if (res.status == true) {
+          emit(LoginVerifyOtpSucess(successModel: res));
+        } else {
+          emit(LoginOtpError(message: "${res.message}"));
+        }
       } else {
         emit(LoginOtpError(message: "No data available"));
       }

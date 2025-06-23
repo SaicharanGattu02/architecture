@@ -4,6 +4,7 @@ import '../../services/remote_data_source.dart';
 
 abstract class LoginOTPRepository {
   Future<SuccessModel?> loginOtpApi(Map<String,dynamic> data);
+  Future<SuccessModel?> verifyLoginOtp(Map<String,dynamic> data);
 }
 
 class LogInRepositoryImpl implements LoginOTPRepository {
@@ -11,6 +12,9 @@ class LogInRepositoryImpl implements LoginOTPRepository {
   LogInRepositoryImpl({required this.remoteDataSource});
 
   Future<SuccessModel?> loginOtpApi(Map<String,dynamic> data) async {
-    return await remoteDataSource.loginotp(data);
+    return await remoteDataSource.loginOtp(data);
+  }
+  Future<SuccessModel?> verifyLoginOtp(Map<String,dynamic> data) async {
+    return await remoteDataSource.verifyLoginOtp(data);
   }
 }

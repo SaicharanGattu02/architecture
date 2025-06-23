@@ -18,28 +18,31 @@ class _PostYourRequiremntSuccessfullyState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Lottie.asset(
-            'assets/lottie/successfully.json',
-            height: 150,
-            width: 150,
-            repeat: true,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Thank you! Your requirement has been sent to the best architects. You will get a call back shortly.',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'assets/lottie/successfully.json',
+              height: 150,
+              width: 150,
+              repeat: true,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 24),
+            Text(
+              'Thank you! Your requirement has been sent to the best architects. You will get a call back shortly.',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -47,7 +50,7 @@ class _PostYourRequiremntSuccessfullyState
           child: CustomAppButton1(
             text: 'Done',
             onPlusTap: () {
-              // context.pushReplacement('/post_your_requirement_success');
+              context.pushReplacement('/onboarding');
             },
           ),
         ),

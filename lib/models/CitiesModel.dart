@@ -1,23 +1,29 @@
-class Citiesmodel {
-  final String name;
-  final String stateCode;
+class CityListModel {
+  final List<CityModel> cities;
 
-  Citiesmodel({
-    required this.name,
-    required this.stateCode,
-  });
+  CityListModel({required this.cities});
 
-  factory Citiesmodel.fromJson(Map<String, dynamic> json) {
-    return Citiesmodel(
-      name: json['name'],
-      stateCode: json['Cities_code'],
+  factory CityListModel.fromJson(List<dynamic> jsonList) {
+    return CityListModel(
+      cities: jsonList.map((e) => CityModel.fromJson(e)).toList(),
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'Cities_code': stateCode,
-    };
+  List<dynamic> toJson() {
+    return cities.map((e) => e.toJson()).toList();
   }
 }
+class CityModel {
+  final String name;
+
+  CityModel({required this.name});
+
+  factory CityModel.fromJson(dynamic json) {
+    return CityModel(name: json.toString());
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name};
+  }
+}
+

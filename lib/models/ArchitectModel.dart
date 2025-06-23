@@ -1,17 +1,17 @@
-class ArchitectModel {
+class GetArchitectsModel {
   bool? status;
-  ArchitectData? data; // Renamed to ArchitectData
+  PaginatedData? data;
 
-  ArchitectModel({this.status, this.data});
+  GetArchitectsModel({this.status, this.data});
 
-  ArchitectModel.fromJson(Map<String, dynamic> json) {
+  GetArchitectsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    data = json['data'] != null ? ArchitectData.fromJson(json['data']) : null;
+    data = json['data'] != null ? PaginatedData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
+    final Map<String, dynamic> data = {};
+    data['status'] = status;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -19,9 +19,9 @@ class ArchitectModel {
   }
 }
 
-class ArchitectData {
+class PaginatedData {
   int? currentPage;
-  List<Architect>? data;  // The list of architects
+  List<ArchitectData>? data;
   String? firstPageUrl;
   int? from;
   int? lastPage;
@@ -34,27 +34,28 @@ class ArchitectData {
   int? to;
   int? total;
 
-  ArchitectData(
-      {this.currentPage,
-        this.data,
-        this.firstPageUrl,
-        this.from,
-        this.lastPage,
-        this.lastPageUrl,
-        this.links,
-        this.nextPageUrl,
-        this.path,
-        this.perPage,
-        this.prevPageUrl,
-        this.to,
-        this.total});
+  PaginatedData({
+    this.currentPage,
+    this.data,
+    this.firstPageUrl,
+    this.from,
+    this.lastPage,
+    this.lastPageUrl,
+    this.links,
+    this.nextPageUrl,
+    this.path,
+    this.perPage,
+    this.prevPageUrl,
+    this.to,
+    this.total,
+  });
 
-  ArchitectData.fromJson(Map<String, dynamic> json) {
+  PaginatedData.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      data = <Architect>[];  // Create the list for architect data
+      data = <ArchitectData>[];
       json['data'].forEach((v) {
-        data!.add(Architect.fromJson(v));  // Map to Architect
+        data!.add(ArchitectData.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -69,112 +70,123 @@ class ArchitectData {
     }
     nextPageUrl = json['next_page_url'];
     path = json['path'];
-    perPage = json['per_page'];
+    perPage = json['per_page'] is String ? int.tryParse(json['per_page']) : json['per_page'];
     prevPageUrl = json['prev_page_url'];
     to = json['to'];
     total = json['total'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['current_page'] = this.currentPage;
+    final Map<String, dynamic> data = {};
+    data['current_page'] = currentPage;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
-    data['first_page_url'] = this.firstPageUrl;
-    data['from'] = this.from;
-    data['last_page'] = this.lastPage;
-    data['last_page_url'] = this.lastPageUrl;
-    if (this.links != null) {
-      data['links'] = this.links!.map((v) => v.toJson()).toList();
+    data['first_page_url'] = firstPageUrl;
+    data['from'] = from;
+    data['last_page'] = lastPage;
+    data['last_page_url'] = lastPageUrl;
+    if (links != null) {
+      data['links'] = links!.map((v) => v.toJson()).toList();
     }
-    data['next_page_url'] = this.nextPageUrl;
-    data['path'] = this.path;
-    data['per_page'] = this.perPage;
-    data['prev_page_url'] = this.prevPageUrl;
-    data['to'] = this.to;
-    data['total'] = this.total;
+    data['next_page_url'] = nextPageUrl;
+    data['path'] = path;
+    data['per_page'] = perPage;
+    data['prev_page_url'] = prevPageUrl;
+    data['to'] = to;
+    data['total'] = total;
     return data;
   }
 }
 
-class Architect {
+class ArchitectData {
   int? id;
-  String? name;
-  String? email;
-  String? phone;
-  String? password;
-  String? rememberToken;
-  String? licenseNumber;
-  String? specialization;
+  String? companyName;
+  String? companyEmail;
+  String? contactPersonName;
+  String? establishedYear;
+  String? state;
+  String? location;
+  String? logo;
+  bool? emailVerified;
+  String? aboutCompany;
+  String? industryType;
   int? yearsOfExperience;
-  String? profilePicture;
-  String? portfolioUrl;
-  String? country;
-  String? officeLocation;
-  String? companyId;
-  String? availableForNewProjects;
+  int? numberOfProjects;
+  String? contactNumber;
+  String? whatsappNumber;
+  List<String>? specializations;
+  String? portfolio;
   String? createdAt;
   String? updatedAt;
 
-  Architect(
-      {this.id,
-        this.name,
-        this.email,
-        this.phone,
-        this.password,
-        this.rememberToken,
-        this.licenseNumber,
-        this.specialization,
-        this.yearsOfExperience,
-        this.profilePicture,
-        this.portfolioUrl,
-        this.country,
-        this.officeLocation,
-        this.companyId,
-        this.availableForNewProjects,
-        this.createdAt,
-        this.updatedAt});
+  ArchitectData({
+    this.id,
+    this.companyName,
+    this.companyEmail,
+    this.contactPersonName,
+    this.establishedYear,
+    this.state,
+    this.location,
+    this.logo,
+    this.emailVerified,
+    this.aboutCompany,
+    this.industryType,
+    this.yearsOfExperience,
+    this.numberOfProjects,
+    this.contactNumber,
+    this.whatsappNumber,
+    this.specializations,
+    this.portfolio,
+    this.createdAt,
+    this.updatedAt,
+  });
 
-  Architect.fromJson(Map<String, dynamic> json) {
+  ArchitectData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    email = json['email'];
-    phone = json['phone'];
-    password = json['password'];
-    rememberToken = json['remember_token'];
-    licenseNumber = json['license_number'];
-    specialization = json['specialization'];
+    companyName = json['company_name'];
+    companyEmail = json['company_email'];
+    contactPersonName = json['contact_person_name'];
+    establishedYear = json['established_year'];
+    state = json['state'];
+    location = json['location'];
+    logo = json['logo'];
+    emailVerified = json['email_verified'];
+    aboutCompany = json['about_company'];
+    industryType = json['industry_type'];
     yearsOfExperience = json['years_of_experience'];
-    profilePicture = json['profile_picture'];
-    portfolioUrl = json['portfolio_url'];
-    country = json['country'];
-    officeLocation = json['office_location'];
-    companyId = json['company_id'];
-    availableForNewProjects = json['available_for_new_projects'];
+    numberOfProjects = json['number_of_projects'];
+    contactNumber = json['contact_number'];
+    whatsappNumber = json['whatsapp_number'];
+    specializations = json['specializations'] != null
+        ? List<String>.from(json['specializations'])
+        : null;
+    portfolio = json['portfolio'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['phone'] = this.phone;
-    data['password'] = this.password;
-    data['remember_token'] = this.rememberToken;
-    data['license_number'] = this.licenseNumber;
-    data['specialization'] = this.specialization;
-    data['years_of_experience'] = this.yearsOfExperience;
-    data['profile_picture'] = this.profilePicture;
-    data['portfolio_url'] = this.portfolioUrl;
-    data['country'] = this.country;
-    data['office_location'] = this.officeLocation;
-    data['company_id'] = this.companyId;
-    data['available_for_new_projects'] = this.availableForNewProjects;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['company_name'] = companyName;
+    data['company_email'] = companyEmail;
+    data['contact_person_name'] = contactPersonName;
+    data['established_year'] = establishedYear;
+    data['state'] = state;
+    data['location'] = location;
+    data['logo'] = logo;
+    data['email_verified'] = emailVerified;
+    data['about_company'] = aboutCompany;
+    data['industry_type'] = industryType;
+    data['years_of_experience'] = yearsOfExperience;
+    data['number_of_projects'] = numberOfProjects;
+    data['contact_number'] = contactNumber;
+    data['whatsapp_number'] = whatsappNumber;
+    data['specializations'] = specializations;
+    data['portfolio'] = portfolio;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -193,10 +205,10 @@ class Links {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['url'] = this.url;
-    data['label'] = this.label;
-    data['active'] = this.active;
+    final Map<String, dynamic> data = {};
+    data['url'] = url;
+    data['label'] = label;
+    data['active'] = active;
     return data;
   }
 }

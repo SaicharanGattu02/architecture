@@ -5,7 +5,6 @@ class APIEndpointUrls {
 
   /// Auth URls
   static const String register = '${apiUrl}register';
-  // static const String login = '${apiUrl}login-otp';
   static const String refreshtoken = '${apiUrl}login';
 
   static const String addPost = '${apiUrl}create-post';
@@ -18,5 +17,9 @@ class APIEndpointUrls {
   static const String get_states = '${apiUrl}states';
   static const String get_city = '${apiUrl}states';
   static const String loginotp = '${apiUrl}login-otp';
+  static const String verify_company_otp = '${apiUrl}company/verify-otp';
+  static const String verify_login_otp = '${apiUrl}verify-login-otp';
   static const String create_profile = '${apiUrl}company/register';
+  static const String create_post = '${apiUrl}create-post';
+  static const String user_posts = '${apiUrl}customer-posts';
 }

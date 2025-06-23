@@ -8,10 +8,10 @@ class ArchitectCubit extends Cubit<ArchitectState> {
 
   ArchitectCubit(this.archeticrepository) : super(ArchitectIntailly());
 
-  Future<void> getArchitect() async {
+  Future<void> getArchitect(String industrialType,String location) async {
     emit(ArchitectLoading());
     try {
-      final res = await archeticrepository.getArchitect();
+      final res = await archeticrepository.getArchitect(industrialType,location);
       if (res != null) {
         emit(ArchitectLoaded(architectModel: res));
       } else {

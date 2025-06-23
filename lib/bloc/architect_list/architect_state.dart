@@ -17,7 +17,7 @@ class ArchitectLoading extends ArchitectState {
 
 class ArchitectLoaded extends ArchitectState {
 
-  final ArchitectModel architectModel;
+  final GetArchitectsModel architectModel;
   ArchitectLoaded({required this.architectModel});
 
 }

@@ -1,59 +1,75 @@
+import 'package:architect/bloc/city/city_cubit.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../Components/CutomAppBar.dart';
+import '../bloc/city/city_states.dart';
+
 
 class SelectCity extends StatefulWidget {
+  final String city;
+  SelectCity({required this.city});
   @override
   State<SelectCity> createState() => _SelectCityState();
 }
 
 class _SelectCityState extends State<SelectCity> {
-  final List<String> cities = [
-    'Hyderabad',
-    'Warangal',
-    'Nizamabad',
-    'Pune',
-    'Karimnagar',
-    'Khammam',
-    'Nalgonda',
-    'Mahbubnagar',
-    'Mancherial',
-    'Siddipet',
-  ];
+  @override
+  void initState() {
+    print("city:${widget.city}");
+    context.read<CityCubit>().getCity(widget.city);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
       appBar: CustomAppBar1(title: 'Select City', actions: []),
-      body: ListView.builder(
-        itemCount: cities.length,
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[800],
-              borderRadius: BorderRadius.circular(16),
-            ),
-            margin: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 24,
-
-              ),
-              title: Text(
-                cities[index],
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white,size: 20,),
-
-              onTap: () {
-                context.push('/select_type');
+      body: BlocBuilder<CityCubit, CityStates>(
+        builder: (context, state) {
+          if (state is CityLoading) {
+            return Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          } else if (state is CityLoaded) {
+            return ListView.builder(
+              itemCount: state.cityList.length,
+              itemBuilder: (context, index) {
+                final city = state.cityList[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  margin: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                    title: Text(
+                      city.name,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    onTap: () {
+                      context.push('/select_type');
+                    },
+                  ),
+                );
               },
-            ),
-          );
+            );
+          } else if (state is CityFailure) {
+            return Center(
+              child: Text(state.msg, style: TextStyle(color: Colors.redAccent)),
+            );
+          } else {
+            return Center(child: Text("Something went wrong"));
+          }
         },
       ),
     );

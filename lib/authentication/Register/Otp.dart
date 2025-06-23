@@ -1,14 +1,23 @@
 import 'package:architect/Components/CustomAppButton.dart';
+import 'package:architect/Components/CustomSnackBar.dart';
+import 'package:architect/bloc/CreateProfile/create_profile_cubit.dart';
+import 'package:architect/bloc/CreateProfile/create_profile_state.dart';
+import 'package:architect/bloc/login/login_cubit.dart';
+import 'package:architect/bloc/login/login_state.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../Components/CutomAppBar.dart';
+import '../../Components/ShakeWidget.dart';
 
 class Otp extends StatefulWidget {
   final String mailId;
-  const Otp({Key? key, required this.mailId}) : super(key: key);
+  final String type;
+  const Otp({Key? key, required this.mailId, required this.type})
+    : super(key: key);
   @override
   State<Otp> createState() => _OtpVerificationScreenState();
 }
@@ -16,6 +25,7 @@ class Otp extends StatefulWidget {
 class _OtpVerificationScreenState extends State<Otp> {
   TextEditingController otpController = TextEditingController();
   int countdown = 30;
+  bool _showOtpError = false;
 
   @override
   void initState() {
@@ -32,6 +42,26 @@ class _OtpVerificationScreenState extends State<Otp> {
         startCountdown();
       }
     });
+  }
+
+  void _onVerifyTap() {
+    final String otp = otpController.text.trim();
+    setState(() {
+      _showOtpError = otp.length != 6 || !RegExp(r'^\d{6}$').hasMatch(otp);
+    });
+
+    if (!_showOtpError) {
+      final Map<String, dynamic> data = {
+        "company_email": widget.mailId,
+        "otp": otp.toString(),
+      };
+      if(widget.type=="LogInVerify"){
+        context.read<LoginOTPCubit>().logInVerifyOtpApi(data);
+      }else{
+        context.read<CreateProfileCubit>().createProfileVerifyOtpApi(data);
+      }
+
+    }
   }
 
   @override
@@ -74,12 +104,12 @@ class _OtpVerificationScreenState extends State<Otp> {
               ),
               const SizedBox(height: 10),
 
-              // Subtext
-              const Text(
-                'Enter the 6-digit code sent to your registered\nMail id Company@gmail.com',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+              Text(
+                'Enter the 6-digit code sent to your registered\nMail id ${widget.mailId}',
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
               const SizedBox(height: 20),
+
               PinCodeTextField(
                 appContext: context,
                 length: 6,
@@ -95,7 +125,11 @@ class _OtpVerificationScreenState extends State<Otp> {
                   fontFamily: "Inter",
                   fontWeight: FontWeight.w400,
                 ),
-                onChanged: (value) {},
+                onChanged: (_) {
+                  setState(() {
+                    _showOtpError = false;
+                  });
+                },
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
                   borderRadius: BorderRadius.circular(8),
@@ -110,6 +144,24 @@ class _OtpVerificationScreenState extends State<Otp> {
                 ),
               ),
 
+              if (_showOtpError)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: ShakeWidget(
+                    key: const Key('otp_error'),
+                    duration: const Duration(milliseconds: 700),
+                    child: const Text(
+                      'Please enter a valid 6-digit OTP',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: 10),
 
               Row(
@@ -122,17 +174,49 @@ class _OtpVerificationScreenState extends State<Otp> {
                 ],
               ),
               const SizedBox(height: 30),
+              _buildBlocConsumer()
 
-              CustomAppButton1(
-                text: "Verify & View Plans",
-                onPlusTap: () {
-                  context.push('/subscription');
-                },
-              ),
             ],
           ),
         ),
       ),
     );
+  }
+  Widget _buildBlocConsumer() {
+    if (widget.type == "LogInVerify") {
+      return BlocConsumer<LoginOTPCubit, LoginOtpState>(
+        listener: (context, state) {
+          if (state is LoginVerifyOtpSucess) {
+            context.pushReplacement('/user_created');
+          } else if (state is LoginOtpError) {
+            CustomSnackBar.show(context, state.message);
+          }
+        },
+        builder: (context, state) {
+          return CustomAppButton1(
+            text: "Verify Otp",
+            isLoading: state is LoginVerifyOtpLoading,
+            onPlusTap: _onVerifyTap,
+          );
+        },
+      );
+    } else {
+      return BlocConsumer<CreateProfileCubit, CreateProfileState>(
+        listener: (context, state) {
+          if (state is CreateProfileVerifyOTPSucess) {
+            context.pushReplacement('/subscription?id=${state.successModel.companyId}');
+          } else if (state is CreateProfileError) {
+            CustomSnackBar.show(context, state.message);
+          }
+        },
+        builder: (context, state) {
+          return CustomAppButton1(
+            text: "Verify & View Plans",
+            isLoading: state is CreateProfileVerifyOtpLoading,
+            onPlusTap: _onVerifyTap,
+          );
+        },
+      );
+    }
   }
 }

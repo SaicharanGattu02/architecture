@@ -1,5 +1,7 @@
 import 'package:architect/bloc/CreateProfile/create_profile_cubit.dart';
 import 'package:architect/bloc/CreateProfile/create_profile_state.dart';
+import 'package:architect/bloc/city/city_cubit.dart';
+import 'package:architect/bloc/city/city_states.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ import '../../Components/ShakeWidget.dart';
 import 'dart:io';
 
 import '../../bloc/state/state_cubit.dart';
+import '../../bloc/state/state_states.dart';
+import '../../utils/color_constants.dart';
 
 class CompanyDetails extends StatefulWidget {
   const CompanyDetails({Key? key}) : super(key: key);
@@ -22,6 +26,7 @@ class CompanyDetails extends StatefulWidget {
 }
 
 class _CompanyDetailsState extends State<CompanyDetails> {
+
   @override
   void initState() {
     context.read<StateCubit>().getState();
@@ -38,8 +43,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   File? _logoImage;
   bool _showCompanyError = false;
   bool _showContactPersonError = false;
-  bool _showLocationError = false;
-  bool _showAddressError = false;
+
   bool _showEmailError = false;
   bool _showYearError = false;
   bool _showLogoError = false;
@@ -71,8 +75,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     setState(() {
       _showCompanyError = !_validateCompany();
       _showContactPersonError = !_validateContactPerson();
-      _showLocationError = !_validateLocation();
-      _showAddressError = !_validateAddress();
       _showEmailError = !_validateEmail();
       _showYearError = !_validateYear();
       _showLogoError = !_validateLogo();
@@ -254,489 +256,503 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       appBar: CustomAppBar1(title: 'Create Profile', actions: []),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              '1 of 4',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 12),
-            LinearProgressIndicator(
-              minHeight: 8,
-              value: 0.25,
-              backgroundColor: const Color(0xff4D4D4D),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              label: 'Company Name',
-              hint: 'Enter company name',
-              controller: _companyController,
-              showError: _showCompanyError,
-              errorMessage: 'Please enter a company name',
-              validate: () => _showCompanyError = !_validateCompany(),
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              label: 'Contact Person Name',
-              hint: 'Enter contact person name',
-              controller: _contactPersonController,
-              showError: _showContactPersonError,
-              errorMessage: 'Please enter a contact person name',
-              validate: () =>
-                  _showContactPersonError = !_validateContactPerson(),
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              label: 'Contact Email',
-              hint: 'Enter company email',
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              showError: _showEmailError,
-              errorMessage: 'Please enter a valid email',
-              validate: () => _showEmailError = !_validateEmail(),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonHideUnderline(
-              child: DropdownButton2<String>(
-                isExpanded: true,
-                hint: Row(
+      body: BlocBuilder<StateCubit, StateStates>(
+        builder: (context, stateState) {
+          return BlocBuilder<CityCubit, CityStates>(
+            builder: (context, cityState) {
+              if (stateState is StateLoading || cityState is CityLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Select State',
-                        style: TextStyle(
-                          fontFamily: 'roboto_serif',
-                          fontSize: 16,
-                          color: Colors.grey.shade500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                    const Text(
+                      '1 of 4',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
                     ),
-                  ],
-                ),
-                items:
-                    [
-                          "Andhra Pradesh",
-                          "Arunachal Pradesh",
-                          "Assam",
-                          "Bihar",
-                          "Chhattisgarh",
-                          "Goa",
-                          "Gujarat",
-                          "Haryana",
-                          "Himachal Pradesh",
-                          "Jharkhand",
-                          "Karnataka",
-                          "Kerala",
-                          "Madhya Pradesh",
-                          "Maharashtra",
-                          "Manipur",
-                          "Meghalaya",
-                          "Mizoram",
-                          "Nagaland",
-                          "Odisha",
-                          "Punjab",
-                          "Rajasthan",
-                          "Sikkim",
-                          "Tamil Nadu",
-                          "Telangana",
-                          "Tripura",
-                          "Uttar Pradesh",
-                          "Uttarakhand",
-                          "West Bengal",
-                        ]
-                        .map(
-                          (e) => DropdownMenuItem<String>(
-                            value: e,
-                            child: Text(
-                              e,
-                              style: TextStyle(
-                                fontFamily: 'roboto_serif',
-                                fontSize: 15,
-                                color: Colors.white,
+                    const SizedBox(height: 12),
+                    LinearProgressIndicator(
+                      minHeight: 8,
+                      value: 0.25,
+                      backgroundColor: const Color(0xff4D4D4D),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      label: 'Company Name',
+                      hint: 'Enter company name',
+                      controller: _companyController,
+                      showError: _showCompanyError,
+                      errorMessage: 'Please enter a company name',
+                      validate: () => _showCompanyError = !_validateCompany(),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      label: 'Contact Person Name',
+                      hint: 'Enter contact person name',
+                      controller: _contactPersonController,
+                      showError: _showContactPersonError,
+                      errorMessage: 'Please enter a contact person name',
+                      validate: () =>
+                          _showContactPersonError = !_validateContactPerson(),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      label: 'Contact Email',
+                      hint: 'Enter company email',
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      showError: _showEmailError,
+                      errorMessage: 'Please enter a valid email',
+                      validate: () => _showEmailError = !_validateEmail(),
+                    ),
+                    const SizedBox(height: 16),
+                    BlocBuilder<StateCubit, StateStates>(
+                      builder: (context, state) {
+                        if (state is StateLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          );
+                        } else if (state is StateLoaded) {
+                          return DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Select State',
+                                      style: TextStyle(
+                                        fontFamily: 'roboto_serif',
+                                        fontSize: 16,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              items: state.statesList.map((e) {
+                                return DropdownMenuItem<String>(
+                                  value: e.name,
+                                  child: Text(
+                                    e.name ?? "",
+                                    style: TextStyle(
+                                      fontFamily: 'roboto_serif',
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              value: _selectState,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _selectState = value;
+                                  context.read<CityCubit>().getCity(
+                                    _selectState ?? "",
+                                  );
+                                });
+                              },
+                              buttonStyleData: ButtonStyleData(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: formfieldColor,
+                                    width: 0.5,
+                                  ),
+                                  color: formfieldColor,
+                                ),
+                              ),
+                              iconStyleData: IconStyleData(
+                                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                                iconSize: 26,
+                                iconEnabledColor: Colors.white70,
+                              ),
+                              dropdownStyleData: DropdownStyleData(
+                                offset: Offset(0, -6),
+                                maxHeight: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: formfieldColor,
+                                ),
+                              ),
+                              menuItemStyleData: MenuItemStyleData(
+                                height: 45,
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                overlayColor:
+                                    MaterialStateProperty.resolveWith<Color?>((
+                                      Set<MaterialState> states,
+                                    ) {
+                                      if (states.contains(
+                                        MaterialState.hovered,
+                                      )) {
+                                        return Colors.white.withOpacity(0.12);
+                                      }
+                                      if (states.contains(
+                                        MaterialState.pressed,
+                                      )) {
+                                        return Colors.white.withOpacity(0.2);
+                                      }
+                                      return null;
+                                    }),
                               ),
                             ),
-                          ),
-                        )
-                        .toList(),
-                value: _selectState,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectState = value;
-                  });
-                },
-                buttonStyleData: ButtonStyleData(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade800, width: 0.5),
-                    color: Colors.grey.shade900,
-                  ),
-                ),
-                iconStyleData: IconStyleData(
-                  icon: Icon(Icons.keyboard_arrow_down_rounded),
-                  iconSize: 26,
-                  iconEnabledColor: Colors.white70,
-                ),
-                dropdownStyleData: DropdownStyleData(
-                  maxHeight: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey.shade900,
-                  ),
-                ),
-                menuItemStyleData: MenuItemStyleData(
-                  height: 45,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>((
-                    Set<MaterialState> states,
-                  ) {
-                    if (states.contains(MaterialState.hovered)) {
-                      return Colors.white.withOpacity(0.12);
-                    }
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.white.withOpacity(0.2);
-                    }
-                    return null;
-                  }),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonHideUnderline(
-              child: DropdownButton2<String>(
-                isExpanded: true,
-                hint: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Select State',
-                        style: TextStyle(
-                          fontFamily: 'roboto_serif',
-                          fontSize: 16,
-                          color: Colors.grey.shade500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                items:
-                    [
-                          "Andhra Pradesh",
-                          "Arunachal Pradesh",
-                          "Assam",
-                          "Bihar",
-                          "Chhattisgarh",
-                          "Goa",
-                          "Gujarat",
-                          "Haryana",
-                          "Himachal Pradesh",
-                          "Jharkhand",
-                          "Karnataka",
-                          "Kerala",
-                          "Madhya Pradesh",
-                          "Maharashtra",
-                          "Manipur",
-                          "Meghalaya",
-                          "Mizoram",
-                          "Nagaland",
-                          "Odisha",
-                          "Punjab",
-                          "Rajasthan",
-                          "Sikkim",
-                          "Tamil Nadu",
-                          "Telangana",
-                          "Tripura",
-                          "Uttar Pradesh",
-                          "Uttarakhand",
-                          "West Bengal",
-                        ]
-                        .map(
-                          (e) => DropdownMenuItem<String>(
-                            value: e,
+                          );
+                        } else {
+                          return Center(
                             child: Text(
-                              e,
-                              style: TextStyle(
-                                fontFamily: 'roboto_serif',
-                                fontSize: 15,
+                              'Failed to load state',
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    if (_selectState != null && _selectState!.isNotEmpty) ...[
+                      BlocBuilder<CityCubit, CityStates>(
+                        builder: (context, state) {
+                          if (state is CityLoading) {
+                            return Center(
+                              child: CircularProgressIndicator(
                                 color: Colors.white,
                               ),
+                            );
+                          } else if (state is CityLoaded) {
+                            return DropdownButtonHideUnderline(
+                              child: DropdownButton2<String>(
+                                isExpanded: true,
+                                hint: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Select City',
+                                        style: TextStyle(
+                                          fontFamily: 'roboto_serif',
+                                          fontSize: 16,
+                                          color: Colors.grey.shade500,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                items: state.cityList.map((e) {
+                                  return DropdownMenuItem<String>(
+                                    value: e.name,
+                                    child: Text(
+                                      e.name ?? "",
+                                      style: TextStyle(
+                                        fontFamily: 'roboto_serif',
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                                value: _selectCity,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _selectCity = value;
+                                  });
+                                },
+                                buttonStyleData: ButtonStyleData(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: formfieldColor,
+                                      width: 0.5,
+                                    ),
+                                    color: formfieldColor,
+                                  ),
+                                ),
+                                iconStyleData: IconStyleData(
+                                  icon: Icon(Icons.keyboard_arrow_down_rounded),
+                                  iconSize: 26,
+                                  iconEnabledColor: Colors.white70,
+                                ),
+                                dropdownStyleData: DropdownStyleData(
+                                  offset: Offset(0, -6),
+                                  maxHeight: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: formfieldColor,
+                                  ),
+                                ),
+                                menuItemStyleData: MenuItemStyleData(
+                                  height: 45,
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  overlayColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                        (Set<MaterialState> states) {
+                                          if (states.contains(
+                                            MaterialState.hovered,
+                                          )) {
+                                            return Colors.white.withOpacity(
+                                              0.12,
+                                            );
+                                          }
+                                          if (states.contains(
+                                            MaterialState.pressed,
+                                          )) {
+                                            return Colors.white.withOpacity(
+                                              0.2,
+                                            );
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Center(
+                              child: Text(
+                                'Failed to load city',
+                                style: TextStyle(color: Colors.redAccent),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Established Year',
+                          style: TextStyle(
+                            color: Color(0xffD8D8D8),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        DropdownButtonFormField2<String>(
+                          value: _selectedYear,
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            filled: true,
+                            fillColor: const Color(0xff363636),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
                             ),
                           ),
-                        )
-                        .toList(),
-                value: _selectCity,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectCity = value;
-                  });
-                },
-                buttonStyleData: ButtonStyleData(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade800, width: 0.5),
-                    color: Colors.grey.shade900,
-                  ),
-                ),
-                iconStyleData: IconStyleData(
-                  icon: Icon(Icons.keyboard_arrow_down_rounded),
-                  iconSize: 26,
-                  iconEnabledColor: Colors.white70,
-                ),
-                dropdownStyleData: DropdownStyleData(
-                  maxHeight: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey.shade900,
-                  ),
-                ),
-                menuItemStyleData: MenuItemStyleData(
-                  height: 45,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>((
-                    Set<MaterialState> states,
-                  ) {
-                    if (states.contains(MaterialState.hovered)) {
-                      return Colors.white.withOpacity(0.12);
-                    }
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.white.withOpacity(0.2);
-                    }
-                    return null;
-                  }),
-                ),
-              ),
-            ),
-            // _buildTextField(
-            //   label: 'Location',
-            //   hint: 'Enter company location',
-            //   controller: _locationController,
-            //   showError: _showLocationError,
-            //   errorMessage: 'Please enter a location',
-            //   validate: () => _showLocationError = !_validateLocation(),
-            // ),
-            // const SizedBox(height: 16),
-            // _buildTextField(
-            //   label: 'Address',
-            //   hint: 'Enter company address',
-            //   controller: _addressController,
-            //   showError: _showAddressError,
-            //   errorMessage: 'Please enter an address',
-            //   validate: () => _showAddressError = !_validateAddress(),
-            // ),
-            const SizedBox(height: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Established Year',
-                  style: TextStyle(
-                    color: Color(0xffD8D8D8),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                DropdownButtonFormField2<String>(
-                  value: _selectedYear,
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    filled: true,
-                    fillColor: const Color(0xff363636),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  hint: const Text(
-                    'Select year',
-                    style: TextStyle(color: Colors.white38),
-                  ),
-                  items:
-                      List.generate(
-                        100,
-                        (index) => (DateTime.now().year - index).toString(),
-                      ).map((year) {
-                        return DropdownMenuItem<String>(
-                          value: year,
-                          child: Text(
-                            year,
-                            style: const TextStyle(color: Colors.white),
+                          hint: const Text(
+                            'Select year',
+                            style: TextStyle(color: Colors.white38),
                           ),
-                        );
-                      }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedYear = value;
-                      _showYearError = !_validateYear();
-                    });
-                  },
-                  dropdownStyleData: DropdownStyleData(
-                    useSafeArea: true,
-                    offset: const Offset(0, -8),
-                    maxHeight: 200,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff363636),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(
-                    overlayColor: MaterialStatePropertyAll(Colors.transparent),
-                  ),
-                ),
-
-                if (_showYearError)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: ShakeWidget(
-                      key: const Key('year_error'),
-                      duration: const Duration(milliseconds: 700),
-                      child: const Text(
-                        'Please select a year',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 12,
-                          color: Colors.red,
-                          fontWeight: FontWeight.w500,
+                          items:
+                              List.generate(
+                                100,
+                                (index) =>
+                                    (DateTime.now().year - index).toString(),
+                              ).map((year) {
+                                return DropdownMenuItem<String>(
+                                  value: year,
+                                  child: Text(
+                                    year,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedYear = value;
+                              _showYearError = !_validateYear();
+                            });
+                          },
+                          dropdownStyleData: DropdownStyleData(
+                            useSafeArea: true,
+                            offset: const Offset(0, -8),
+                            maxHeight: 200,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff363636),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            overlayColor: MaterialStatePropertyAll(
+                              Colors.transparent,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Logo',
-                  style: TextStyle(
-                    color: Color(0xFFD8D8D8),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 10),
 
-                // Upload Container
-                GestureDetector(
-                  onTap: _showImageSourceSelection,
-                  child: Container(
-                    width: double.infinity,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2E2E2E),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _logoImage != null
-                            ? Colors.green
-                            : Colors.grey.withOpacity(0.4),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: _logoImage == null
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.upload_file_rounded,
-                                color: Colors.white70,
-                              ),
-                              const SizedBox(width: 10),
-                              const Text(
-                                'Tap to Upload Logo',
+                        if (_showYearError)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: ShakeWidget(
+                              key: const Key('year_error'),
+                              duration: const Duration(milliseconds: 700),
+                              child: const Text(
+                                'Please select a year',
                                 style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 15,
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                  color: Colors.red,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ],
-                          )
-                        : Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.file(
-                                  _logoImage!,
-                                  width: double.infinity,
-                                  height: 120,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                top: 8,
-                                right: 8,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _logoImage = null;
-                                      _showLogoError = false; // Optional reset
-                                    });
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black54,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                  ),
-                ),
-
-                // Error Text
-                if (_showLogoError)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: ShakeWidget(
-                      key: const Key('logo_error'),
-                      duration: const Duration(milliseconds: 700),
-                      child: const Text(
-                        'Please upload a logo',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 12,
-                          color: Colors.redAccent,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      ],
                     ),
-                  ),
-              ],
-            ),
-          ],
-        ),
+                    const SizedBox(height: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Logo',
+                          style: TextStyle(
+                            color: Color(0xFFD8D8D8),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Upload Container
+                        GestureDetector(
+                          onTap: _showImageSourceSelection,
+                          child: Container(
+                            width: double.infinity,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2E2E2E),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: _logoImage != null
+                                    ? Colors.green
+                                    : Colors.grey.withOpacity(0.4),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: _logoImage == null
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.upload_file_rounded,
+                                        color: Colors.white70,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      const Text(
+                                        'Tap to Upload Logo',
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.file(
+                                          _logoImage!,
+                                          width: double.infinity,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 8,
+                                        right: 8,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              _logoImage = null;
+                                              _showLogoError =
+                                                  false; // Optional reset
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.black54,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                        if (_showLogoError)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: ShakeWidget(
+                              key: const Key('logo_error'),
+                              duration: const Duration(milliseconds: 700),
+                              child: const Text(
+                                'Please upload a logo',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -748,7 +764,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               BlocConsumer<CreateProfileCubit, CreateProfileState>(
                 listener: (context, state) {
                   if (state is CreateProfileSucess) {
-                    context.pushReplacement("/otp?mailId=${_emailController.text.trim()}");
+                    context.pushReplacement(
+                      "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
+                    );
                   } else if (state is CreateProfileError) {
                     CustomSnackBar.show(context, "${state.message}");
                   }
@@ -765,10 +783,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           "contact_person_name": _contactPersonController.text
                               .trim(),
                           "established_year": _selectedYear,
-                          // "state": _selectState,
-                          "state": "Telanagana",
-                          // "location": _selectCity,
-                          "location": "Hyd",
+                          "state": _selectState,
+
+                          "location": _selectCity,
                         };
                         context.read<CreateProfileCubit>().createProfileApi(
                           data,

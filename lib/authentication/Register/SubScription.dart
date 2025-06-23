@@ -9,7 +9,8 @@ import '../../bloc/SubscriptionPlans/subscription_cubit.dart';
 import '../../bloc/SubscriptionPlans/subscription_state.dart';
 
 class Subscription extends StatefulWidget {
-  const Subscription({Key? key}) : super(key: key);
+  final int id;
+  const Subscription({Key? key,required this.id}) : super(key: key);
 
   @override
   _SubscriptionScreenState createState() => _SubscriptionScreenState();

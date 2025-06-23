@@ -1,23 +1,30 @@
-class Statesmodel {
-  final String name;
-  final String stateCode;
+class StatesListModel {
+  List<StatesModel> states;
 
-  Statesmodel({
-    required this.name,
-    required this.stateCode,
-  });
+  StatesListModel({required this.states});
 
-  factory Statesmodel.fromJson(Map<String, dynamic> json) {
-    return Statesmodel(
-      name: json['name'],
-      stateCode: json['state_code'],
+  factory StatesListModel.fromJson(List<dynamic> json) {
+    return StatesListModel(
+      states: json.map((e) => StatesModel.fromJson(e)).toList(),
     );
+  }
+}
+
+class StatesModel {
+  String? name;
+  String? stateCode;
+
+  StatesModel({this.name, this.stateCode});
+
+  StatesModel.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    stateCode = json['state_code'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'state_code': stateCode,
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['state_code'] = this.stateCode;
+    return data;
   }
 }

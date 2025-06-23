@@ -54,8 +54,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/select_city',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(SelectCity(), state),
+      pageBuilder: (context, state) {
+        final city = state.uri.queryParameters['city'] ?? "";
+        return buildSlideTransitionPage(SelectCity(city: city), state);
+      },
     ),
     GoRoute(
       path: '/select_type',
@@ -92,11 +94,16 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(ProfileCreated(), state),
     ),
+
     GoRoute(
       path: '/subscription',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(Subscription(), state),
+      pageBuilder: (context, state) {
+        final idParam = state.uri.queryParameters['id'];
+        final int id = int.tryParse(idParam ?? '') ?? 0;
+        return buildSlideTransitionPage(Subscription(id: id), state);
+      },
     ),
+
     GoRoute(
       path: '/post_your_requirement',
       pageBuilder: (context, state) =>
@@ -122,7 +129,8 @@ final GoRouter appRouter = GoRouter(
       path: '/otp',
       pageBuilder: (context, state) {
         final mailId = state.uri.queryParameters['mailId'] ?? "";
-        return buildSlideTransitionPage(Otp(mailId: mailId), state);
+        final type = state.uri.queryParameters['type'] ?? "";
+        return buildSlideTransitionPage(Otp(mailId: mailId, type: type), state);
       },
     ),
     GoRoute(

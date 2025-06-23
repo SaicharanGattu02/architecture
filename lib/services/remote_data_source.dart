@@ -8,21 +8,30 @@ import '../models/ArchitectModel.dart';
 import '../models/CitiesModel.dart';
 import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
+import '../models/UserPostedModel.dart';
+import '../models/VerifyOtpModel.dart';
 import 'ApiClient.dart';
 import 'api_endpoint_urls.dart';
 
 abstract class RemoteDataSource {
-  Future<ArchitectModel?> getArchitect();
+  Future<GetArchitectsModel?> getArchitect(
+    String industrialType,
+    String location,
+  );
   Future<SuccessModel?> registerApi(Map<String, dynamic> data);
   Future<SuccessModel?> addPost(Map<String, dynamic> data);
   Future<SuccessModel?> editPost(Map<String, dynamic> data, id);
   Future<SuccessModel?> deletePost(id);
   Future<SubscriptionModel?> getsubplans();
-  Future<Statesmodel?> getStates();
-  Future<Citiesmodel?> getCity(String city);
+  Future<List<StatesModel>?> getStates();
+  Future<List<CityModel>?> getCity(String state);
   Future<Activesubscriptionmodel?> activesubplans(int Id);
-  Future<SuccessModel?> loginotp(Map<String, dynamic> data);
+  Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createProfile(Map<String, dynamic> data);
+  Future<SuccessModel?> verifyLoginOtp(Map<String, dynamic> data);
+  Future<VerifyOtpModel?> companyVerifyOtp(Map<String, dynamic> data);
+  Future<SuccessModel?> createPost(Map<String, dynamic> data);
+  Future<UserPostedModel?> getUserPosts();
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -144,19 +153,56 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<SuccessModel?> loginotp(Map<String, dynamic> data) async {
+  Future<SuccessModel?> loginOtp(Map<String, dynamic> data) async {
     try {
       Response res = await ApiClient.post(
-        "${APIEndpointUrls.loginotp}?company_email=${data}",
+        "${APIEndpointUrls.loginotp}?company_email=${data['company_email']}",
       );
       if (res.statusCode == 200) {
-        debugPrint('loginotp:${res.data}');
+        debugPrint('loginOtp:${res.data}');
         return SuccessModel.fromJson(res.data);
       } else {
         return null;
       }
     } catch (e) {
-      debugPrint('Error loginotp::$e');
+      debugPrint('Error loginOtp::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> verifyLoginOtp(Map<String, dynamic> data) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.verify_login_otp}?company_email=${data["company_email"]}&otp=${data["otp"]}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('verifyLoginOtp:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error verifyLoginOtp::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<VerifyOtpModel?> companyVerifyOtp(Map<String, dynamic> data) async {
+    print('data:${data}');
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.verify_company_otp}?company_email=${data["company_email"]}&otp=${data["otp"]}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('verifyLoginOtp:${res.data}');
+        return VerifyOtpModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error verifyLoginOtp::$e');
       return null;
     }
   }
@@ -180,12 +226,38 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<ArchitectModel?> getArchitect() async {
+  Future<SuccessModel?> createPost(Map<String, dynamic> data) async {
+    debugPrint('createPost Data:${data}');
+
     try {
-      Response res = await ApiClient.get("${APIEndpointUrls.get_architect}");
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.create_post}",
+        data: data,
+      );
+      if (res.statusCode == 200) {
+        debugPrint('createPost:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error createPost::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<GetArchitectsModel?> getArchitect(
+    String industrialType,
+    String location,
+  ) async {
+    try {
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.get_architect}?industry_type=${industrialType}&location=${location}",
+      );
       if (res.statusCode == 200) {
         debugPrint('getArchitect:${res.data}');
-        return ArchitectModel.fromJson(res.data);
+        return GetArchitectsModel.fromJson(res.data);
       } else {
         return null;
       }
@@ -212,35 +284,56 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Statesmodel?> getStates() async {
+  Future<List<StatesModel>?> getStates() async {
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.get_states}");
-      if (res.statusCode == 200) {
-        debugPrint('get getStates:${res.data}');
-        return Statesmodel.fromJson(res.data);
+
+      if (res.statusCode == 200 && res.data is List) {
+        debugPrint('getStates Response: ${res.data}');
+        List<dynamic> dataList = res.data;
+        return dataList.map((e) => StatesModel.fromJson(e)).toList();
       } else {
         return null;
       }
     } catch (e) {
-      debugPrint('Error getStates::$e');
+      debugPrint('Error getStates: $e');
       return null;
     }
   }
 
   @override
-  Future<Citiesmodel?> getCity(String city) async {
+  Future<List<CityModel>?> getCity(String state) async {
     try {
       Response res = await ApiClient.get(
-        "${APIEndpointUrls.get_city}/${city}/cities",
+        "${APIEndpointUrls.get_city}/$state/cities",
       );
-      if (res.statusCode == 200) {
-        debugPrint('get getCity:${res.data}');
-        return Citiesmodel.fromJson(res.data);
+
+      if (res.statusCode == 200 && res.data is List) {
+        debugPrint('get getCity: ${res.data}');
+        List<dynamic> data = res.data;
+        return data.map((e) => CityModel.fromJson(e)).toList();
       } else {
         return null;
       }
     } catch (e) {
-      debugPrint('Error getCity::$e');
+      debugPrint('Error getCity: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<UserPostedModel?> getUserPosts() async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.user_posts}");
+
+      if (res.statusCode == 200 && res.data is List) {
+        debugPrint('get getUserPosts: ${res.data}');
+        return UserPostedModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getUserPosts: $e');
       return null;
     }
   }
