@@ -1,13 +1,9 @@
-import 'package:architect/services/api_endpoint_urls.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
-import '../app_routes/router.dart';
-import '../utils/constants.dart';
-import 'ApiClient.dart';
-import 'api_endpoint_urls.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+import '../services/api_endpoint_urls.dart';
+import '../services/ApiClient.dart';
+import '../app_routes/router.dart'; // Assuming this defines navigatorKey
 
 class AuthService {
   static const String _accessTokenKey = "access_token";
@@ -39,76 +35,104 @@ class AuthService {
       debugPrint('No expiry timestamp found, considering token expired');
       return true;
     }
+
     final expiryTimestamp = int.tryParse(expiryTimestampStr);
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final isExpired = expiryTimestamp == null || now >= expiryTimestamp;
+    if (expiryTimestamp == null) {
+      debugPrint('Invalid expiry timestamp format, considering token expired');
+      return true;
+    }
+
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; // current time in seconds
+
+    final isExpired = now >= expiryTimestamp;
+
     debugPrint('Token expiry check: now=$now, expiry=$expiryTimestamp, isExpired=$isExpired');
     return isExpired;
   }
 
+  // static Future<bool> isTokenExpired() async {
+  //   final expiryTimestamp = await _storage.read(key: _tokenExpiryKey);
+  //   if (expiryTimestamp == null) {
+  //     debugPrint('No expiry timestamp found, considering token expired');
+  //     return true;
+  //   }
+  //
+  //   final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; // ✅ Convert to seconds
+  //   final isExpired = now >= expiryTimestamp;
+  //
+  //   debugPrint('Token expiry check: now=$now, expiry=$expiryTimestamp, isExpired=$isExpired');
+  //   return isExpired;
+  // }
+
   /// Save tokens and expiry time
-  static Future<void> saveTokens(String accessToken, String refreshToken, int expiresIn) async {
+  static Future<void> saveTokens(
+    String accessToken,
+    String? refreshToken,
+    int expiresIn,
+  ) async {
     await _storage.write(key: _accessTokenKey, value: accessToken);
-    await _storage.write(key: _refreshTokenKey, value: refreshToken);
+    await _storage.write(key: _refreshTokenKey, value: refreshToken ?? "");
     await _storage.write(key: _tokenExpiryKey, value: expiresIn.toString());
     debugPrint('Tokens saved: accessToken=$accessToken, expiryTime=$expiresIn');
   }
 
   /// Refresh token
-  static Future<bool> refreshToken() async {
-    final refreshToken = await getRefreshToken();
-    if (refreshToken == null) {
-      debugPrint('❌ No refresh token available');
-      return false;
-    }
-
-    try {
-      final response = await ApiClient.post(
-        APIEndpointUrls.refreshtoken,
-        data: {"refresh": refreshToken},
-      );
-
-      if (response.statusCode == 200) {
-        final tokenData = response.data["data"];
-        final newAccessToken = tokenData["access"];
-        final newRefreshToken = tokenData["refresh"];
-        final expiryTime = tokenData["expiry_time"];
-
-        if (newAccessToken == null || newRefreshToken == null || expiryTime == null) {
-          debugPrint("❌ Missing token data in response: $tokenData");
-          return false;
-        }
-
-        await saveTokens(newAccessToken, newRefreshToken, expiryTime);
-        debugPrint("✅ Token refreshed and saved successfully");
-        return true;
-      } else {
-        debugPrint("❌ Refresh token request failed with status: ${response.statusCode}");
-        return false;
-      }
-    } catch (e) {
-      debugPrint("❌ Token refresh failed: $e");
-      return false;
-    }
-  }
+  // static Future<bool> refreshToken() async {
+  //   final refreshToken = await getRefreshToken();
+  //   if (refreshToken == null) {
+  //     debugPrint('❌ No refresh token available');
+  //     return false;
+  //   }
+  //
+  //   try {
+  //     final response = await ApiClient.post(
+  //       APIEndpointUrls.refreshtoken,
+  //       data: {"refresh": refreshToken},
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final tokenData = response.data["data"];
+  //       final newAccessToken = tokenData["access"];
+  //       final newRefreshToken = tokenData["refresh"];
+  //       final expiryTime = tokenData["expiry_time"];
+  //
+  //       if (newAccessToken == null || newRefreshToken == null || expiryTime == null) {
+  //         debugPrint("❌ Missing token data in response: $tokenData");
+  //         return false;
+  //       }
+  //
+  //       await saveTokens(newAccessToken, newRefreshToken, expiryTime);
+  //       debugPrint("✅ Token refreshed and saved successfully");
+  //       return true;
+  //     } else {
+  //       debugPrint("❌ Refresh token request failed with status: ${response.statusCode}");
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     debugPrint("❌ Token refresh failed: $e");
+  //     return false;
+  //   }
+  // }
 
   /// Logout and clear tokens, redirect to sign-in screen
   static Future<void> logout() async {
-    await _storage.delete(key: _accessTokenKey);
-    await _storage.delete(key: _refreshTokenKey);
-    await _storage.delete(key: _tokenExpiryKey);
+    await _storage.deleteAll(); // clear all tokens
+
     debugPrint('Tokens cleared, user logged out');
 
-    if (navigatorKey.currentContext != null) {
-      navigatorKey.currentContext!.go('/onboarding');
+    if (navigatorKey.currentState != null) {
+      navigatorKey.currentState!.pushNamedAndRemoveUntil('/onboarding', (route) => false);
     } else {
-      debugPrint('⚠️ Navigator context is null, scheduling navigation...');
+      debugPrint('Navigator state is null, scheduling navigation after frame');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (navigatorKey.currentContext != null) {
-          navigatorKey.currentContext!.go('/onboarding');
+        if (navigatorKey.currentState != null) {
+          navigatorKey.currentState!.pushNamedAndRemoveUntil('/onboarding', (route) => false);
+        } else {
+          debugPrint('Still no navigator state after delay');
+          // Optional: fallback, maybe restart app or notify user
         }
       });
     }
   }
-}
 
+}

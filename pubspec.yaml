@@ -53,6 +53,8 @@ dependencies:
   animate_do: ^4.2.0
   file_picker: ^10.2.0
   icons_plus: ^5.0.0
+  url_launcher: ^6.3.1
+  logger: ^2.6.0
 
 dev_dependencies:
   flutter_test:

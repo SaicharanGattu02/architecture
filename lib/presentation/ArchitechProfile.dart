@@ -1,8 +1,11 @@
 import 'package:architect/Components/CutomAppBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../bloc/ArchitechProfile/architech_profile_cubit.dart';
+import '../bloc/ArchitechProfile/architech_profile_state.dart';
 import '../services/AuthService.dart';
 
 class ArchitechProfile extends StatefulWidget {
@@ -14,227 +17,264 @@ class ArchitechProfile extends StatefulWidget {
 
 class _ArchitechProfileState extends State<ArchitechProfile> {
   @override
+  void initState() {
+    super.initState();
+    context.read<ArchitechProfileCubit>().getArchitechProfile();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: primarycolor,
       appBar: CustomAppBar1(title: 'Profile', actions: []),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey[900],
-                borderRadius: BorderRadius.circular(8),
-              ),
+      body: BlocBuilder<ArchitechProfileCubit, ArchitechProfileState>(
+        builder: (context, state) {
+          if (state is ArchitechProfileLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          } else if (state is ArchitechProfileLoaded) {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Column(
-                spacing: 16,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 100,
-                        width: w * 0.25,
-                        decoration: BoxDecoration(
-                          color: Color(0xff010101),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Icon(
-                          Icons.image,
-                          size: 48,
-                          color: Colors.white30,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      spacing: 16,
+                      children: [
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Sarah Johnson',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                            Container(
+                              height: 100,
+                              width: w * 0.25,
+                              decoration: BoxDecoration(
+                                color: Color(0xff010101),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Icon(
+                                Icons.image,
+                                size: 48,
+                                color: Colors.white30,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'Modern Spaces Architecture',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                    vertical: 2,
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    state
+                                            .architechProfileModel
+                                            .data
+                                            ?.contactPersonName ??
+                                        "",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                        size: 16,
-                                      ),
-                                      SizedBox(width: 2),
-                                      Text(
-                                        '4.9',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                SizedBox(width: 16),
-                                Icon(
-                                  Icons.apartment,
-                                  color: Colors.white70,
-                                  size: 16,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Est. 2015',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: const [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Colors.white70,
-                                  size: 16,
-                                ),
-                                SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    'Hyderabad, India',
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    state
+                                            .architechProfileModel
+                                            .data
+                                            ?.companyName ??
+                                        "",
                                     style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.yellow,
+                                              size: 16,
+                                            ),
+                                            SizedBox(width: 2),
+                                            Text(
+                                              '4.9',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      SizedBox(width: 16),
+                                      Icon(
+                                        Icons.apartment,
+                                        color: Colors.white70,
+                                        size: 16,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Est. ${state.architechProfileModel.data?.establishedYear ?? ""}',
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: Colors.white70,
+                                        size: 16,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Expanded(
+                                        child: Text(
+                                          '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              TextButton.icon(
+                                onPressed: () {
+                                  context.push('/architecture_details?id=${state.architechProfileModel.data?.id ?? 0}');
+                                },
+                                icon: Icon(
+                                  Icons.remove_red_eye,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                label: Text(
+                                  'View Profile',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                              TextButton.icon(
+                                onPressed: () {
+                                  context.push('/architect_profile_setup');
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                label: Text(
+                                  'Edit Profile',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  SizedBox(height: 20),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        TextButton.icon(
-                          onPressed: () {
-                         context.push('/architecture_details');
-                          },
-                          icon: Icon(
-                            Icons.remove_red_eye,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          label: Text(
-                            'View Profile',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
+                        Column(
+                          spacing: 12,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(26),
+                              decoration: BoxDecoration(
+                                color: Color(0xff363636),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Image.asset(
+                                'assets/subscription.png',
+                                scale: 5,
+                              ),
                             ),
-                          ),
-                        ),
-                        Spacer(),
-                        TextButton.icon(
-                          onPressed: () {
-                            context.push('/architect_profile_setup');
-                          },
-                          icon: Icon(Icons.edit, color: Colors.white, size: 20),
-                          label: Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
+                            Text(
+                              'Renew the plan',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xffCCCCCC),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    spacing: 12,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(26),
-                        decoration: BoxDecoration(
-                          color: Color(0xff363636),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Image.asset('assets/subscription.png', scale: 5),
-                      ),
-                      Text(
-                        'Renew the plan',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xffCCCCCC),
-                        ),
-                      ),
-                    ],
-                  ),
 
-                  GestureDetector(onTap: (){
-                    showLogoutDialog(context);
-                  },
-                    child: Column(
-                      spacing: 12,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(26),
-                          decoration: BoxDecoration(
-                            color: Color(0xff363636),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Image.asset('assets/logout.png', scale: 5),
-                        ),
-                        Text(
-                          'Log Out',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xffCCCCCC),
+                        GestureDetector(
+                          onTap: () {
+                            showLogoutDialog(context);
+                          },
+                          child: Column(
+                            spacing: 12,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(26),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff363636),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Image.asset(
+                                  'assets/logout.png',
+                                  scale: 5,
+                                ),
+                              ),
+                              Text(
+                                'Log Out',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xffCCCCCC),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -242,12 +282,26 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                   ),
                 ],
               ),
+            );
+          } else if (state is ArchitechProfileError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+              ),
+            );
+          }
+          return const Center(
+            child: Text(
+              'Something went wrong',
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
+
   void showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -298,19 +352,21 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                         Text(
                           "Logout",
                           style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.w700,
-                              color: primarycolor,
-                              fontFamily: "Inter"),
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.w700,
+                            color: primarycolor,
+                            fontFamily: "Inter",
+                          ),
                         ),
                         const SizedBox(height: 10.0),
                         const Text(
                           "Are you sure you want to logout?",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.black54,
-                              fontFamily: "Inter"),
+                            fontSize: 16.0,
+                            color: Colors.black54,
+                            fontFamily: "Inter",
+                          ),
                         ),
                         const SizedBox(height: 20.0),
 
@@ -325,7 +381,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                 onPressed: () => Navigator.pop(context),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                  primarycolor, // Filled button color
+                                      primarycolor, // Filled button color
                                   foregroundColor: Colors.white, // Text color
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 20,
@@ -335,8 +391,9 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                 child: const Text(
                                   "No",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "lexend"),
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "lexend",
+                                  ),
                                 ),
                               ),
                             ),
@@ -345,7 +402,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                             SizedBox(
                               width: 100,
                               child: OutlinedButton(
-                                onPressed: () async{
+                                onPressed: () async {
                                   await AuthService.logout();
                                   context.push("/onboarding");
                                 },
@@ -362,8 +419,9 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                 child: const Text(
                                   "Yes",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "lexend"),
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "lexend",
+                                  ),
                                 ),
                               ),
                             ),
@@ -380,5 +438,4 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
       },
     );
   }
-
 }

@@ -2,6 +2,12 @@ import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
 import 'package:architect/bloc/city/city_cubit.dart';
 import 'package:architect/bloc/state/state_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
+import '../bloc/ArchitechAditionalInfo/architech_aditional_info_repository.dart';
+import '../bloc/ArchitechProfile/architech_profile_cubit.dart';
+import '../bloc/ArchitechProfile/architech_profile_repository.dart';
+import '../bloc/ArchitechProfileDetails/architech_profile_details_cubit.dart';
+import '../bloc/ArchitechProfileDetails/architech_profile_details_repository.dart';
 import '../bloc/CreateProfile/create_profile_cubit.dart';
 import '../bloc/CreateProfile/create_profile_repository.dart';
 import '../bloc/SubscriptionPlans/subscription_cubit.dart';
@@ -70,6 +76,21 @@ class StateInjector {
       create: (context) =>
           UserPostsImpl(remoteDataSource: context.read<RemoteDataSource>()),
     ),
+    RepositoryProvider<ArchitechProfileRepository>(
+      create: (context) => ArchitechProfileImpl(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
+    ),
+    RepositoryProvider<ArchitechProfileDetailsRepository>(
+      create: (context) => ArchitechProfileDetailsImpl(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
+    ),
+    RepositoryProvider<ArchitechAditionalInfoRepository>(
+      create: (context) => ArchitechAditionalInfoImpl(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
+    ),
   ];
 
   static final blocProviders = <BlocProvider>[
@@ -105,8 +126,21 @@ class StateInjector {
           CreatePostCubit(context.read<CreatePostRepository>()),
     ),
     BlocProvider<UserPostsCubit>(
+      create: (context) => UserPostsCubit(context.read<UserPostsRepository>()),
+    ),
+    BlocProvider<ArchitechProfileCubit>(
       create: (context) =>
-          UserPostsCubit(context.read<UserPostsRepository>()),
+          ArchitechProfileCubit(context.read<ArchitechProfileRepository>()),
+    ),
+    BlocProvider<ArchitechProfileDetailsCubit>(
+      create: (context) => ArchitechProfileDetailsCubit(
+        context.read<ArchitechProfileDetailsRepository>(),
+      ),
+    ),
+    BlocProvider<ArchitechAditionalInfoCubit>(
+      create: (context) => ArchitechAditionalInfoCubit(
+        context.read<ArchitechAditionalInfoRepository>(),
+      ),
     ),
   ];
 }

@@ -9,8 +9,8 @@ import '../bloc/city/city_states.dart';
 
 
 class SelectCity extends StatefulWidget {
-  final String city;
-  SelectCity({required this.city});
+  final String state;
+  SelectCity({required this.state});
   @override
   State<SelectCity> createState() => _SelectCityState();
 }
@@ -18,8 +18,7 @@ class SelectCity extends StatefulWidget {
 class _SelectCityState extends State<SelectCity> {
   @override
   void initState() {
-    print("city:${widget.city}");
-    context.read<CityCubit>().getCity(widget.city);
+    context.read<CityCubit>().getCity(widget.state);
     super.initState();
   }
 
@@ -57,7 +56,9 @@ class _SelectCityState extends State<SelectCity> {
                       size: 20,
                     ),
                     onTap: () {
-                      context.push('/select_type');
+                      final selectedCity = city.name;
+                      print('selectedCity:${selectedCity}');
+                      context.push('/select_type?city=${selectedCity}');
                     },
                   ),
                 );

@@ -26,21 +26,20 @@ class _PostRequirementState extends State<PostRequirement> {
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
-  final _locationCtrl = TextEditingController();
   final _landDetailsCtrl = TextEditingController();
 
   String? _selectedDuration;
 
-  // error messages
+  // Error messages
   String _nameError = '';
   String _emailError = '';
   String _phoneError = '';
-  String _locationError = '';
+  String _stateError = '';
+  String _cityError = '';
   String _landDetailsError = '';
   String _durationError = '';
   String? _selectState;
   String? _selectCity;
-
 
   @override
   void initState() {
@@ -63,22 +62,11 @@ class _PostRequirementState extends State<PostRequirement> {
       }
     });
 
-    _locationCtrl.addListener(() {
-      if (_locationError.isNotEmpty) {
-        setState(() => _locationError = '');
-      }
-    });
-
     _landDetailsCtrl.addListener(() {
       if (_landDetailsError.isNotEmpty) {
         setState(() => _landDetailsError = '');
       }
     });
-    // _selectedDuration.addListener(() {
-    //   if (_durationError.isNotEmpty) {
-    //     setState(() => _durationError = '');
-    //   }
-    // });
   }
 
   @override
@@ -86,7 +74,6 @@ class _PostRequirementState extends State<PostRequirement> {
     _nameCtrl.dispose();
     _emailCtrl.dispose();
     _phoneCtrl.dispose();
-    _locationCtrl.dispose();
     _landDetailsCtrl.dispose();
     super.dispose();
   }
@@ -140,24 +127,19 @@ class _PostRequirementState extends State<PostRequirement> {
     setState(() {
       _nameError = _nameCtrl.text.trim().isEmpty ? 'Name is required' : '';
       _emailError = _emailCtrl.text.trim().isEmpty ? 'Email is required' : '';
-      _phoneError = _phoneCtrl.text.trim().isEmpty
-          ? 'Phone number is required'
-          : '';
-      // _locationError = _locationCtrl.text.trim().isEmpty
-      //     ? 'Location is required'
-      //     : '';
-      _landDetailsError = _landDetailsCtrl.text.trim().isEmpty
-          ? 'Land details are required'
-          : '';
-      _durationError = _selectedDuration == null
-          ? 'Please select a timeline'
-          : '';
+      _phoneError = _phoneCtrl.text.trim().isEmpty ? 'Phone number is required' : '';
+      _stateError = _selectState == null ? 'Please select a state' : '';
+      _cityError = _selectCity == null ? 'Please select a city' : '';
+      _landDetailsError = _landDetailsCtrl.text.trim().isEmpty ? 'Land details are required' : '';
+      _durationError = _selectedDuration == null ? 'Please select a timeline' : '';
     });
 
     final hasError = [
       _nameError,
       _emailError,
       _phoneError,
+      _stateError,
+      _cityError,
       _landDetailsError,
       _durationError,
     ].any((e) => e.isNotEmpty);
@@ -244,6 +226,16 @@ class _PostRequirementState extends State<PostRequirement> {
                       _errorText(_phoneError, 'phoneError'),
 
                       const SizedBox(height: 16),
+                      Text(
+                        "Select State",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Inter',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
                       BlocBuilder<StateCubit, StateStates>(
                         builder: (context, state) {
                           if (state is StateLoading) {
@@ -288,22 +280,17 @@ class _PostRequirementState extends State<PostRequirement> {
                                 onChanged: (String? value) {
                                   setState(() {
                                     _selectState = value;
-                                    context.read<CityCubit>().getCity(
-                                      _selectState ?? "",
-                                    );
+                                    _stateError = ''; // Clear error on selection
+                                    _selectCity = null; // Reset city when state changes
+                                    _cityError = ''; // Clear city error
+                                    context.read<CityCubit>().getCity(_selectState ?? "");
                                   });
                                 },
                                 buttonStyleData: ButtonStyleData(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 6,
-                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: formfieldColor,
-                                      width: 0.5,
-                                    ),
+                                    border: Border.all(color: formfieldColor, width: 0.5),
                                     color: formfieldColor,
                                   ),
                                 ),
@@ -323,48 +310,49 @@ class _PostRequirementState extends State<PostRequirement> {
                                 menuItemStyleData: MenuItemStyleData(
                                   height: 45,
                                   padding: EdgeInsets.symmetric(horizontal: 20),
-                                  overlayColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
+                                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
                                         (Set<MaterialState> states) {
-                                          if (states.contains(
-                                            MaterialState.hovered,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.12,
-                                            );
-                                          }
-                                          if (states.contains(
-                                            MaterialState.pressed,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.2,
-                                            );
-                                          }
-                                          return null;
-                                        },
-                                      ),
+                                      if (states.contains(MaterialState.hovered)) {
+                                        return Colors.white.withOpacity(0.12);
+                                      }
+                                      if (states.contains(MaterialState.pressed)) {
+                                        return Colors.white.withOpacity(0.2);
+                                      }
+                                      return null;
+                                    },
+                                  ),
                                 ),
                               ),
                             );
                           } else {
                             return Center(
                               child: Text(
-                                'Failed to load state',
+                                'Failed to load states',
                                 style: TextStyle(color: Colors.redAccent),
                               ),
                             );
                           }
                         },
                       ),
+                      _errorText(_stateError, 'stateError'),
                       const SizedBox(height: 16),
+
                       if (_selectState != null && _selectState!.isNotEmpty) ...[
+                        Text(
+                          "Select City",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         BlocBuilder<CityCubit, CityStates>(
                           builder: (context, state) {
                             if (state is CityLoading) {
                               return Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
+                                child: CircularProgressIndicator(color: Colors.white),
                               );
                             } else if (state is CityLoaded) {
                               return DropdownButtonHideUnderline(
@@ -402,26 +390,19 @@ class _PostRequirementState extends State<PostRequirement> {
                                   onChanged: (String? value) {
                                     setState(() {
                                       _selectCity = value;
+                                      _cityError = ''; // Clear error on selection
                                     });
                                   },
                                   buttonStyleData: ButtonStyleData(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 6,
-                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: formfieldColor,
-                                        width: 0.5,
-                                      ),
+                                      border: Border.all(color: formfieldColor, width: 0.5),
                                       color: formfieldColor,
                                     ),
                                   ),
                                   iconStyleData: IconStyleData(
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                    ),
+                                    icon: Icon(Icons.keyboard_arrow_down_rounded),
                                     iconSize: 26,
                                     iconEnabledColor: Colors.white70,
                                   ),
@@ -435,46 +416,35 @@ class _PostRequirementState extends State<PostRequirement> {
                                   ),
                                   menuItemStyleData: MenuItemStyleData(
                                     height: 45,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
+                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                    overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                          (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered)) {
+                                          return Colors.white.withOpacity(0.12);
+                                        }
+                                        if (states.contains(MaterialState.pressed)) {
+                                          return Colors.white.withOpacity(0.2);
+                                        }
+                                        return null;
+                                      },
                                     ),
-                                    overlayColor:
-                                        MaterialStateProperty.resolveWith<
-                                          Color?
-                                        >((Set<MaterialState> states) {
-                                          if (states.contains(
-                                            MaterialState.hovered,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.12,
-                                            );
-                                          }
-                                          if (states.contains(
-                                            MaterialState.pressed,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.2,
-                                            );
-                                          }
-                                          return null;
-                                        }),
                                   ),
                                 ),
                               );
                             } else {
                               return Center(
                                 child: Text(
-                                  'Failed to load states',
+                                  'Failed to load cities',
                                   style: TextStyle(color: Colors.redAccent),
                                 ),
                               );
                             }
                           },
                         ),
+                        _errorText(_cityError, 'cityError'),
                         const SizedBox(height: 16),
                       ],
 
-                      // Land Details
                       _buildTextField(
                         label: 'Land Details',
                         hint: 'Enter land details',
@@ -507,26 +477,25 @@ class _PostRequirementState extends State<PostRequirement> {
                           items: ['1-3 months', '3-6 months', '6+ months']
                               .map(
                                 (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(
-                                    e,
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 15,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                              value: e,
+                              child: Text(
+                                e,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 15,
+                                  color: Colors.white,
                                 ),
-                              )
+                              ),
+                            ),
+                          )
                               .toList(),
                           value: _selectedDuration,
-                          onChanged: (val) =>
-                              setState(() => _selectedDuration = val),
+                          onChanged: (val) => setState(() {
+                            _selectedDuration = val;
+                            _durationError = ''; // Clear error on selection
+                          }),
                           buttonStyleData: ButtonStyleData(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 6,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: Colors.grey.shade800),

@@ -1,25 +1,13 @@
-class VerifyLogInOtpModel {
+class ArchitechProfileModel {
   bool? status;
   String? message;
-  String? accessToken;
-  String? tokenType;
-  int? expiresIn;
   Data? data;
 
-  VerifyLogInOtpModel(
-      {this.status,
-        this.message,
-        this.accessToken,
-        this.tokenType,
-        this.expiresIn,
-        this.data});
+  ArchitechProfileModel({this.status, this.message, this.data});
 
-  VerifyLogInOtpModel.fromJson(Map<String, dynamic> json) {
+  ArchitechProfileModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    accessToken = json['access_token'];
-    tokenType = json['token_type'];
-    expiresIn = json['expires_in'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
@@ -27,9 +15,6 @@ class VerifyLogInOtpModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
-    data['access_token'] = this.accessToken;
-    data['token_type'] = this.tokenType;
-    data['expires_in'] = this.expiresIn;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }

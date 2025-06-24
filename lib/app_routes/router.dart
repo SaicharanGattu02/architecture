@@ -20,7 +20,7 @@ import '../presentation/onboarding.dart';
 import '../presentation/selectState.dart';
 import '../presentation/ArchitectureDetails.dart';
 import '../authentication/Register/createProfile.dart';
-import '../presentation/selectArchitecture.dart';
+import '../presentation/ArchitectureList.dart';
 import '../presentation/selectCity.dart';
 import '../presentation/selectType.dart';
 
@@ -57,14 +57,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/select_city',
       pageBuilder: (context, state) {
-        final city = state.uri.queryParameters['city'] ?? "";
-        return buildSlideTransitionPage(SelectCity(city: city), state);
+        final states = state.uri.queryParameters['state'] ?? "";
+        return buildSlideTransitionPage(SelectCity(state: states), state);
       },
     ),
     GoRoute(
       path: '/select_type',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(SelectType(), state),
+      pageBuilder: (context, state) {
+        final city = state.uri.queryParameters['city'] ?? "";
+        return buildSlideTransitionPage(SelectType(city: city), state);
+      },
     ),
     GoRoute(
       path: '/select_architecture',
@@ -77,11 +79,13 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-
     GoRoute(
       path: '/architecture_details',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(ArchitectureDetails(), state),
+      pageBuilder: (context, state) {
+        final idString = state.uri.queryParameters['id'];
+        final id = int.tryParse(idString ?? '') ?? 0;
+        return buildSlideTransitionPage(ArchitectureDetails(id: id), state);
+      },
     ),
     GoRoute(
       path: '/company_details',
@@ -130,10 +134,12 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/architect_profile_setup',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(ArchitectProfileSetup(), state),
+      pageBuilder: (context, state) {
+        final idString = state.uri.queryParameters['id'];
+        final id = int.tryParse(idString ?? '') ?? 0;
+        return buildSlideTransitionPage(ArchitectProfileSetup(id: id), state);
+      },
     ),
-
     GoRoute(
       path: '/otp',
       pageBuilder: (context, state) {
@@ -142,6 +148,7 @@ final GoRouter appRouter = GoRouter(
         return buildSlideTransitionPage(Otp(mailId: mailId, type: type), state);
       },
     ),
+
     GoRoute(
       path: '/user_posts',
       pageBuilder: (context, state) =>

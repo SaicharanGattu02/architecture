@@ -21,7 +21,7 @@ class GetArchitectsModel {
 
 class PaginatedData {
   int? currentPage;
-  List<ArchitectData>? data;
+  List<ArchitectData>? architechData;
   String? firstPageUrl;
   int? from;
   int? lastPage;
@@ -36,7 +36,7 @@ class PaginatedData {
 
   PaginatedData({
     this.currentPage,
-    this.data,
+    this.architechData,
     this.firstPageUrl,
     this.from,
     this.lastPage,
@@ -53,9 +53,9 @@ class PaginatedData {
   PaginatedData.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      data = <ArchitectData>[];
+      architechData = <ArchitectData>[];
       json['data'].forEach((v) {
-        data!.add(ArchitectData.fromJson(v));
+        architechData!.add(ArchitectData.fromJson(v));
       });
     }
     firstPageUrl = json['first_page_url'];
@@ -79,8 +79,8 @@ class PaginatedData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
     data['current_page'] = currentPage;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    if (this.architechData != null) {
+      data['data'] = this.architechData!.map((v) => v.toJson()).toList();
     }
     data['first_page_url'] = firstPageUrl;
     data['from'] = from;

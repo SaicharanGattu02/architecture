@@ -8,6 +8,10 @@ import '../Components/CutomAppBar.dart';
 enum PropertyType { residential, commercial, industrial }
 
 class SelectType extends StatefulWidget {
+  final String city;
+
+  const SelectType({Key? key, required this.city}) : super(key: key);
+
   @override
   _SelectTypeScreenState createState() => _SelectTypeScreenState();
 }
@@ -93,9 +97,12 @@ class _SelectTypeScreenState extends State<SelectType> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: CustomAppButton1(
                   text: 'Find Architects',
-                  onPlusTap: () {
-                    context.push('/select_architecture');
-                  },
+
+                    onPlusTap: () {
+                      final industryType = _selectedType!.name;
+
+                      context.push('/select_architecture?industryType=$industryType&location=$widget.city');
+                    },
                 ),
               ),
             )

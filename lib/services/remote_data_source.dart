@@ -4,6 +4,7 @@ import 'package:architect/models/ActiveSubscriptionmodel.dart';
 import 'package:architect/models/SubscriptionModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import '../models/ArchitechProfileModel.dart';
 import '../models/ArchitectModel.dart';
 import '../models/CitiesModel.dart';
 import '../models/StatesModel.dart';
@@ -33,6 +34,11 @@ abstract class RemoteDataSource {
   Future<VerifyOtpModel?> companyVerifyOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createPost(Map<String, dynamic> data);
   Future<UserPostedModel?> getUserPosts();
+  Future<ArchitechProfileModel?> getArchitechProfile();
+  Future<ArchitechProfileModel?> getArchitechProfileDetails(int id);
+  Future<SuccessModel?> ArchitechCompanyAdditionalInfoPost(
+    Map<String, dynamic> data,
+  );
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -228,8 +234,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<SuccessModel?> createPost(Map<String, dynamic> data) async {
-    debugPrint('createPost Data:${data}');
-
     try {
       Response res = await ApiClient.post(
         "${APIEndpointUrls.create_post}",
@@ -243,6 +247,27 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error createPost::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> ArchitechCompanyAdditionalInfoPost(
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.architech_company_additional_info}",
+        data: data,
+      );
+      if (res.statusCode == 200) {
+        debugPrint('create comapny Additional Post:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error comapny Additional Post ::$e');
       return null;
     }
   }
@@ -324,10 +349,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<UserPostedModel?> getUserPosts() async {
-    print('hii');
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.user_posts}");
-      if (res.statusCode == 200 ) {
+      if (res.statusCode == 200) {
         debugPrint('get getUserPosts: ${res.data}');
         return UserPostedModel.fromJson(res.data);
       } else {
@@ -335,6 +359,42 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error getUserPosts: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<ArchitechProfileModel?> getArchitechProfile() async {
+    try {
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.architech_profile}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('get getArchitechProfile: ${res.data}');
+        return ArchitechProfileModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getArchitechProfile: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<ArchitechProfileModel?> getArchitechProfileDetails(int id) async {
+    try {
+      Response res = await ApiClient.get(
+        '${APIEndpointUrls.architech_profile_details}/$id',
+      );
+      if (res.statusCode == 200) {
+        debugPrint('getArchitech Profile Details: ${res.data}');
+        return ArchitechProfileModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getArchitech Profile Details: $e');
       return null;
     }
   }

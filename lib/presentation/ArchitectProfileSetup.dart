@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:architect/Components/CustomSnackBar.dart';
 import 'package:architect/utils/color_constants.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
@@ -9,9 +12,12 @@ import 'package:path/path.dart' as path;
 import '../Components/CustomAppButton.dart';
 import '../Components/CutomAppBar.dart';
 import '../Components/ShakeWidget.dart';
+import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
+import '../bloc/ArchitechAditionalInfo/architech_aditional_info_state.dart';
 
 class ArchitectProfileSetup extends StatefulWidget {
-  const ArchitectProfileSetup({super.key});
+  final int id;
+  const ArchitectProfileSetup({super.key, required this.id});
 
   @override
   State<ArchitectProfileSetup> createState() => _ArchitectProfileSetupState();
@@ -26,7 +32,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   final ImagePicker _picker = ImagePicker();
   List<File> _portfolioFiles = [];
   File? _documentFile;
-
+  String? _selectedIndustryType;
   bool sameAsContact = false;
   bool _showDescriptionError = false;
   bool _showExperienceError = false;
@@ -44,7 +50,8 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   String _whatsAppErrorMessage = '';
   String _portfolioErrorMessage = '';
   String _documentErrorMessage = '';
-
+  final List<String> _industryTypes = ['Residential', 'Commercial', 'Industrial'];
+  bool _showtypes = false;
   final List<String> specializations = [
     'Sustainable Design',
     'Residential',
@@ -188,16 +195,45 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   }
 
   bool _validateForm() {
-    final isValid =
-        _validateDescription() &&
+    print("Validating form...");
+    final isValid = _validateDescription() &&
         _validateExperience() &&
         _validateProjects() &&
         _validateContact() &&
         _validateWhatsApp() &&
         _validatePortfolio() &&
         _validateDocument() &&
-        _validateSpecializations();
-    setState(() {}); // Trigger UI update to show errors
+        _validateSpecializations() ;
+        // _validateIndustryType();
+//
+    if (isValid) {
+      print("Form is valid!");
+      final selectedSpecializations = <String>[];
+      for (int i = 0; i < specializations.length; i++) {
+        if (selectedSpecs[i]) {
+          selectedSpecializations.add(specializations[i]);
+        }
+      }
+
+      final Map<String, dynamic> data = {
+        'company_id': widget.id,
+        'about_company': _descriptionController.text.trim(),
+        'years_of_experience': _experienceController.text.trim(),
+        'number_of_projects': _projectsController.text.trim(),
+        'contact_number': _contactController.text.trim(),
+        'whatsapp_number': _whatsappController.text.trim(),
+        'specializations': selectedSpecializations, // Changed to 'specializations'
+        'portfolio_images': _portfolioFiles, // Separate key for images
+        'document': _documentFile, // Separate key for document
+        'industry_type': _selectedIndustryType!.toLowerCase(), // Send lowercase
+      };
+      print("Data to send: $data");
+      context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfo(data);
+    } else {
+      print("Form validation failed");
+    }
+
+    setState(() {});
     return isValid;
   }
 
@@ -592,6 +628,76 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                       ],
                     ),
                     const SizedBox(height: 20),
+                    DropdownButtonFormField2<String>(
+                      value: _selectedIndustryType,
+                      isExpanded: true,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        filled: true,
+                        fillColor: const Color(0xff363636),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      hint: const Text(
+                        'Select industry type',
+                        style: TextStyle(color: Colors.white38),
+                      ),
+                      items: _industryTypes.map((String type) {
+                        return DropdownMenuItem<String>(
+                          value: type,
+                          child: Text(
+                            type,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedIndustryType = value;
+                          _showtypes = false;
+                        });
+                      },
+                      dropdownStyleData: DropdownStyleData(
+                        useSafeArea: true,
+                        offset: const Offset(0, -8),
+                        maxHeight: 200,
+                        decoration: BoxDecoration(
+                          color: const Color(0xff363636),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      iconStyleData: const IconStyleData(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
+                      ),
+                      menuItemStyleData: const MenuItemStyleData(
+                        overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                      ),
+                    ),
+
+                    if (_showtypes)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Text(
+                          'Please select industry type',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 12,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+
+                    const SizedBox(height: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -747,13 +853,30 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
-            spacing: 12,
             mainAxisSize: MainAxisSize.min,
             children: [
-              CustomAppButton1(
-                text: 'Done',
-                onPlusTap: () {
-                  context.push('/profile_created');
+              BlocConsumer<
+                ArchitechAditionalInfoCubit,
+                ArchitechAditionalInfoState
+              >(
+                listener: (context, state) {
+                  if (state is ArchitechAditionalInfoSucess) {
+                    context.pushReplacement(
+                      '/profile_created',
+                    ); // Use pushReplacement to avoid back navigation
+                  } else if (state is ArchitechAditionalInfoError) {
+                    CustomSnackBar.show(context, state.message);
+                  }
+                },
+                builder: (context, state) {
+                  return CustomAppButton1(isLoading: state is ArchitechAditionalInfoLoading ,
+                    text: state is ArchitechAditionalInfoLoading
+                        ? 'Submitting...'
+                        : 'Done',
+                    onPlusTap: state is ArchitechAditionalInfoLoading
+                        ? null
+                        : () => _validateForm(),
+                  );
                 },
               ),
             ],

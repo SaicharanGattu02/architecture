@@ -186,16 +186,21 @@ class _OtpVerificationScreenState extends State<Otp> {
   Widget _buildBlocConsumer() {
     if (widget.type == "LogInVerify") {
       return BlocConsumer<LoginOTPCubit, LoginOtpState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is LoginVerifyOtpSucess) {
-            AuthService.saveTokens(
+            final int currentTimestamp =
+                DateTime.now().millisecondsSinceEpoch ~/ 1000;
+            final int expiryTimestamp =
+                currentTimestamp + (state.successModel.expiresIn ?? 0);
+
+            await AuthService.saveTokens(
               state.successModel.accessToken ?? "",
-              state.successModel.refreshToken ?? "",
-              state.successModel.expiresIn ?? 0,
+               "",
+              expiryTimestamp,
             );
-
-
             context.pushReplacement('/user_posts');
+          } else if (state is LoginOtpError) {
+            CustomSnackBar.show(context, state.message);
           } else if (state is LoginOtpError) {
             CustomSnackBar.show(context, state.message);
           }

@@ -160,7 +160,7 @@ class _EnterStateScreenState extends State<EnterState> {
             onPlusTap: _selectState == null
                 ? null
                 : () {
-                    context.push('/select_city?city=${_selectState}');
+                    context.push('/select_city?state=${_selectState}');
                   },
           ),
         ),
