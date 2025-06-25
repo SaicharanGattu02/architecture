@@ -18,22 +18,7 @@ class ArchitectureDetails extends StatefulWidget {
 }
 
 class _ArchitectureDetailsState extends State<ArchitectureDetails> {
-  Widget _buildPortfolioCard() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey[850],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Image.asset('assets/portfolio.png', fit: BoxFit.cover),
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildInfoTile(IconData icon, String text) {
     return Row(
@@ -69,6 +54,7 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
   }
 
   void launchWhatsApp(String phoneNumber, {String message = ''}) async {
+    print('hiii');
     final whatsappUrl = Uri.parse(
       "https://wa.me/$phoneNumber${message.isNotEmpty ? '?text=${Uri.encodeComponent(message)}' : ''}",
     );
@@ -93,382 +79,399 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
             );
           } else if (state is ArchitechProfileDetailsLoaded) {
             return SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                   Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        height: 200,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/architecturebc.png'),
-                            fit: BoxFit.cover,
-                          ),
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/architecturebc.png'),
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      Positioned(
-                        left: 16,
-                        bottom: -50,
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                state.architechProfileModel.data?.logo ?? "",
+                    ),
+                    Positioned(
+                      left: 16,
+                      bottom: -50,
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl:
+                          state.architechProfileModel.data?.logo ?? "",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            width: 140,
+                            height: 140,
+                            color: Colors.grey.shade200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            "assets/profile.png",
                             width: 140,
                             height: 140,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              width: 140,
-                              height: 140,
-                              color: Colors.grey.shade200,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Image.asset(
-                              "assets/profile.png",
-                              width: 140,
-                              height: 140,
-                              fit: BoxFit.cover,
-                            ),
                           ),
                         ),
                       ),
+                    ),
 
-                      Positioned(
-                        right: 60,
-                        bottom: -50,
-                        child: Row(
-                          children: [
-                            IconButton.outlined(
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all(
-                                  Color(0xff191919),
-                                ),
-                                shape: WidgetStateProperty.all(CircleBorder()),
+                    Positioned(
+                      right: 60,
+                      bottom: -50,
+                      child: Row(
+                        children: [
+                          IconButton.outlined(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                Color(0xff191919),
                               ),
-                              visualDensity: VisualDensity.compact,
-                              icon: Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Icon(Icons.call, color: Colors.blue),
-                              ),
-                              onPressed: () {
-                                final phone =
-                                    state
-                                        .architechProfileModel
-                                        .data
-                                        ?.contactNumber ??
-                                    '';
-                                _launchDialer(phone);
-                              },
+                              shape: WidgetStateProperty.all(CircleBorder()),
                             ),
-                          ],
-                        ),
+                            visualDensity: VisualDensity.compact,
+                            icon: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Icon(Icons.call, color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              final phone =
+                                  state
+                                      .architechProfileModel
+                                      .data
+                                      ?.contactNumber ??
+                                      '';
+                              _launchDialer(phone);
+                            },
+                          ),
+                        ],
                       ),
+                    ),
 
-                      Positioned(
-                        right: 10,
-                        bottom: -50,
-                        child: Row(
-                          children: [
-                            IconButton.outlined(
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all(
-                                  Color(0xff191919),
-                                ),
-                                shape: WidgetStateProperty.all(CircleBorder()),
+                    Positioned(
+                      right: 10,
+                      bottom: -50,
+                      child: Row(
+                        children: [
+                          IconButton.outlined(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                Color(0xff191919),
                               ),
-                              visualDensity: VisualDensity.compact,
-                              icon: Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Icon(
-                                  Bootstrap.whatsapp,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              onPressed: () {
-                                final phone =
-                                    state
-                                        .architechProfileModel
-                                        .data
-                                        ?.contactNumber ??
-                                    '';
-                                launchWhatsApp(phone);
-                              },
+                              shape: WidgetStateProperty.all(CircleBorder()),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 56),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                capitalize(
-                                  "${state.architechProfileModel.data?.contactPersonName ?? ""}",
-                                ),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
+                            visualDensity: VisualDensity.compact,
+                            icon: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Icon(
+                                Bootstrap.whatsapp,
+                                color: Colors.green,
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                capitalize(
-                                  "${state.architechProfileModel.data?.companyName ?? ""}",
-                                ),
-                                style: TextStyle(
-                                  fontSize: 14,
+                            ),
+                            onPressed: () {
+                              final phone =
+                                  state
+                                      .architechProfileModel
+                                      .data
+                                      ?.contactNumber ??
+                                      '';
+                              launchWhatsApp(phone);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 56),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              capitalize(
+                                "${state.architechProfileModel.data?.contactPersonName ?? ""}",
+                              ),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              capitalize(
+                                "${state.architechProfileModel.data?.companyName ?? ""}",
+                              ),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            // SizedBox(height: 8),
+                            // Row(
+                            //   children: [
+                            //     Icon(
+                            //       Icons.star,
+                            //       size: 16,
+                            //       color: Colors.yellow,
+                            //     ),
+                            //     SizedBox(width: 4),
+                            //     Text(
+                            //       '4.0',
+                            //       style: TextStyle(
+                            //         fontSize: 14,
+                            //         color: Colors.white,
+                            //       ),
+                            //     ),
+                            //     SizedBox(width: 4),
+                            //     Text(
+                            //       '(5 reviews)',
+                            //       style: TextStyle(
+                            //         fontSize: 14,
+                            //         color: Colors.white70,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  size: 16,
                                   color: Colors.white70,
                                 ),
-                              ),
-                              SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    size: 16,
-                                    color: Colors.yellow,
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    '4.0',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    '(5 reviews)',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    size: 16,
+                                SizedBox(width: 4),
+                                Text(
+                                  '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+                                  style: TextStyle(
+                                    fontSize: 14,
                                     color: Colors.white70,
                                   ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        if(state.architechProfileModel.data?.emailVerified==true)...[
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              'Verified',
-                              style: TextStyle(color: Colors.white, fontSize: 12),
-                            ),
+                      ),
+                      if (state.architechProfileModel.data?.emailVerified ==
+                          true) ...[
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
                           ),
-                        ]
-
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Stats
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        _buildStatBox('${state.architechProfileModel.data?.yearsOfExperience??"0"}', 'Year Exp.'),
-                        const SizedBox(width: 12),
-                        _buildStatBox('${state.architechProfileModel.data?.numberOfProjects??"0"}', 'Projects'),
-                        const SizedBox(width: 12),
-                        _buildStatBox('98%', 'Response'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // About
-                  _buildSectionTitle('About'),
-                  _buildSectionContent(
-                    state.architechProfileModel.data?.aboutCompany ?? "",
-                  ),
-
-                  // Specializations
-                  _buildSectionTitle('Specializations'),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children:
-                          [
-                            'Sustainable Design',
-                            'Residential',
-                            'Commercial',
-                            'Urban Planning',
-                          ].map((s) {
-                            return Chip(
-                              label: Text(
-                                s,
-                                style: const TextStyle(fontSize: 12),
-                              ),
-                              backgroundColor: Colors.white,
-                              labelPadding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                            );
-                          }).toList(),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-                  _buildSectionTitle('Portfolio'),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: List.generate(3, (_) => _buildPortfolioCard()),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-                  _buildSectionTitle('Reviews'),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[850],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.grey[700],
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           child: const Text(
-                            'S',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Sarah Johnson',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: List.generate(5, (i) {
-                                  return Icon(
-                                    i < 4 ? Icons.star : Icons.star_border,
-                                    size: 16,
-                                    color: Colors.yellow,
-                                  );
-                                }),
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                'When giving permission to use their work, some copyright holders ask that you do this. In some cases, you may also need to credit the copyright holder if you plan to use their work in a way that you consider appropriate.',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 1.4,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
+                            'Verified',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ],
-                    ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 16),
 
-                  const SizedBox(height: 24),
+                // Stats
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      _buildStatBox(
+                        '${state.architechProfileModel.data?.yearsOfExperience ?? "0"}',
+                        'Year Exp.',
+                      ),
+                      const SizedBox(width: 12),
+                      _buildStatBox(
+                        '${state.architechProfileModel.data?.numberOfProjects ?? "0"}',
+                        'Projects',
+                      ),
+                      // const SizedBox(width: 12),
+                      // _buildStatBox('98%', 'Response'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
 
-                  // Contact Info
-                  _buildSectionTitle('Contact Info'),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        _buildInfoTile(Icons.phone, '${state.architechProfileModel.data?.contactNumber??""}',),
-                        const SizedBox(height: 8),
-                        _buildInfoTile(Icons.email,'${state.architechProfileModel.data?.companyEmail??""}',),
-                        const SizedBox(height: 8),
-                        _buildInfoTile(
-                          Icons.location_on,
-                          '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+                // About
+                _buildSectionTitle('About'),
+                _buildSectionContent(
+                  state.architechProfileModel.data?.aboutCompany ?? "",
+                ),
+
+                // Specializations
+                _buildSectionTitle('Specializations'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: (state.architechProfileModel.data?.specializations ?? [])
+                        .map<Widget>((s) {
+                      return Chip(
+                        label: Text(
+                          s,
+                          style: const TextStyle(fontSize: 12),
                         ),
-                      ],
+                        backgroundColor: Colors.white,
+                        labelPadding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+                _buildSectionTitle('Portfolio'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                      children: List.generate(3, (_) => Container(
+                  margin: EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[850],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset('assets/portfolio.png', fit: BoxFit.cover),
                     ),
                   ),
-                  const SizedBox(height: 80),
-                ],
-              ),
-            );
+                )),
+          ),
+          ),
+
+          // const SizedBox(height: 24),
+          // _buildSectionTitle('Reviews'),
+          // Container(
+          //   margin: const EdgeInsets.symmetric(
+          //     horizontal: 16,
+          //     vertical: 8,
+          //   ),
+          //   padding: const EdgeInsets.all(12),
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey[850],
+          //     borderRadius: BorderRadius.circular(12),
+          //   ),
+          //   child: Row(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       CircleAvatar(
+          //         radius: 20,
+          //         backgroundColor: Colors.grey[700],
+          //         child: const Text(
+          //           'S',
+          //           style: TextStyle(color: Colors.white),
+          //         ),
+          //       ),
+          //       const SizedBox(width: 12),
+          //       Expanded(
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             const Text(
+          //               'Sarah Johnson',
+          //               style: TextStyle(
+          //                 fontSize: 16,
+          //                 fontWeight: FontWeight.w600,
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //             const SizedBox(height: 4),
+          //             Row(
+          //               children: List.generate(5, (i) {
+          //                 return Icon(
+          //                   i < 4 ? Icons.star : Icons.star_border,
+          //                   size: 16,
+          //                   color: Colors.yellow,
+          //                 );
+          //               }),
+          //             ),
+          //             const SizedBox(height: 8),
+          //             const Text(
+          //               'When giving permission to use their work, some copyright holders ask that you do this. In some cases, you may also need to credit the copyright holder if you plan to use their work in a way that you consider appropriate.',
+          //               style: TextStyle(
+          //                 fontSize: 14,
+          //                 height: 1.4,
+          //                 color: Colors.white70,
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+
+          const SizedBox(height: 24),
+
+          // Contact Info
+          _buildSectionTitle('Contact Info'),
+          Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+          children: [
+          _buildInfoTile(
+          Icons.phone,
+          '${state.architechProfileModel.data?.contactNumber ?? ""}',
+          ),
+          const SizedBox(height: 8),
+          _buildInfoTile(
+          Icons.email,
+          '${state.architechProfileModel.data?.companyEmail ?? ""}',
+          ),
+          const SizedBox(height: 8),
+          _buildInfoTile(
+          Icons.location_on,
+          '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+          ),
+          ],
+          ),
+          ),
+          const SizedBox(height: 80),
+          ],
+          ),
+          );
           } else if (state is ArchitechProfileDetailsError) {
-            return Center(
-              child: Text(
-                state.message,
-                style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-              ),
-            );
+          return Center(
+          child: Text(
+          state.message,
+          style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+          ),
+          );
           }
           return const Center(
-            child: Text(
-              'Something went wrong',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
+          child: Text(
+          'Something went wrong',
+          style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
           );
         },
       ),
-      // bottomNavigationBar: SafeArea(
-      //   child: Padding(
-      //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      //     child: CustomAppButton1(text: 'Contact Architect', onPlusTap: () {}),
-      //   ),
-      // ),
     );
   }
 
@@ -517,12 +520,13 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
 
   Widget _buildSectionContent(String content) {
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Text(
         content,
         style: const TextStyle(
           fontSize: 14,
-          height: 1.4,fontFamily: 'Inter',
+          height: 1.4,
+          fontFamily: 'Inter',
           color: Colors.white70,
         ),
       ),
