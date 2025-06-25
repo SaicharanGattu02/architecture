@@ -1,19 +1,18 @@
-import 'package:architect/Components/CustomSnackBar.dart';
-import 'package:architect/Components/CutomAppBar.dart';
-import 'package:architect/Components/CustomAppButton.dart';
 import 'package:architect/bloc/create_posted/create_post_cubit.dart';
 import 'package:architect/bloc/create_posted/create_post_state.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../Components/ShakeWidget.dart';
 import '../bloc/city/city_cubit.dart';
 import '../bloc/city/city_states.dart';
 import '../bloc/state/state_cubit.dart';
 import '../bloc/state/state_states.dart';
+import '../utils/ShakeWidget.dart';
 import '../utils/color_constants.dart';
+import 'Components/CustomAppButton.dart';
+import 'Components/CustomSnackBar.dart';
+import 'Components/CutomAppBar.dart';
 
 class PostRequirement extends StatefulWidget {
   const PostRequirement({Key? key}) : super(key: key);

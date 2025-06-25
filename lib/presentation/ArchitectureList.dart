@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_touch_ripple/flutter_touch_ripple.dart';
 import 'package:go_router/go_router.dart';
-
-import '../Components/CutomAppBar.dart';
 import '../bloc/architect_list/architect_cubit.dart';
 import '../bloc/architect_list/architect_state.dart';
 import '../utils/color_constants.dart';
+import 'Components/CutomAppBar.dart';
 
 class SelectArchitecture extends StatefulWidget {
   final String industryType;

@@ -2,7 +2,7 @@ import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-import '../Components/CustomAppButton.dart';
+import 'Components/CustomAppButton.dart';
 
 class PostYourRequiremntSuccessfully extends StatefulWidget {
   const PostYourRequiremntSuccessfully({super.key});

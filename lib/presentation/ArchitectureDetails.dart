@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../Components/CustomAppButton.dart';
-import '../Components/CutomAppBar.dart';
-import '../Components/debugPrint.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_cubit.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_state.dart';
+import 'Components/CutomAppBar.dart';
+import 'Components/debugPrint.dart';
 
 class ArchitectureDetails extends StatefulWidget {
   final int id;

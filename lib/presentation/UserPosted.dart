@@ -1,10 +1,8 @@
-import 'package:architect/Components/CutomAppBar.dart';
 import 'package:architect/bloc/user_posts/user_posts_state.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../bloc/user_posts/user_posts_cubit.dart';
 
 class UserPosted extends StatefulWidget {

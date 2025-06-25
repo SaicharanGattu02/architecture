@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/color_constants.dart';
+import '../../utils/color_constants.dart';
 
 class CustomSnackBar {
   static void show(BuildContext context, String message) {

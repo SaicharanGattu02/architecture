@@ -1,12 +1,11 @@
-import 'package:architect/Components/CutomAppBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../bloc/ArchitechProfile/architech_profile_cubit.dart';
 import '../bloc/ArchitechProfile/architech_profile_state.dart';
 import '../services/AuthService.dart';
+import 'Components/CutomAppBar.dart';
 
 class ArchitechProfile extends StatefulWidget {
   const ArchitechProfile({super.key});

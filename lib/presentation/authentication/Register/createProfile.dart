@@ -8,15 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import '../../../bloc/state/state_cubit.dart';
+import '../../../bloc/state/state_states.dart';
+import '../../../utils/ShakeWidget.dart';
+import '../../../utils/color_constants.dart';
 import '../../Components/CustomAppButton.dart';
 import '../../Components/CustomSnackBar.dart';
 import '../../Components/CutomAppBar.dart';
-import '../../Components/ShakeWidget.dart';
-import 'dart:io';
-
-import '../../bloc/state/state_cubit.dart';
-import '../../bloc/state/state_states.dart';
-import '../../utils/color_constants.dart';
 
 class CompanyDetails extends StatefulWidget {
   const CompanyDetails({Key? key}) : super(key: key);
@@ -26,7 +25,6 @@ class CompanyDetails extends StatefulWidget {
 }
 
 class _CompanyDetailsState extends State<CompanyDetails> {
-
   @override
   void initState() {
     context.read<StateCubit>().getState();

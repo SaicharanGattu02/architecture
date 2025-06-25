@@ -2,11 +2,10 @@ import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../bloc/SubscriptionPlans/subscription_cubit.dart';
+import '../../../bloc/SubscriptionPlans/subscription_state.dart';
 import '../../Components/CustomAppButton.dart';
 import '../../Components/CutomAppBar.dart';
-import '../../bloc/SubscriptionPlans/subscription_cubit.dart';
-import '../../bloc/SubscriptionPlans/subscription_state.dart';
 
 class Subscription extends StatefulWidget {
   final int id;

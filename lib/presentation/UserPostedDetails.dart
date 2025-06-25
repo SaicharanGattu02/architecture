@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../Components/CutomAppBar.dart';
 import '../utils/color_constants.dart';
+import 'Components/CutomAppBar.dart';
 
 class UserPostedDetails extends StatefulWidget {
   const UserPostedDetails({super.key});

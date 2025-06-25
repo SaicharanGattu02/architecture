@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../Components/CustomAppButton.dart';
-import '../Components/CutomAppBar.dart';
+import 'Components/CustomAppButton.dart';
+import 'Components/CutomAppBar.dart';
 
 enum PropertyType { residential, commercial, industrial }
 
@@ -97,12 +97,12 @@ class _SelectTypeScreenState extends State<SelectType> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: CustomAppButton1(
                   text: 'Find Architects',
-
-                    onPlusTap: () {
-                      final industryType = _selectedType!.name;
-
-                      context.push('/select_architecture?industryType=$industryType&location=$widget.city');
-                    },
+                  onPlusTap: () {
+                    final industryType = _selectedType!.name;
+                    context.push(
+                      '/select_architecture?industryType=$industryType&location=$widget.city',
+                    );
+                  },
                 ),
               ),
             )
