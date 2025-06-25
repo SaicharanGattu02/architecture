@@ -5,7 +5,7 @@ import '../../services/remote_data_source.dart';
 
 abstract class ArchitechAditionalInfoRepository {
   Future<SuccessModel?> createArchitechAditionalInfo(Map<String,dynamic> data);
-  Future<SuccessModel?> createArchitechAditionalInfoUpdate(Map<String,dynamic> data);
+  Future<SuccessModel?> ArchitechAditionalInfoUpdate(Map<String,dynamic> data);
 }
 
 class ArchitechAditionalInfoImpl implements ArchitechAditionalInfoRepository {
@@ -15,7 +15,7 @@ class ArchitechAditionalInfoImpl implements ArchitechAditionalInfoRepository {
   Future<SuccessModel?> createArchitechAditionalInfo(Map<String,dynamic> data) async {
     return await remoteDataSource.ArchitechCompanyAdditionalInfoPost(data);
   }
-  Future<SuccessModel?> createArchitechAditionalInfoUpdate(Map<String,dynamic> data) async {
+  Future<SuccessModel?> ArchitechAditionalInfoUpdate(Map<String,dynamic> data) async {
     return await remoteDataSource.ArchitechCompanyAdditionalInfoUpdate(data);
   }
 

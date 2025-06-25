@@ -30,7 +30,8 @@ class Data {
   String? establishedYear;
   String? state;
   String? location;
-  Null? logo;
+  String? logo;
+  String? coverPhoto;
   bool? emailVerified;
   String? aboutCompany;
   String? industryType;
@@ -39,7 +40,7 @@ class Data {
   String? contactNumber;
   String? whatsappNumber;
   List<String>? specializations;
-  String? portfolio;
+  List<String>? portfolio;
   String? createdAt;
   String? updatedAt;
 
@@ -52,6 +53,7 @@ class Data {
         this.state,
         this.location,
         this.logo,
+        this.coverPhoto,
         this.emailVerified,
         this.aboutCompany,
         this.industryType,
@@ -73,6 +75,7 @@ class Data {
     state = json['state'];
     location = json['location'];
     logo = json['logo'];
+    coverPhoto = json['cover_photo'];
     emailVerified = json['email_verified'];
     aboutCompany = json['about_company'];
     industryType = json['industry_type'];
@@ -81,7 +84,7 @@ class Data {
     contactNumber = json['contact_number'];
     whatsappNumber = json['whatsapp_number'];
     specializations = json['specializations'].cast<String>();
-    portfolio = json['portfolio'];
+    portfolio = json['portfolio'].cast<String>();
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -96,6 +99,7 @@ class Data {
     data['state'] = this.state;
     data['location'] = this.location;
     data['logo'] = this.logo;
+    data['cover_photo'] = this.coverPhoto;
     data['email_verified'] = this.emailVerified;
     data['about_company'] = this.aboutCompany;
     data['industry_type'] = this.industryType;

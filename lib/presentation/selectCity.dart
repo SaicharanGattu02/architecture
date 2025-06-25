@@ -57,8 +57,8 @@ class _SelectCityState extends State<SelectCity> {
                     ),
                     onTap: () {
                       final selectedCity = city.name;
-                      print('selectedCity:${selectedCity}');
-                      context.push('/select_type?city=${selectedCity}');
+                      print('selectedCity: $selectedCity');
+                      context.push("/select_type?city=${selectedCity}");
                     },
                   ),
                 );
@@ -76,3 +76,4 @@ class _SelectCityState extends State<SelectCity> {
     );
   }
 }
+

@@ -34,7 +34,7 @@ class ArchitechAditionalInfoCubit extends Cubit<ArchitechAditionalInfoState> {
     emit(ArchitechAditionalInfoUpdateLoading());
     try {
       final res = await architechAditionalInfoRepository
-          .createArchitechAditionalInfo(data);
+          .ArchitechAditionalInfoUpdate(data);
       if (res != null) {
         if (res.status == true) {
           emit(ArchitechAditionalInfoUpdateSucess(successModel: res));

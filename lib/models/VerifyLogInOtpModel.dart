@@ -45,7 +45,7 @@ class Data {
   String? establishedYear;
   String? state;
   String? location;
-  Null? logo;
+  String? logo;
   bool? emailVerified;
   String? aboutCompany;
   String? industryType;

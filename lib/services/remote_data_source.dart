@@ -29,6 +29,7 @@ abstract class RemoteDataSource {
   Future<Activesubscriptionmodel?> activesubplans(int Id);
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createProfile(Map<String, dynamic> data);
+  Future<SuccessModel?> updateCompanyProfile(Map<String, dynamic> data);
   Future<VerifyLogInOtpModel?> verifyLoginOtp(Map<String, dynamic> data);
   Future<VerifyOtpModel?> companyVerifyOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createPost(Map<String, dynamic> data);
@@ -39,8 +40,8 @@ abstract class RemoteDataSource {
     Map<String, dynamic> data,
   );
   Future<SuccessModel?> ArchitechCompanyAdditionalInfoUpdate(
-      Map<String, dynamic> data,
-      );
+    Map<String, dynamic> data,
+  );
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -249,6 +250,26 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<SuccessModel?> updateCompanyProfile(Map<String, dynamic> data) async {
+    try {
+      var formdata = await buildFormData(data);
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.update_company_profile}",
+        data: formdata,
+      );
+      if (res.statusCode == 200) {
+        debugPrint('updateCompanyProfile:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error updateCompanyProfile::$e');
+      return null;
+    }
+  }
+
+  @override
   Future<SuccessModel?> createPost(Map<String, dynamic> data) async {
     try {
       Response res = await ApiClient.post(
@@ -288,6 +309,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       return null;
     }
   }
+
   @override
   Future<SuccessModel?> ArchitechCompanyAdditionalInfoUpdate(
     Map<String, dynamic> data,

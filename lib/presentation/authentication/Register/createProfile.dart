@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../../../bloc/ArchitechProfile/architech_profile_cubit.dart';
+import '../../../bloc/ArchitechProfile/architech_profile_state.dart';
 import '../../../bloc/state/state_cubit.dart';
 import '../../../bloc/state/state_states.dart';
 import '../../../utils/ShakeWidget.dart';
@@ -18,7 +20,8 @@ import '../../Components/CustomSnackBar.dart';
 import '../../Components/CutomAppBar.dart';
 
 class CompanyDetails extends StatefulWidget {
-  const CompanyDetails({Key? key}) : super(key: key);
+  final int? id;
+  const CompanyDetails({Key? key, this.id}) : super(key: key);
 
   @override
   _CompanyDetailsState createState() => _CompanyDetailsState();
@@ -27,33 +30,41 @@ class CompanyDetails extends StatefulWidget {
 class _CompanyDetailsState extends State<CompanyDetails> {
   @override
   void initState() {
-    context.read<StateCubit>().getState();
     super.initState();
+    // Fetch states
+    context.read<StateCubit>().getState();
+
+    // Only fetch profile if id is not null and not 0
+    final int? companyId = widget.id;
+    if (companyId != null && companyId != 0) {
+      context.read<ArchitechProfileCubit>().getArchitechProfile();
+    }
   }
 
   final _companyController = TextEditingController();
   final _contactPersonController = TextEditingController();
   final _locationController = TextEditingController();
-  final _addressController = TextEditingController();
+
   final _emailController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   String? _selectedYear;
   File? _logoImage;
+  File? _coverImage;
   bool _showCompanyError = false;
   bool _showContactPersonError = false;
-
   bool _showEmailError = false;
   bool _showYearError = false;
   bool _showLogoError = false;
   String? _selectState;
   String? _selectCity;
+  bool _isInitialized = false;
 
   @override
   void dispose() {
     _companyController.dispose();
     _contactPersonController.dispose();
     _locationController.dispose();
-    _addressController.dispose();
+
     _emailController.dispose();
     super.dispose();
   }
@@ -61,8 +72,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   bool _validateCompany() => _companyController.text.trim().isNotEmpty;
   bool _validateContactPerson() =>
       _contactPersonController.text.trim().isNotEmpty;
-  bool _validateLocation() => _locationController.text.trim().isNotEmpty;
-  bool _validateAddress() => _addressController.text.trim().isNotEmpty;
+  bool _validateLocation() => _selectCity != null && _selectCity!.isNotEmpty;
+
   bool _validateEmail() => RegExp(
     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
   ).hasMatch(_emailController.text.trim());
@@ -81,30 +92,34 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     return _validateCompany() &&
         _validateContactPerson() &&
         _validateLocation() &&
-        _validateAddress() &&
+
         _validateEmail() &&
         _validateYear() &&
         _validateLogo();
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, {bool isLogo = true}) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
         setState(() {
-          _logoImage = File(pickedFile.path);
-          _showLogoError = !_validateLogo();
+          if (isLogo) {
+            _logoImage = File(pickedFile.path);
+            _showLogoError = !_validateLogo();
+          } else {
+            _coverImage = File(pickedFile.path);
+          }
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking image: $e')),
+      );
     }
-    context.pop(context);
+    context.pop();
   }
 
-  void _showImageSourceSelection() {
+  void _showImageSourceSelection({bool isLogo = true}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
@@ -118,10 +133,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 24,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -135,10 +147,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                     ),
                     const SizedBox(height: 20),
                     ListTile(
-                      leading: const Icon(
-                        Icons.photo_library,
-                        color: Colors.white,
-                      ),
+                      leading: const Icon(Icons.photo_library, color: Colors.white),
                       title: const Text(
                         'Choose from Gallery',
                         style: TextStyle(
@@ -147,13 +156,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onTap: () => _pickImage(ImageSource.gallery),
+                      onTap: () => _pickImage(ImageSource.gallery, isLogo: isLogo),
                     ),
                     ListTile(
-                      leading: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                      ),
+                      leading: const Icon(Icons.camera_alt, color: Colors.white),
                       title: const Text(
                         'Take Photo',
                         style: TextStyle(
@@ -162,7 +168,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onTap: () => _pickImage(ImageSource.camera),
+                      onTap: () => _pickImage(ImageSource.camera, isLogo: isLogo),
                     ),
                   ],
                 ),
@@ -216,16 +222,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             fontFamily: "Inter",
           ),
           decoration: InputDecoration(hintText: hint),
-          onTap: () {
-            setState(() {
-              validate();
-            });
-          },
-          onChanged: (_) {
-            setState(() {
-              validate();
-            });
-          },
+          onTap: () => setState(() => validate()),
+          onChanged: (_) => setState(() => validate()),
         ),
         if (showError)
           Padding(
@@ -258,495 +256,63 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         builder: (context, stateState) {
           return BlocBuilder<CityCubit, CityStates>(
             builder: (context, cityState) {
-              if (stateState is StateLoading || cityState is CityLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                );
-              }
-              return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 20,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '1 of 4',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    LinearProgressIndicator(
-                      minHeight: 8,
-                      value: 0.25,
-                      backgroundColor: const Color(0xff4D4D4D),
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      label: 'Company Name',
-                      hint: 'Enter company name',
-                      controller: _companyController,
-                      showError: _showCompanyError,
-                      errorMessage: 'Please enter a company name',
-                      validate: () => _showCompanyError = !_validateCompany(),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      label: 'Contact Person Name',
-                      hint: 'Enter contact person name',
-                      controller: _contactPersonController,
-                      showError: _showContactPersonError,
-                      errorMessage: 'Please enter a contact person name',
-                      validate: () =>
-                          _showContactPersonError = !_validateContactPerson(),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      label: 'Contact Email',
-                      hint: 'Enter company email',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      showError: _showEmailError,
-                      errorMessage: 'Please enter a valid email',
-                      validate: () => _showEmailError = !_validateEmail(),
-                    ),
-                    const SizedBox(height: 16),
-                    BlocBuilder<StateCubit, StateStates>(
-                      builder: (context, state) {
-                        if (state is StateLoading) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          );
-                        } else if (state is StateLoaded) {
-                          return DropdownButtonHideUnderline(
-                            child: DropdownButton2<String>(
-                              isExpanded: true,
-                              hint: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'Select State',
-                                      style: TextStyle(
-                                        fontFamily: 'roboto_serif',
-                                        fontSize: 16,
-                                        color: Colors.grey.shade500,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              items: state.statesList.map((e) {
-                                return DropdownMenuItem<String>(
-                                  value: e.name,
-                                  child: Text(
-                                    e.name ?? "",
-                                    style: TextStyle(
-                                      fontFamily: 'roboto_serif',
-                                      fontSize: 15,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              value: _selectState,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _selectState = value;
-                                  context.read<CityCubit>().getCity(
-                                    _selectState ?? "",
-                                  );
-                                });
-                              },
-                              buttonStyleData: ButtonStyleData(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: formfieldColor,
-                                    width: 0.5,
-                                  ),
-                                  color: formfieldColor,
-                                ),
-                              ),
-                              iconStyleData: IconStyleData(
-                                icon: Icon(Icons.keyboard_arrow_down_rounded),
-                                iconSize: 26,
-                                iconEnabledColor: Colors.white70,
-                              ),
-                              dropdownStyleData: DropdownStyleData(
-                                offset: Offset(0, -6),
-                                maxHeight: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: formfieldColor,
-                                ),
-                              ),
-                              menuItemStyleData: MenuItemStyleData(
-                                height: 45,
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                overlayColor:
-                                    MaterialStateProperty.resolveWith<Color?>((
-                                      Set<MaterialState> states,
-                                    ) {
-                                      if (states.contains(
-                                        MaterialState.hovered,
-                                      )) {
-                                        return Colors.white.withOpacity(0.12);
-                                      }
-                                      if (states.contains(
-                                        MaterialState.pressed,
-                                      )) {
-                                        return Colors.white.withOpacity(0.2);
-                                      }
-                                      return null;
-                                    }),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Center(
-                            child: Text(
-                              'Failed to load state',
-                              style: TextStyle(color: Colors.redAccent),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    if (_selectState != null && _selectState!.isNotEmpty) ...[
-                      BlocBuilder<CityCubit, CityStates>(
-                        builder: (context, state) {
-                          if (state is CityLoading) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            );
-                          } else if (state is CityLoaded) {
-                            return DropdownButtonHideUnderline(
-                              child: DropdownButton2<String>(
-                                isExpanded: true,
-                                hint: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        'Select City',
-                                        style: TextStyle(
-                                          fontFamily: 'roboto_serif',
-                                          fontSize: 16,
-                                          color: Colors.grey.shade500,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                items: state.cityList.map((e) {
-                                  return DropdownMenuItem<String>(
-                                    value: e.name,
-                                    child: Text(
-                                      e.name ?? "",
-                                      style: TextStyle(
-                                        fontFamily: 'roboto_serif',
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                                value: _selectCity,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _selectCity = value;
-                                  });
-                                },
-                                buttonStyleData: ButtonStyleData(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: formfieldColor,
-                                      width: 0.5,
-                                    ),
-                                    color: formfieldColor,
-                                  ),
-                                ),
-                                iconStyleData: IconStyleData(
-                                  icon: Icon(Icons.keyboard_arrow_down_rounded),
-                                  iconSize: 26,
-                                  iconEnabledColor: Colors.white70,
-                                ),
-                                dropdownStyleData: DropdownStyleData(
-                                  offset: Offset(0, -6),
-                                  maxHeight: 200,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: formfieldColor,
-                                  ),
-                                ),
-                                menuItemStyleData: MenuItemStyleData(
-                                  height: 45,
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  overlayColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
-                                        (Set<MaterialState> states) {
-                                          if (states.contains(
-                                            MaterialState.hovered,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.12,
-                                            );
-                                          }
-                                          if (states.contains(
-                                            MaterialState.pressed,
-                                          )) {
-                                            return Colors.white.withOpacity(
-                                              0.2,
-                                            );
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return Center(
-                              child: Text(
-                                'Failed to load city',
-                                style: TextStyle(color: Colors.redAccent),
-                              ),
-                            );
+              return BlocBuilder<ArchitechProfileCubit, ArchitechProfileState>(
+                builder: (context, profileState) {
+                  // Show loading indicator if states or cities are loading
+                  if (stateState is StateLoading || cityState is CityLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
+
+                  // For new profile creation (id == null or id == 0)
+                  if (widget.id == null || widget.id == 0) {
+                    return _buildForm(context, stateState, cityState);
+                  }
+
+                  // For profile editing (id != null and id != 0)
+                  if (profileState is ArchitechProfileLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  } else if (profileState is ArchitechProfileLoaded) {
+                    if (!_isInitialized) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        setState(() {
+                          _isInitialized = true;
+                          final profile = profileState.architechProfileModel.data;
+                          _companyController.text = profile?.companyName ?? "";
+                          _contactPersonController.text = profile?.contactPersonName ?? "";
+                          _emailController.text = profile?.companyEmail ?? "";
+                          _selectState = profile?.state ?? "";
+                          _selectCity = profile?.location ?? "";
+                          _selectedYear = profile?.establishedYear ?? "";
+
+
+                          if (_selectState != null && _selectState!.isNotEmpty) {
+                            context.read<CityCubit>().getCity(_selectState!);
                           }
-                        },
+                        });
+                      });
+                    }
+                    return _buildForm(context, stateState, cityState);
+                  } else if (profileState is ArchitechProfileError) {
+                    return Center(
+                      child: Text(
+                        profileState.message,
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 16,
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                    ],
+                    );
+                  }
 
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Established Year',
-                          style: TextStyle(
-                            color: Color(0xffD8D8D8),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        DropdownButtonFormField2<String>(
-                          value: _selectedYear,
-                          isExpanded: true,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            filled: true,
-                            fillColor: const Color(0xff363636),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 14,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          hint: const Text(
-                            'Select year',
-                            style: TextStyle(color: Colors.white38),
-                          ),
-                          items:
-                              List.generate(
-                                100,
-                                (index) =>
-                                    (DateTime.now().year - index).toString(),
-                              ).map((year) {
-                                return DropdownMenuItem<String>(
-                                  value: year,
-                                  child: Text(
-                                    year,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                );
-                              }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedYear = value;
-                              _showYearError = !_validateYear();
-                            });
-                          },
-                          dropdownStyleData: DropdownStyleData(
-                            useSafeArea: true,
-                            offset: const Offset(0, -8),
-                            maxHeight: 200,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff363636),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: Colors.white,
-                            ),
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            overlayColor: MaterialStatePropertyAll(
-                              Colors.transparent,
-                            ),
-                          ),
-                        ),
-
-                        if (_showYearError)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: ShakeWidget(
-                              key: const Key('year_error'),
-                              duration: const Duration(milliseconds: 700),
-                              child: const Text(
-                                'Please select a year',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Logo',
-                          style: TextStyle(
-                            color: Color(0xFFD8D8D8),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Upload Container
-                        GestureDetector(
-                          onTap: _showImageSourceSelection,
-                          child: Container(
-                            width: double.infinity,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2E2E2E),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _logoImage != null
-                                    ? Colors.green
-                                    : Colors.grey.withOpacity(0.4),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: _logoImage == null
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.upload_file_rounded,
-                                        color: Colors.white70,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Text(
-                                        'Tap to Upload Logo',
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Image.file(
-                                          _logoImage!,
-                                          width: double.infinity,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 8,
-                                        right: 8,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _logoImage = null;
-                                              _showLogoError =
-                                                  false; // Optional reset
-                                            });
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.black54,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        ),
-                        if (_showLogoError)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: ShakeWidget(
-                              key: const Key('logo_error'),
-                              duration: const Duration(milliseconds: 700),
-                              child: const Text(
-                                'Please upload a logo',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
+                  // Default case for profile editing before data is loaded
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                },
               );
             },
           );
@@ -756,75 +322,522 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
-            spacing: 12,
             mainAxisSize: MainAxisSize.min,
             children: [
               BlocConsumer<CreateProfileCubit, CreateProfileState>(
                 listener: (context, state) {
                   if (state is CreateProfileSucess) {
                     context.pushReplacement(
-                      "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
+                      "/otp?mailId=${_emailController.text.trim()}&type=ProfileVerify",
                     );
+                  } else if (state is UpdateCompanyProfileSucess) {
+                    context.push('/architect_profile_setup?id=${widget.id}');
                   } else if (state is CreateProfileError) {
-                    CustomSnackBar.show(context, "${state.message}");
+                    CustomSnackBar.show(context, state.message);
                   }
                 },
                 builder: (context, state) {
                   return CustomAppButton1(
                     isLoading: state is CreateProfileLoading,
-                    text: 'Get OTP',
+                    text: widget.id != null && widget.id != 0 ? 'Next' : 'Get OTP',
                     onPlusTap: () {
-                      if (!_validateForm()) {
+                      if (_validateForm()) {
                         final Map<String, dynamic> data = {
                           "company_name": _companyController.text.trim(),
                           "company_email": _emailController.text.trim(),
-                          "contact_person_name": _contactPersonController.text
-                              .trim(),
+                          "contact_person_name": _contactPersonController.text.trim(),
                           "established_year": _selectedYear,
                           "state": _selectState,
-
                           "location": _selectCity,
+
                           "logo": _logoImage,
+                          "cover_photo": _coverImage,
                         };
-                        context.read<CreateProfileCubit>().createProfileApi(
-                          data,
-                        );
+                        if (widget.id != null && widget.id != 0) {
+                          data['company_id'] = widget.id;
+                          context.read<CreateProfileCubit>().updateComapnyProfileApi(data);
+                        } else {
+                          context.read<CreateProfileCubit>().createProfileApi(data);
+                        }
                       }
                     },
                   );
                 },
               ),
-              GestureDetector(
-                onTap: () {
-                  context.push('/login');
-                },
-                child: RichText(
-                  text: TextSpan(
-                    text: "Already have an account? ",
-                    style: const TextStyle(
-                      color: Color(0xffADADAD),
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Login Here",
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Color(0xffADADAD),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
+              if (widget.id == null || widget.id == 0) ...[
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () => context.push('/login'),
+                  child: RichText(
+                    text: const TextSpan(
+                      text: "Already have an account? ",
+                      style: TextStyle(
+                        color: Color(0xffADADAD),
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
                       ),
-                    ],
+                      children: [
+                        TextSpan(
+                          text: "Login Here",
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Color(0xffADADAD),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildForm(BuildContext context, StateStates stateState, CityStates cityState) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.id == null || widget.id == 0) ...[
+            const Text(
+              '1 of 4',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 12),
+            LinearProgressIndicator(
+              minHeight: 8,
+              value: 0.25,
+              backgroundColor: const Color(0xff4D4D4D),
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            const SizedBox(height: 16),
+          ],
+          _buildTextField(
+            label: 'Company Name',
+            hint: 'Enter company name',
+            controller: _companyController,
+            showError: _showCompanyError,
+            errorMessage: 'Please enter a company name',
+            validate: () => _showCompanyError = !_validateCompany(),
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            label: 'Contact Person Name',
+            hint: 'Enter contact person name',
+            controller: _contactPersonController,
+            showError: _showContactPersonError,
+            errorMessage: 'Please enter a contact person name',
+            validate: () => _showContactPersonError = !_validateContactPerson(),
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            label: 'Contact Email',
+            hint: 'Enter company email',
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            showError: _showEmailError,
+            errorMessage: 'Please enter a valid email',
+            validate: () => _showEmailError = !_validateEmail(),
+          ),
+
+          const SizedBox(height: 16),
+          _buildStateDropdown(stateState),
+          const SizedBox(height: 16),
+          if (_selectState != null && _selectState!.isNotEmpty)
+            _buildCityDropdown(cityState),
+          const SizedBox(height: 16),
+          _buildYearDropdown(),
+          const SizedBox(height: 16),
+          _buildImagePicker(
+            label: 'Logo',
+            image: _logoImage,
+            showError: _showLogoError,
+            errorMessage: 'Please upload a logo',
+            onTap: () => _showImageSourceSelection(isLogo: true),
+            onRemove: () => setState(() {
+              _logoImage = null;
+              _showLogoError = false;
+            }),
+          ),
+          const SizedBox(height: 16),
+          _buildImagePicker(
+            label: 'Cover Photo',
+            image: _coverImage,
+            showError: false,
+            errorMessage: 'Please upload a cover photo',
+            onTap: () => _showImageSourceSelection(isLogo: false),
+            onRemove: () => setState(() {
+              _coverImage = null;
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStateDropdown(StateStates stateState) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select State',
+          style: TextStyle(
+            color: Color(0xffD8D8D8),
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (stateState is StateLoaded)
+          DropdownButtonHideUnderline(
+            child: DropdownButton2<String>(
+              isExpanded: true,
+              hint: const Text(
+                'Select State',
+                style: TextStyle(
+                  fontFamily: 'roboto_serif',
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              items: stateState.statesList.map((e) {
+                return DropdownMenuItem<String>(
+                  value: e.name,
+                  child: Text(
+                    e.name ?? "",
+                    style: const TextStyle(
+                      fontFamily: 'roboto_serif',
+                      fontSize: 15,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }).toList(),
+              value: _selectState,
+              onChanged: (String? value) {
+                setState(() {
+                  _selectState = value;
+                  _selectCity = null; // Reset city when state changes
+                  if (_selectState != null && _selectState!.isNotEmpty) {
+                    context.read<CityCubit>().getCity(_selectState!);
+                  }
+                });
+              },
+              buttonStyleData: ButtonStyleData(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: formfieldColor, width: 0.5),
+                  color: formfieldColor,
+                ),
+              ),
+              iconStyleData: const IconStyleData(
+                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                iconSize: 26,
+                iconEnabledColor: Colors.white70,
+              ),
+              dropdownStyleData: DropdownStyleData(
+                offset: const Offset(0, -6),
+                maxHeight: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: formfieldColor,
+                ),
+              ),
+              menuItemStyleData: const MenuItemStyleData(
+                height: 45,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+              ),
+            ),
+          )
+        else
+          const Center(
+            child: Text(
+              'Failed to load states',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildCityDropdown(CityStates cityState) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Select City',
+          style: TextStyle(
+            color: Color(0xffD8D8D8),
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (cityState is CityLoaded)
+          DropdownButtonHideUnderline(
+            child: DropdownButton2<String>(
+              isExpanded: true,
+              hint: const Text(
+                'Select City',
+                style: TextStyle(
+                  fontFamily: 'roboto_serif',
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              items: cityState.cityList.map((e) {
+                return DropdownMenuItem<String>(
+                  value: e.name,
+                  child: Text(
+                    e.name ?? "",
+                    style: const TextStyle(
+                      fontFamily: 'roboto_serif',
+                      fontSize: 15,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }).toList(),
+              value: _selectCity,
+              onChanged: (String? value) {
+                setState(() {
+                  _selectCity = value;
+                });
+              },
+              buttonStyleData: ButtonStyleData(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: formfieldColor, width: 0.5),
+                  color: formfieldColor,
+                ),
+              ),
+              iconStyleData: const IconStyleData(
+                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                iconSize: 26,
+                iconEnabledColor: Colors.white70,
+              ),
+              dropdownStyleData: DropdownStyleData(
+                offset: const Offset(0, -6),
+                maxHeight: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: formfieldColor,
+                ),
+              ),
+              menuItemStyleData: const MenuItemStyleData(
+                height: 45,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+              ),
+            ),
+          )
+        else
+          const Center(
+            child: Text(
+              'Failed to load cities',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildYearDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Established Year',
+          style: TextStyle(
+            color: Color(0xffD8D8D8),
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        DropdownButtonFormField2<String>(
+          value: _selectedYear,
+          isExpanded: true,
+          decoration: InputDecoration(
+            isDense: true,
+            filled: true,
+            fillColor: const Color(0xff363636),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          hint: const Text('Select year', style: TextStyle(color: Colors.white38)),
+          items: List.generate(100, (index) => (DateTime.now().year - index).toString())
+              .map((year) => DropdownMenuItem<String>(
+            value: year,
+            child: Text(year, style: const TextStyle(color: Colors.white)),
+          ))
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedYear = value;
+              _showYearError = !_validateYear();
+            });
+          },
+          dropdownStyleData: DropdownStyleData(
+            useSafeArea: true,
+            offset: const Offset(0, -8),
+            maxHeight: 200,
+            decoration: BoxDecoration(
+              color: const Color(0xff363636),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          iconStyleData: const IconStyleData(
+            icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+        ),
+        if (_showYearError)
+          Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: ShakeWidget(
+              key: const Key('year_error'),
+              duration: const Duration(milliseconds: 700),
+              child: const Text(
+                'Please select a year',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildImagePicker({
+    required String label,
+    required File? image,
+    required bool showError,
+    required String errorMessage,
+    required VoidCallback onTap,
+    required VoidCallback onRemove,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFFD8D8D8),
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: double.infinity,
+            height: 120,
+            decoration: BoxDecoration(
+              color: const Color(0xFF2E2E2E),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: image != null ? Colors.green : Colors.grey.withOpacity(0.4),
+                width: 1.5,
+              ),
+            ),
+            child: image == null
+                ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.upload_file_rounded, color: Colors.white70),
+                SizedBox(width: 10),
+                Text(
+                  'Tap to Upload',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            )
+                : Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    image,
+                    width: double.infinity,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: GestureDetector(
+                    onTap: onRemove,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (showError)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: ShakeWidget(
+              key: Key('${label.toLowerCase()}_error'),
+              duration: const Duration(milliseconds: 700),
+              child: Text(
+                errorMessage,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

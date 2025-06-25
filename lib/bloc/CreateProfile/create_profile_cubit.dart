@@ -26,6 +26,24 @@ class CreateProfileCubit extends Cubit<CreateProfileState> {
       emit(CreateProfileError(message: "An error occurred: $e"));
     }
   }
+  Future<void> updateComapnyProfileApi(Map<String, dynamic> data) async {
+    emit(CreateProfileLoading());
+    try {
+      final res = await createProfileRepository.updateCompanyProfile(data);
+      if (res != null) {
+        if(res.status==true){
+          emit(UpdateCompanyProfileSucess(successModel: res));
+        }else{
+          emit(CreateProfileError(message: "${res.message}"));
+        }
+
+      } else {
+        emit(CreateProfileError(message: "No data available"));
+      }
+    } catch (e) {
+      emit(CreateProfileError(message: "An error occurred: $e"));
+    }
+  }
   Future<void> createProfileVerifyOtpApi(Map<String, dynamic> data) async {
     emit(CreateProfileVerifyOtpLoading());
     try {

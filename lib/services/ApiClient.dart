@@ -21,7 +21,6 @@ class ApiClient {
     '/api/login-otp',
     '/api/company/register',
     '/api/refreshtoken',
-    '/api/get-architect-by-id',
     '/api/create-post',
     '/api/company/verify-otp',
     '/api/verify-login-otp',
@@ -60,6 +59,10 @@ class ApiClient {
             final isUnauthenticated = _unauthenticatedEndpoints.any(
               (endpoint) => options.uri.path.startsWith(endpoint),
             );
+
+            // final isUnauthenticated = _unauthenticatedEndpoints.any(
+            //       (endpoint) => options.uri.path == endpoint,
+            // );
 
             if (isUnauthenticated) {
               logger.d(

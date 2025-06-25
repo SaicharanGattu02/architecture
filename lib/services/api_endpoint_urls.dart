@@ -20,10 +20,11 @@ class APIEndpointUrls {
   static const String verify_company_otp = '${apiUrl}company/verify-otp';
   static const String verify_login_otp = '${apiUrl}verify-login-otp';
   static const String create_profile = '${apiUrl}company/register';
+  static const String update_company_profile = '${apiUrl}company/update-profile';
   static const String create_post = '${apiUrl}create-post';
   static const String user_posts = '${apiUrl}customer-posts';
   static const String architech_profile = '${apiUrl}getProfile';
   static const String architech_profile_details = '${apiUrl}get-architect-by-id';
   static const String architech_company_additional_info = '${apiUrl}company/additional-info';
-  static const String architech_company_additional_info_update = '${apiUrl}additional-info-update';
+  static const String architech_company_additional_info_update = '${apiUrl}company/update-additional-info';
 }

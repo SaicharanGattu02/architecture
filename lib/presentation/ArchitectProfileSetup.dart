@@ -32,8 +32,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     super.initState();
 
     final int? companyId = widget.id;
-    print("companyId:${companyId}");
-
     if (companyId != null && companyId != 0) {
       context.read<ArchitechProfileDetailsCubit>().getArchitechProfileDetails(
         companyId,
@@ -233,14 +231,13 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     setState(() {}); // Trigger UI update to show errors
 
     if (isValid) {
-      print("Form is valid!");
+
       final selectedSpecializations = <String>[];
       for (int i = 0; i < specializations.length; i++) {
         if (selectedSpecs[i]) {
           selectedSpecializations.add(specializations[i]);
         }
       }
-
       if (selectedSpecializations.isEmpty) {
         print("Error: No specializations selected despite validation");
         setState(() {
@@ -256,20 +253,18 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         'number_of_projects': _projectsController.text.trim(),
         'contact_number': _contactController.text.trim(),
         'whatsapp_number': _whatsappController.text.trim(),
-        'specializations': selectedSpecializations, // List<String>
+        'specializations': selectedSpecializations,
         'portfolio': _portfolioFiles,
         'document': _documentFile,
         'industry_type': _selectedIndustryType!.toLowerCase(),
       };
       if (widget.id != null && widget.id.toString().trim().isNotEmpty) {
+        print('hiiii');
         data['company_id'] = widget.id;
-        context
-            .read<ArchitechAditionalInfoCubit>()
-            .createArchitechAditionalInfoUpdate(data);
+        context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfoUpdate(data);
       } else {
-        context
-            .read<ArchitechAditionalInfoCubit>()
-            .createArchitechAditionalInfo(data);
+        print('ntg');
+        context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfo(data);
       }
     } else {
       print("Form validation failed");
@@ -979,9 +974,9 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
               >(
                 listener: (context, state) {
                   if (state is ArchitechAditionalInfoSucess) {
-                    context.pushReplacement('/profile_created');
+                    context.go('/profile_created');
                   } else if (state is ArchitechAditionalInfoUpdateSucess) {
-                    context.pop();
+                    context.go('/architech_profile');
                   } else if (state is ArchitechAditionalInfoError) {
                     CustomSnackBar.show(context, state.message);
                   }

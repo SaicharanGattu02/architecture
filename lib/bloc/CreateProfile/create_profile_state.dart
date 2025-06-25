@@ -17,6 +17,10 @@ class CreateProfileSucess extends CreateProfileState {
   final SuccessModel successModel;
   CreateProfileSucess({required this.successModel});
 }
+class UpdateCompanyProfileSucess extends CreateProfileState {
+  final SuccessModel successModel;
+  UpdateCompanyProfileSucess({required this.successModel});
+}
 class CreateProfileVerifyOTPSucess extends CreateProfileState {
   final VerifyOtpModel successModel;
   CreateProfileVerifyOTPSucess({required this.successModel});

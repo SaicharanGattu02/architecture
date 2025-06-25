@@ -89,8 +89,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/company_details',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(CompanyDetails(), state),
+      pageBuilder: (context, state) {
+        final idString = state.uri.queryParameters['id'];
+        final id = int.tryParse(idString ?? '') ?? 0;
+        return buildSlideTransitionPage(CompanyDetails(id: id,), state);
+      },
     ),
     GoRoute(
       path: '/payment',

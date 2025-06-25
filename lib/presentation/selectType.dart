@@ -17,6 +17,7 @@ class SelectType extends StatefulWidget {
 }
 
 class _SelectTypeScreenState extends State<SelectType> {
+
   PropertyType? _selectedType;
 
   Widget _buildTypeCard(PropertyType type, IconData icon, String label) {
@@ -100,7 +101,7 @@ class _SelectTypeScreenState extends State<SelectType> {
                   onPlusTap: () {
                     final industryType = _selectedType!.name;
                     context.push(
-                      '/select_architecture?industryType=$industryType&location=$widget.city',
+                      '/select_architecture?industryType=$industryType&location=${widget.city}',
                     );
                   },
                 ),
