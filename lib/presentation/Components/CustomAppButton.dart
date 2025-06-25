@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../utils/color_constants.dart';
 
 class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
@@ -85,11 +84,13 @@ class CustomAppButton1 extends StatelessWidget implements PreferredSizeWidget {
       height: height ?? 48,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          backgroundColor: color,
-          foregroundColor: color,
-          disabledBackgroundColor: color,
-          disabledForegroundColor: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: color?? Colors.white,
+          foregroundColor: color?? Colors.white,
+          disabledBackgroundColor: color?? Colors.white,
+          disabledForegroundColor: color?? Colors.white,
           shadowColor: Colors.transparent,
           overlayColor: Colors.transparent,
         ),

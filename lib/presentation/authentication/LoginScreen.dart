@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final Validator _validator = Validator();
-
   bool _showEmailError = false;
 
   @override
@@ -37,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _showEmailError = !_validateEmail();
     });
-
     if (_formKey.currentState!.validate() && !_showEmailError) {
       final data = {'company_email': _emailController.text.trim()};
       context.read<LoginOTPCubit>().logInOtpApi(data);
@@ -100,6 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         isLoading: state is LoginOtpLoading,
                         text: 'Get OTP',
                         onPlusTap: _submitForm,
+                        color: Colors.white, // set clearly visible background
+                        textcolor: Colors.black, // visible text
                       );
                     },
                   ),
