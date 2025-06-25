@@ -11,6 +11,8 @@ import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as path;
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_state.dart';
+import '../bloc/ArchitechProfileDetails/architech_profile_details_cubit.dart';
+import '../bloc/ArchitechProfileDetails/architech_profile_details_state.dart';
 import '../utils/ShakeWidget.dart';
 import 'Components/CustomAppButton.dart';
 import 'Components/CustomSnackBar.dart';
@@ -24,992 +26,21 @@ class ArchitectProfileSetup extends StatefulWidget {
   State<ArchitectProfileSetup> createState() => _ArchitectProfileSetupState();
 }
 
-// class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
-//   final TextEditingController _descriptionController = TextEditingController();
-//   final TextEditingController _experienceController = TextEditingController();
-//   final TextEditingController _projectsController = TextEditingController();
-//   final TextEditingController _contactController = TextEditingController();
-//   final TextEditingController _whatsappController = TextEditingController();
-//   final ImagePicker _picker = ImagePicker();
-//   List<File> _portfolioFiles = [];
-//   File? _documentFile;
-//   String? _selectedIndustryType;
-//   bool sameAsContact = false;
-//   bool _showDescriptionError = false;
-//   bool _showExperienceError = false;
-//   bool _showProjectsError = false;
-//   bool _showContactError = false;
-//   bool _showWhatsAppError = false;
-//   bool _whatsappTouched = false;
-//   bool _showPortfolioError = false;
-//   bool _showDocumentError = false;
-//   bool _showSpecializationError = false;
-//
-//   bool _validateSpecializations() {
-//     _showSpecializationError = !selectedSpecs.contains(true);
-//     return !_showSpecializationError;
-//   }
-//   String _descriptionErrorMessage = '';
-//   String _experienceErrorMessage = '';
-//   String _projectsErrorMessage = '';
-//   String _contactErrorMessage = '';
-//   String _whatsAppErrorMessage = '';
-//   String _portfolioErrorMessage = '';
-//   String _documentErrorMessage = '';
-//   final List<String> _industryTypes = ['Residential', 'Commercial', 'Industrial'];
-//   bool _showtypes = false;
-//   final List<String> specializations = [
-//     'Sustainable Design',
-//     'Residential',
-//     'Commercial',
-//     'Urban Planning',
-//   ];
-//   List<bool> selectedSpecs = [false, false, false, false];
-//   bool _showAllPortfolioSlots = false;
-//
-//   @override
-//   void dispose() {
-//     _descriptionController.dispose();
-//     _experienceController.dispose();
-//     _projectsController.dispose();
-//     _contactController.dispose();
-//     _whatsappController.dispose();
-//     super.dispose();
-//   }
-//
-//   bool _validateDescription() {
-//     if (_descriptionController.text.isEmpty) {
-//       _descriptionErrorMessage = 'Company description is required';
-//       _showDescriptionError = true;
-//       _showDescriptionError = true;
-//       return false;
-//     } else if (_descriptionController.text.length < 20) {
-//       _descriptionErrorMessage = 'Description must be at least 20 characters';
-//       _showDescriptionError = true;
-//       return false;
-//     }
-//     _showDescriptionError = false;
-//     return true;
-//   }
-//   bool _validateIndustryType() {
-//     if (_selectedIndustryType == null) {
-//       _showtypes = true;
-//       return false;
-//     }
-//     _showtypes = false;
-//     return true;
-//   }
-//   bool _validateExperience() {
-//     if (_experienceController.text.isEmpty) {
-//       _experienceErrorMessage = 'Years of experience is required';
-//       _showExperienceError = true;
-//       return false;
-//     }
-//     final years = int.tryParse(_experienceController.text);
-//     if (years == null || years < 0 || years > 100) {
-//       _experienceErrorMessage = 'Enter a valid number (0-100)';
-//       _showExperienceError = true;
-//       return false;
-//     }
-//     _showExperienceError = false;
-//     return true;
-//   }
-//
-//   bool _validateProjects() {
-//     if (_projectsController.text.isEmpty) {
-//       _projectsErrorMessage = 'Number of projects is required';
-//       _showProjectsError = true;
-//       return false;
-//     }
-//     final projects = int.tryParse(_projectsController.text);
-//     if (projects == null || projects < 0) {
-//       _projectsErrorMessage = 'Enter a valid number';
-//       _showProjectsError = true;
-//       return false;
-//     }
-//     _showProjectsError = false;
-//     return true;
-//   }
-//
-//   bool _validateContact() {
-//     final text = _contactController.text.trim();
-//     if (text.isEmpty) {
-//       _contactErrorMessage = 'Contact number is required';
-//       _showContactError = true;
-//       return false;
-//     } else if (!text.startsWith('+') && text.length != 10) {
-//       // If no country code, expect exactly 10 digits
-//       _contactErrorMessage =
-//           'Enter a valid 10-digit phone number or include country code (e.g., +1234567890)';
-//       _showContactError = true;
-//       return false;
-//     } else if (text.startsWith('+') && text.length < 10) {
-//       // If country code is included, expect at least 9 more characters
-//       _contactErrorMessage =
-//           'Enter a valid phone number with country code (e.g., +1234567890)';
-//       _showContactError = true;
-//       return false;
-//     }
-//     _showContactError = false;
-//     return true;
-//   }
-//
-//   bool _validateWhatsApp() {
-//     final text = _whatsappController.text.trim();
-//     if (text.isEmpty) {
-//       _whatsAppErrorMessage = 'WhatsApp number is required';
-//       _showWhatsAppError = true;
-//       return false;
-//     } else if (!text.startsWith('+') && text.length != 10) {
-//       // If no country code, expect exactly 10 digits
-//       _whatsAppErrorMessage =
-//           'Enter a valid 10-digit phone number or include country code (e.g., +1234567890)';
-//       _showWhatsAppError = true;
-//       return false;
-//     } else if (text.startsWith('+') && text.length < 10) {
-//       // If country code is included, expect at least 9 more characters
-//       _whatsAppErrorMessage =
-//           'Enter a valid phone number with country code (e.g., +1234567890)';
-//       _showWhatsAppError = true;
-//       return false;
-//     }
-//     _showWhatsAppError = false;
-//     return true;
-//   }
-//
-//   bool _validatePortfolio() {
-//     if (_portfolioFiles.isEmpty) {
-//       _portfolioErrorMessage = 'Please upload at least 1 portfolio file';
-//       _showPortfolioError = true;
-//     } else {
-//       _portfolioErrorMessage = '';
-//       _showPortfolioError = false;
-//     }
-//     _showPortfolioError = false;
-//     return true;
-//   }
-//
-//   bool _validateDocument() {
-//     if (_documentFile == null) {
-//       _documentErrorMessage = 'Please upload a document';
-//       _showDocumentError = true;
-//       return false;
-//     } else if (path.extension(_documentFile!.path).toLowerCase() != '.pdf') {
-//       _documentErrorMessage = 'Only PDF files are allowed';
-//       _showDocumentError = true;
-//       return false;
-//     }
-//     _showDocumentError = false;
-//     return true;
-//   }
-//
-//
-// // Rest of the _validateForm method remains unchanged except clearer breakdown of result:
-//   bool _validateForm() {
-//     print("Validating form...");
-//
-//     final descriptionValid = _validateDescription();
-//     final experienceValid = _validateExperience();
-//     final projectsValid = _validateProjects();
-//     final contactValid = _validateContact();
-//     final whatsappValid = _validateWhatsApp();
-//     final portfolioValid = _validatePortfolio();
-//     final documentValid = _validateDocument();
-//     final specializationValid = _validateSpecializations();
-//     final industryTypeValid = _validateIndustryType();
-//
-//     final isValid = descriptionValid &&
-//         experienceValid &&
-//         projectsValid &&
-//         contactValid &&
-//         whatsappValid &&
-//         portfolioValid &&
-//         documentValid &&
-//         specializationValid &&
-//         industryTypeValid;
-//
-//     setState(() {}); // 🟢 Triggers error display
-//
-//     if (isValid) {
-//       print("Form is valid!");
-//
-//       final selectedSpecializations = <String>[];
-//       for (int i = 0; i < specializations.length; i++) {
-//         if (selectedSpecs[i]) {
-//           selectedSpecializations.add(specializations[i]);
-//         }
-//       }
-//
-//       final Map<String, dynamic> data = {
-//         'company_id': widget.id,
-//         'about_company': _descriptionController.text.trim(),
-//         'years_of_experience': _experienceController.text.trim(),
-//         'number_of_projects': _projectsController.text.trim(),
-//         'contact_number': _contactController.text.trim(),
-//         'whatsapp_number': _whatsappController.text.trim(),
-//         'specializations': selectedSpecializations,
-//         'portfolio_images': _portfolioFiles,
-//         'document': _documentFile,
-//         'industry_type': _selectedIndustryType!.toLowerCase()
-//       };
-//
-//       print("Data to send: \$data");
-//       context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfo(data);
-//     } else {
-//       print("Form validation failed");
-//     }
-//
-//     return isValid;
-//   }
-//
-//
-//   Future<void> _pickImage(ImageSource source) async {
-//     try {
-//       final XFile? pickedFile = await _picker.pickImage(source: source);
-//       if (pickedFile != null) {
-//         setState(() {
-//           _portfolioFiles.add(File(pickedFile.path));
-//           _showAllPortfolioSlots = true; // Show files after adding
-//         });
-//       }
-//     } catch (e) {
-//       setState(() {
-//         _portfolioErrorMessage = 'Error picking image';
-//         _showPortfolioError = true;
-//       });
-//     }
-//     if (mounted) {
-//       _validatePortfolio();
-//       context.pop();
-//     }
-//   }
-//
-//   Future<void> _pickFile({bool isDocument = false}) async {
-//     try {
-//       FilePickerResult? result = await FilePicker.platform.pickFiles(
-//         type: FileType.custom,
-//         allowedExtensions: isDocument ? ['pdf'] : ['pdf', 'jpg', 'jpeg', 'png'],
-//       );
-//       if (result != null && result.files.single.path != null) {
-//         setState(() {
-//           if (isDocument) {
-//             _documentFile = File(result.files.single.path!);
-//             _validateDocument();
-//           } else {
-//             _portfolioFiles.add(File(result.files.single.path!));
-//             _showAllPortfolioSlots = true; // Show files after adding
-//             _validatePortfolio();
-//           }
-//         });
-//       }
-//     } catch (e) {
-//       setState(() {
-//         if (isDocument) {
-//           _documentErrorMessage = 'Error picking file';
-//           _showDocumentError = true;
-//         } else {
-//           _portfolioErrorMessage = 'Error picking file';
-//           _showPortfolioError = true;
-//         }
-//       });
-//     }
-//     if (mounted) context.pop();
-//   }
-//
-//   void _showFileSourceSelection({bool isDocument = false}) {
-//     showModalBottomSheet(
-//       context: context,
-//       isScrollControlled: false,
-//       isDismissible: true,
-//       backgroundColor: const Color(0xff2E2E2E),
-//       shape: const RoundedRectangleBorder(
-//         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-//       ),
-//       builder: (BuildContext context) {
-//         return SafeArea(
-//           child: Stack(
-//             children: [
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(
-//                   horizontal: 16,
-//                   vertical: 24,
-//                 ),
-//                 child: Column(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     Container(
-//                       width: 40,
-//                       height: 4,
-//                       decoration: BoxDecoration(
-//                         color: Colors.white30,
-//                         borderRadius: BorderRadius.circular(4),
-//                       ),
-//                     ),
-//                     const SizedBox(height: 20),
-//                     if (!isDocument) ...[
-//                       ListTile(
-//                         leading: const Icon(
-//                           Icons.photo_library,
-//                           color: Colors.white,
-//                         ),
-//                         title: const Text(
-//                           'Choose from Gallery',
-//                           style: TextStyle(
-//                             color: Colors.white,
-//                             fontSize: 16,
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                         onTap: () => _pickImage(ImageSource.gallery),
-//                       ),
-//                       ListTile(
-//                         leading: const Icon(
-//                           Icons.camera_alt,
-//                           color: Colors.white,
-//                         ),
-//                         title: const Text(
-//                           'Take Photo',
-//                           style: TextStyle(
-//                             color: Colors.white,
-//                             fontSize: 16,
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                         onTap: () => _pickImage(ImageSource.camera),
-//                       ),
-//                     ],
-//                     ListTile(
-//                       leading: const Icon(Icons.folder, color: Colors.white),
-//                       title: Text(
-//                         isDocument ? 'Choose PDF File' : 'Choose File',
-//                         style: const TextStyle(
-//                           color: Colors.white,
-//                           fontSize: 16,
-//                           fontWeight: FontWeight.w500,
-//                         ),
-//                       ),
-//                       onTap: () => _pickFile(isDocument: isDocument),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               Positioned(
-//                 top: 10,
-//                 right: 10,
-//                 child: IconButton(
-//                   onPressed: () => Navigator.of(context).pop(),
-//                   icon: const Icon(Icons.close, color: Colors.white),
-//                   tooltip: 'Close',
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.black,
-//       appBar: CustomAppBar1(title: 'Company Profile Setup', actions: []),
-//       body: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           children: [
-//             Text(
-//               '4 of 4',
-//               style: TextStyle(
-//                 fontFamily: 'Inter',
-//                 color: Colors.white,
-//                 fontWeight: FontWeight.w500,
-//                 fontSize: 16,
-//               ),
-//             ),
-//             const SizedBox(height: 8),
-//             LinearProgressIndicator(
-//               minHeight: 8,
-//               value: 1,
-//               backgroundColor: const Color(0xff4D4D4D),
-//               valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//             SizedBox(height: 20),
-//             Expanded(
-//               child: SingleChildScrollView(
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     _buildTextField(
-//                       label: 'Company Description',
-//                       hint: 'Tell about your company',
-//                       controller: _descriptionController,
-//                       showError: _showDescriptionError,
-//                       errorMessage: _descriptionErrorMessage,
-//                       validate: _validateDescription,
-//                       keyboardType: TextInputType.multiline,
-//                     ),
-//                     const SizedBox(height: 20),
-//                     _buildTextField(
-//                       label: 'Year of Experience',
-//                       hint: 'Enter industry experience',
-//                       controller: _experienceController,
-//                       showError: _showExperienceError,
-//                       errorMessage: _experienceErrorMessage,
-//                       validate: _validateExperience,
-//                       keyboardType: TextInputType.number,
-//                     ),
-//                     const SizedBox(height: 20),
-//                     _buildTextField(
-//                       label: 'Number of Projects',
-//                       hint: 'Enter number of projects completed',
-//                       controller: _projectsController,
-//                       showError: _showProjectsError,
-//                       errorMessage: _projectsErrorMessage,
-//                       validate: _validateProjects,
-//                       keyboardType: TextInputType.number,
-//                     ),
-//                     const SizedBox(height: 20),
-//                     _buildTextField(
-//                       label: 'Contact Number',
-//                       hint: 'Enter contact number (e.g., +1234567890)',
-//                       controller: _contactController,
-//                       showError: _showContactError,
-//                       errorMessage: _contactErrorMessage,
-//                       validate: _validateContact,
-//                       keyboardType: TextInputType.phone,
-//                     ),
-//                     const SizedBox(height: 20),
-//                     Row(
-//                       children: [
-//                         Text(
-//                           'WhatsApp Number',
-//                           style: const TextStyle(
-//                             color: Color(0xFFD8D8D8),
-//                             fontSize: 16,
-//                             fontFamily: 'Inter',
-//                             fontWeight: FontWeight.w600,
-//                           ),
-//                         ),
-//                         Spacer(),
-//                         Text(
-//                           'same as contact no',
-//                           style: const TextStyle(
-//                             color: Color(0xFFD8D8D8),
-//                             fontSize: 10,
-//                             fontFamily: 'Inter',
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                         const SizedBox(width: 5),
-//                         Transform.scale(
-//                           scale: 0.75, // smaller switch size
-//                           child: Switch(
-//                             inactiveTrackColor: Colors.grey.shade800,
-//                             activeColor: Colors.greenAccent,
-//                             activeTrackColor: Colors.green.shade700,
-//                             value: sameAsContact,
-//                             onChanged: (bool val) {
-//                               setState(() {
-//                                 sameAsContact = val;
-//                                 if (val) {
-//                                   _whatsappController.text =
-//                                       _contactController.text;
-//                                   _validateWhatsApp();
-//                                 } else {
-//                                   _whatsappController.clear();
-//                                   _showWhatsAppError = false;
-//                                 }
-//                               });
-//                             },
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                     SizedBox(height: 8),
-//                     TextField(
-//                       cursorColor: Colors.white,
-//                       controller: _whatsappController,
-//                       keyboardType: TextInputType.phone,
-//                       maxLines:
-//                           1, // fix maxLines: phone input should only be one line
-//                       style: const TextStyle(
-//                         color: Colors.white,
-//                         fontWeight: FontWeight.w400,
-//                         fontSize: 16,
-//                         fontFamily: 'Inter',
-//                       ),
-//                       decoration: InputDecoration(
-//                         hintText: 'Enter WhatsApp number (e.g., +1234567890)',
-//                         hintStyle: const TextStyle(color: Colors.white70),
-//                         filled: true,
-//                         fillColor: const Color(0xFF2E2E2E),
-//                         border: OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(12),
-//                           borderSide: BorderSide.none,
-//                         ),
-//                         contentPadding: const EdgeInsets.symmetric(
-//                           horizontal: 12,
-//                           vertical: 14,
-//                         ),
-//                       ),
-//                       onTap: () {
-//                         if (!_whatsappTouched) {
-//                           setState(() {
-//                             _whatsappTouched = true;
-//                           });
-//                         }
-//                       },
-//                       onChanged: (_) {
-//                         if (_whatsappTouched) {
-//                           setState(() {
-//                             _validateWhatsApp();
-//                           });
-//                         }
-//                       },
-//                       onEditingComplete: () {
-//                         setState(() {
-//                           _validateWhatsApp();
-//                         });
-//                       },
-//                     ),
-//                     if (_showWhatsAppError)
-//                       Padding(
-//                         padding: const EdgeInsets.only(top: 6),
-//                         child: ShakeWidget(
-//                           key: Key(_whatsAppErrorMessage),
-//                           duration: const Duration(milliseconds: 700),
-//                           child: Text(
-//                             _whatsAppErrorMessage,
-//                             style: const TextStyle(
-//                               fontFamily: 'Inter',
-//                               fontSize: 12,
-//                               color: Colors.redAccent,
-//                               fontWeight: FontWeight.w500,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     const SizedBox(height: 20),
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const Text(
-//                           'Specializations',
-//                           style: TextStyle(
-//                             color: Color(0xFFD8D8D8),
-//                             fontSize: 16,
-//                             fontFamily: 'Inter',
-//                             fontWeight: FontWeight.w600,
-//                           ),
-//                         ),
-//                         const SizedBox(height: 10),
-//                         Wrap(
-//                           spacing: 8,
-//                           runSpacing: 8,
-//                           children: List.generate(specializations.length, (
-//                             index,
-//                           ) {
-//                             return ChoiceChip(
-//                               label: Text(specializations[index]),
-//                               selected: selectedSpecs[index],
-//                               onSelected: (val) {
-//                                 setState(() {
-//                                   selectedSpecs[index] = val;
-//                                 });
-//                               },
-//                               labelStyle: TextStyle(
-//                                 color: Colors.white,
-//                                 fontFamily: 'Inter',
-//                                 fontSize: 14,
-//                               ),
-//                               selectedColor: primarycolor.withOpacity(0.5),
-//                               backgroundColor: Colors.grey.shade800,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(8),
-//                               ),
-//                             );
-//                           }),
-//                         ),
-//                         if (_showSpecializationError)
-//                           Padding(
-//                             padding: const EdgeInsets.only(top: 6),
-//                             child: ShakeWidget(
-//                               key: const Key('specialization_error'),
-//                               duration: const Duration(milliseconds: 700),
-//                               child: const Text(
-//                                 'Please select at least one specialization',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Inter',
-//                                   fontSize: 12,
-//                                   color: Colors.redAccent,
-//                                   fontWeight: FontWeight.w500,
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//
-//                         // if (!_validateSpecializations())
-//                         //   Padding(
-//                         //     padding: const EdgeInsets.only(top: 6),
-//                         //     child: ShakeWidget(
-//                         //       key: const Key('specialization_error'),
-//                         //       duration: const Duration(milliseconds: 700),
-//                         //       child: const Text(
-//                         //         'Please select at least one specialization',
-//                         //         style: TextStyle(
-//                         //           fontFamily: 'Inter',
-//                         //           fontSize: 12,
-//                         //           color: Colors.redAccent,
-//                         //           fontWeight: FontWeight.w500,
-//                         //         ),
-//                         //       ),
-//                         //     ),
-//                         //   ),
-//                       ],
-//                     ),
-//                     const SizedBox(height: 20),
-//                     DropdownButtonFormField2<String>(
-//                       value: _selectedIndustryType,
-//                       isExpanded: true,
-//                       decoration: InputDecoration(
-//                         isDense: true,
-//                         filled: true,
-//                         fillColor: const Color(0xff363636),
-//                         contentPadding: const EdgeInsets.symmetric(
-//                           horizontal: 16,
-//                           vertical: 14,
-//                         ),
-//                         border: OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(12),
-//                           borderSide: BorderSide.none,
-//                         ),
-//                       ),
-//                       hint: const Text(
-//                         'Select industry type',
-//                         style: TextStyle(color: Colors.white38),
-//                       ),
-//                       items: _industryTypes.map((String type) {
-//                         return DropdownMenuItem<String>(
-//                           value: type,
-//                           child: Text(
-//                             type,
-//                             style: const TextStyle(color: Colors.white),
-//                           ),
-//                         );
-//                       }).toList(),
-//                       onChanged: (value) {
-//                         setState(() {
-//                           _selectedIndustryType = value;
-//                           _showtypes = false;
-//                         });
-//                       },
-//                       dropdownStyleData: DropdownStyleData(
-//                         useSafeArea: true,
-//                         offset: const Offset(0, -8),
-//                         maxHeight: 200,
-//                         decoration: BoxDecoration(
-//                           color: const Color(0xff363636),
-//                           borderRadius: BorderRadius.circular(12),
-//                         ),
-//                       ),
-//                       iconStyleData: const IconStyleData(
-//                         icon: Icon(
-//                           Icons.arrow_drop_down,
-//                           color: Colors.white,
-//                         ),
-//                       ),
-//                       menuItemStyleData: const MenuItemStyleData(
-//                         overlayColor: MaterialStatePropertyAll(Colors.transparent),
-//                       ),
-//                     ),
-//
-//                     if (_showtypes)
-//                       const Padding(
-//                         padding: EdgeInsets.only(top: 5),
-//                         child: Text(
-//                           'Please select industry type',
-//                           style: TextStyle(
-//                             fontFamily: 'Inter',
-//                             fontSize: 12,
-//                             color: Colors.red,
-//                             fontWeight: FontWeight.w500,
-//                           ),
-//                         ),
-//                       ),
-//
-//                     const SizedBox(height: 16),
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const Text(
-//                           'Upload Portfolio',
-//                           style: TextStyle(
-//                             color: Color(0xFFD8D8D8),
-//                             fontSize: 16,
-//                             fontFamily: 'Inter',
-//                             fontWeight: FontWeight.w600,
-//                           ),
-//                         ),
-//                         const SizedBox(height: 10),
-//                         GestureDetector(
-//                           onTap: () {
-//                             _showFileSourceSelection(); // Show file picker on tap
-//                           },
-//                           child: Container(
-//                             width: double.infinity,
-//                             height: 120,
-//                             decoration: BoxDecoration(
-//                               color: const Color(0xFF2E2E2E),
-//                               borderRadius: BorderRadius.circular(12),
-//                               border: Border.all(
-//                                 color: _portfolioFiles.isNotEmpty
-//                                     ? Colors.green
-//                                     : Colors.grey.withOpacity(0.4),
-//                                 width: 1.5,
-//                               ),
-//                             ),
-//                             child: _portfolioFiles.isEmpty
-//                                 ? Row(
-//                                     mainAxisAlignment: MainAxisAlignment.center,
-//                                     children: const [
-//                                       Icon(
-//                                         Icons.upload_file_rounded,
-//                                         color: Colors.white70,
-//                                       ),
-//                                       SizedBox(width: 10),
-//                                       Text(
-//                                         'Tap to Upload Portfolio',
-//                                         style: TextStyle(
-//                                           color: Colors.white70,
-//                                           fontSize: 15,
-//                                           fontWeight: FontWeight.w500,
-//                                           fontFamily: 'Inter',
-//                                         ),
-//                                       ),
-//                                     ],
-//                                   )
-//                                 : Center(
-//                                     child: Text(
-//                                       '${_portfolioFiles.length} file(s) selected',
-//                                       style: const TextStyle(
-//                                         color: Colors.white,
-//                                         fontSize: 15,
-//                                         fontWeight: FontWeight.w500,
-//                                         fontFamily: 'Inter',
-//                                       ),
-//                                     ),
-//                                   ),
-//                           ),
-//                         ),
-//                         if (_portfolioFiles.isNotEmpty)
-//                           Padding(
-//                             padding: const EdgeInsets.only(top: 10),
-//                             child: Column(
-//                               children: List.generate(_portfolioFiles.length, (
-//                                 index,
-//                               ) {
-//                                 final file = _portfolioFiles[index];
-//                                 final isImage = ['.jpg', '.jpeg', '.png']
-//                                     .contains(
-//                                       path.extension(file.path).toLowerCase(),
-//                                     );
-//                                 return Padding(
-//                                   padding: const EdgeInsets.only(bottom: 8),
-//                                   child: Container(
-//                                     decoration: BoxDecoration(
-//                                       color: const Color(0xFF2E2E2E),
-//                                       borderRadius: BorderRadius.circular(12),
-//                                     ),
-//                                     child: ListTile(
-//                                       leading: isImage
-//                                           ? ClipRRect(
-//                                               borderRadius:
-//                                                   BorderRadius.circular(8),
-//                                               child: Image.file(
-//                                                 file,
-//                                                 width: 40,
-//                                                 height: 40,
-//                                                 fit: BoxFit.cover,
-//                                               ),
-//                                             )
-//                                           : const Icon(
-//                                               Icons.picture_as_pdf,
-//                                               color: Colors.white70,
-//                                             ),
-//                                       title: Text(
-//                                         path.basename(file.path),
-//                                         style: const TextStyle(
-//                                           color: Colors.white,
-//                                           fontFamily: 'Inter',
-//                                           fontSize: 14,
-//                                         ),
-//                                         overflow: TextOverflow.ellipsis,
-//                                       ),
-//                                       trailing: IconButton(
-//                                         icon: const Icon(
-//                                           Icons.close,
-//                                           color: Colors.white,
-//                                         ),
-//                                         onPressed: () {
-//                                           setState(() {
-//                                             _portfolioFiles.removeAt(index);
-//                                             _validatePortfolio();
-//                                           });
-//                                         },
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 );
-//                               }),
-//                             ),
-//                           ),
-//                         if (_showPortfolioError)
-//                           Padding(
-//                             padding: const EdgeInsets.only(top: 6),
-//                             child: ShakeWidget(
-//                               key: Key(_portfolioErrorMessage),
-//                               duration: const Duration(milliseconds: 700),
-//                               child: Text(
-//                                 _portfolioErrorMessage,
-//                                 style: const TextStyle(
-//                                   fontFamily: 'Inter',
-//                                   fontSize: 12,
-//                                   color: Colors.redAccent,
-//                                   fontWeight: FontWeight.w500,
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//       bottomNavigationBar: SafeArea(
-//         child: Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               BlocConsumer<
-//                 ArchitechAditionalInfoCubit,
-//                 ArchitechAditionalInfoState
-//               >(
-//                 listener: (context, state) {
-//                   if (state is ArchitechAditionalInfoSucess) {
-//                     context.pushReplacement(
-//                       '/profile_created',
-//                     ); // Use pushReplacement to avoid back navigation
-//                   } else if (state is ArchitechAditionalInfoError) {
-//                     CustomSnackBar.show(context, state.message);
-//                   }
-//                 },
-//                 builder: (context, state) {
-//                   return CustomAppButton1(isLoading: state is ArchitechAditionalInfoLoading ,
-//                     text: state is ArchitechAditionalInfoLoading
-//                         ? 'Submitting...'
-//                         : 'Done',
-//                     onPlusTap: state is ArchitechAditionalInfoLoading
-//                         ? null
-//                         : () => _validateForm(),
-//                   );
-//                 },
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildTextField({
-//     required String label,
-//     required String hint,
-//     required TextEditingController controller,
-//     required bool showError,
-//     required String errorMessage,
-//     TextInputType keyboardType = TextInputType.text,
-//     required Function() validate,
-//   }) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text(
-//           label,
-//           style: const TextStyle(
-//             color: Color(0xFFD8D8D8),
-//             fontSize: 16,
-//             fontFamily: 'Inter',
-//             fontWeight: FontWeight.w600,
-//           ),
-//         ),
-//         const SizedBox(height: 8),
-//         TextField(
-//           cursorColor: Colors.white,
-//           controller: controller,
-//           keyboardType: keyboardType,
-//           maxLines: keyboardType == TextInputType.multiline ? 4 : 1,
-//           style: const TextStyle(
-//             color: Colors.white,
-//             fontWeight: FontWeight.w400,
-//             fontSize: 16,
-//             fontFamily: 'Inter',
-//           ),
-//           decoration: InputDecoration(
-//             hintText: hint,
-//             hintStyle: const TextStyle(color: Colors.white70),
-//             filled: true,
-//             fillColor: const Color(0xFF2E2E2E),
-//             border: OutlineInputBorder(
-//               borderRadius: BorderRadius.circular(12),
-//               borderSide: BorderSide.none,
-//             ),
-//             contentPadding: const EdgeInsets.symmetric(
-//               horizontal: 12,
-//               vertical: 14,
-//             ),
-//           ),
-//           onTap: () {
-//             setState(() {
-//               validate();
-//             });
-//           },
-//           onChanged: (_) {
-//             setState(() {
-//               validate();
-//             });
-//           },
-//         ),
-//         if (showError)
-//           Padding(
-//             padding: const EdgeInsets.only(top: 6),
-//             child: ShakeWidget(
-//               key: Key(errorMessage),
-//               duration: const Duration(milliseconds: 700),
-//               child: Text(
-//                 errorMessage,
-//                 style: const TextStyle(
-//                   fontFamily: 'Inter',
-//                   fontSize: 12,
-//                   color: Colors.redAccent,
-//                   fontWeight: FontWeight.w500,
-//                 ),
-//               ),
-//             ),
-//           ),
-//       ],
-//     );
-//   }
-// }
 class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
+  @override
+  void initState() {
+    super.initState();
+
+    final int? companyId = widget.id;
+    print("companyId:${companyId}");
+
+    if (companyId != null && companyId != 0) {
+      context.read<ArchitechProfileDetailsCubit>().getArchitechProfileDetails(
+        companyId,
+      );
+    }
+  }
+
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _experienceController = TextEditingController();
   final TextEditingController _projectsController = TextEditingController();
@@ -1027,13 +58,14 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   bool _showWhatsAppError = false;
   bool _whatsappTouched = false;
   bool _showPortfolioError = false;
-  bool _showDocumentError = false;
+  // bool _showDocumentError = false;
   bool _showSpecializationError = false;
 
   bool _validateSpecializations() {
     _showSpecializationError = !selectedSpecs.contains(true);
     return !_showSpecializationError;
   }
+
   String _descriptionErrorMessage = '';
   String _experienceErrorMessage = '';
   String _projectsErrorMessage = '';
@@ -1041,7 +73,11 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   String _whatsAppErrorMessage = '';
   String _portfolioErrorMessage = '';
   String _documentErrorMessage = '';
-  final List<String> _industryTypes = ['Residential', 'Commercial', 'Industrial'];
+  final List<String> _industryTypes = [
+    'Residential',
+    'Commercial',
+    'Industrial',
+  ];
   bool _showtypes = false;
   final List<String> specializations = [
     'Sustainable Design',
@@ -1051,7 +87,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   ];
   List<bool> selectedSpecs = [false, false, false, false];
   bool _showAllPortfolioSlots = false;
-
 
   @override
   void dispose() {
@@ -1128,9 +163,10 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
       _showContactError = true;
       return false;
     }
-    // Allow country code (+ followed by 9+ digits) or exactly 10 digits without country code
+
     if (!RegExp(r'^\+?\d{10,}$').hasMatch(text.replaceAll(' ', ''))) {
-      _contactErrorMessage = 'Enter a valid phone number (e.g., +1234567890 or 1234567890)';
+      _contactErrorMessage =
+          'Enter a valid phone number (e.g., +1234567890 or 1234567890)';
       _showContactError = true;
       return false;
     }
@@ -1150,7 +186,8 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     }
     // Allow country code (+ followed by 9+ digits) or exactly 10 digits without country code
     if (!RegExp(r'^\+?\d{10,}$').hasMatch(text.replaceAll(' ', ''))) {
-      _whatsAppErrorMessage = 'Enter a valid phone number (e.g., +1234567890 or 1234567890)';
+      _whatsAppErrorMessage =
+          'Enter a valid phone number (e.g., +1234567890 or 1234567890)';
       _showWhatsAppError = true;
       return false;
     }
@@ -1169,44 +206,27 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     return true;
   }
 
-  bool _validateDocument() {
-    if (_documentFile == null) {
-      _documentErrorMessage = 'Please upload a document';
-      _showDocumentError = true;
-      return false;
-    } else if (path.extension(_documentFile!.path).toLowerCase() != '.pdf') {
-      _documentErrorMessage = 'Only PDF files are allowed';
-      _showDocumentError = true;
-      return false;
-    }
-    _documentErrorMessage = '';
-    _showDocumentError = false;
-    return true;
-  }
-
-
-
   bool _validateForm() {
     print("Validating form...");
 
-    // Validate all fields
     final descriptionValid = _validateDescription();
     final experienceValid = _validateExperience();
     final projectsValid = _validateProjects();
     final contactValid = _validateContact();
     final whatsappValid = _validateWhatsApp();
     final portfolioValid = _validatePortfolio();
-    final documentValid = _validateDocument();
+
     final specializationValid = _validateSpecializations();
     final industryTypeValid = _validateIndustryType();
 
-    final isValid = descriptionValid &&
+    final isValid =
+        descriptionValid &&
         experienceValid &&
         projectsValid &&
         contactValid &&
         whatsappValid &&
         portfolioValid &&
-        documentValid &&
+        // documentValid &&
         specializationValid &&
         industryTypeValid;
 
@@ -1221,7 +241,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         }
       }
 
-      // Ensure specializations is not empty
       if (selectedSpecializations.isEmpty) {
         print("Error: No specializations selected despite validation");
         setState(() {
@@ -1231,24 +250,27 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
       }
 
       final Map<String, dynamic> data = {
-        'company_id': "29",
+        'company_id': widget.id,
         'about_company': _descriptionController.text.trim(),
         'years_of_experience': _experienceController.text.trim(),
         'number_of_projects': _projectsController.text.trim(),
         'contact_number': _contactController.text.trim(),
         'whatsapp_number': _whatsappController.text.trim(),
         'specializations': selectedSpecializations, // List<String>
-        'portfolio': _portfolioFiles, // Renamed from portfolio_images
+        'portfolio': _portfolioFiles,
         'document': _documentFile,
         'industry_type': _selectedIndustryType!.toLowerCase(),
       };
-
-      // Log the data to confirm format
-      print("Specializations: ${jsonEncode(selectedSpecializations)}");
-      print("Portfolio files: ${_portfolioFiles.map((f) => f.path).toList()}");
-      print("Data to send: $data");
-
-      context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfo(data);
+      if (widget.id != null && widget.id.toString().trim().isNotEmpty) {
+        data['company_id'] = widget.id;
+        context
+            .read<ArchitechAditionalInfoCubit>()
+            .createArchitechAditionalInfoUpdate(data);
+      } else {
+        context
+            .read<ArchitechAditionalInfoCubit>()
+            .createArchitechAditionalInfo(data);
+      }
     } else {
       print("Form validation failed");
     }
@@ -1287,7 +309,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         setState(() {
           if (isDocument) {
             _documentFile = File(result.files.single.path!);
-            _validateDocument();
+            // _validateDocument();
           } else {
             _portfolioFiles.add(File(result.files.single.path!));
             _showAllPortfolioSlots = true;
@@ -1299,7 +321,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
       setState(() {
         if (isDocument) {
           _documentErrorMessage = 'Error picking file';
-          _showDocumentError = true;
+          // _showDocumentError = true;
         } else {
           _portfolioErrorMessage = 'Error picking file';
           _showPortfolioError = true;
@@ -1402,580 +424,548 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     );
   }
 
+  bool _isInitialized = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: CustomAppBar1(title: 'Company Profile Setup', actions: []),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              '4 of 4',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+      body: BlocBuilder<ArchitechProfileDetailsCubit, ArchitechProfileDetailsState>(
+        builder: (context, state) {
+          if (state is ArchitechProfileDetailsLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          } else if (state is ArchitechProfileDetailsLoaded) {
+            if (!_isInitialized) {
+              _descriptionController.text =
+                  state.architechProfileModel.data?.aboutCompany ?? "";
+              _experienceController.text =
+                  state.architechProfileModel.data?.yearsOfExperience
+                      .toString() ??
+                  "0";
+              _projectsController.text =
+                  state.architechProfileModel.data?.numberOfProjects
+                      .toString() ??
+                  "0";
+              _contactController.text =
+                  state.architechProfileModel.data?.contactNumber ?? "";
+              _whatsappController.text =
+                  state.architechProfileModel.data?.whatsappNumber ?? "";
+              _whatsappController.text =
+                  state.architechProfileModel.data?.whatsappNumber ?? "";
+              final fetchedSpecs = state.architechProfileModel.data?.specializations ?? [];
+              for (int i = 0; i < specializations.length; i++) {
+                selectedSpecs[i] = fetchedSpecs.contains(specializations[i]);
+                _selectedIndustryType = _industryTypes.firstWhere(
+                      (type) =>
+                  type.toLowerCase() ==
+                      state.architechProfileModel.data?.industryType?.toLowerCase(),
+                  orElse: () => "",
+                );
+
+              }
+              _isInitialized = true;
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 20,
               ),
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              minHeight: 8,
-              value: 1,
-              backgroundColor: const Color(0xff4D4D4D),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTextField(
-                      label: 'Company Description',
-                      hint: 'Tell about your company',
-                      controller: _descriptionController,
-                      showError: _showDescriptionError,
-                      errorMessage: _descriptionErrorMessage,
-                      validate: _validateDescription,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: 'Year of Experience',
-                      hint: 'Enter industry experience',
-                      controller: _experienceController,
-                      showError: _showExperienceError,
-                      errorMessage: _experienceErrorMessage,
-                      validate: _validateExperience,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: 'Number of Projects',
-                      hint: 'Enter number of projects completed',
-                      controller: _projectsController,
-                      showError: _showProjectsError,
-                      errorMessage: _projectsErrorMessage,
-                      validate: _validateProjects,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: 'Contact Number',
-                      hint: 'Enter contact number (e.g., +1234567890)',
-                      controller: _contactController,
-                      showError: _showContactError,
-                      errorMessage: _contactErrorMessage,
-                      validate: _validateContact,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Text(
-                          'WhatsApp Number',
-                          style: const TextStyle(
-                            color: Color(0xFFD8D8D8),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          'same as contact no',
-                          style: const TextStyle(
-                            color: Color(0xFFD8D8D8),
-                            fontSize: 10,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Transform.scale(
-                          scale: 0.75,
-                          child: Switch(
-                            inactiveTrackColor: Colors.grey.shade800,
-                            activeColor: Colors.greenAccent,
-                            activeTrackColor: Colors.green.shade700,
-                            value: sameAsContact,
-                            onChanged: (bool val) {
-                              setState(() {
-                                sameAsContact = val;
-                                if (val) {
-                                  _whatsappController.text = _contactController.text.trim();
-                                } else {
-                                  _whatsappController.clear();
-                                }
-                                _validateWhatsApp();
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    TextField(
-                      cursorColor: Colors.white,
-                      controller: _whatsappController,
-                      keyboardType: TextInputType.phone,
-                      maxLines: 1,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (widget.id == 0) ...[
+                    Text(
+                      '4 of 4',
+                      style: TextStyle(
                         fontFamily: 'Inter',
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Enter WhatsApp number (e.g., +1234567890)',
-                        hintStyle: const TextStyle(color: Colors.white70),
-                        filled: true,
-                        fillColor: const Color(0xFF2E2E2E),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 14,
-                        ),
-                      ),
-                      enabled: !sameAsContact, // Disable input when sameAsContact is true
-                      onTap: () {
-                        setState(() {
-                          _whatsappTouched = true;
-                          _validateWhatsApp();
-                        });
-                      },
-                      onChanged: (_) {
-                        if (_whatsappTouched) {
-                          setState(() {
-                            _validateWhatsApp();
-                          });
-                        }
-                      },
-                      onEditingComplete: () {
-                        setState(() {
-                          _validateWhatsApp();
-                        });
-                      },
-                    ),
-                    if (_showWhatsAppError)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: ShakeWidget(
-                          key: Key(_whatsAppErrorMessage),
-                          duration: const Duration(milliseconds: 700),
-                          child: Text(
-                            _whatsAppErrorMessage,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12,
-                              color: Colors.redAccent,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Specializations',
-                          style: TextStyle(
-                            color: Color(0xFFD8D8D8),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: List.generate(specializations.length, (index) {
-                            return ChoiceChip(
-                              label: Text(specializations[index]),
-                              selected: selectedSpecs[index],
-                              onSelected: (val) {
-                                setState(() {
-                                  selectedSpecs[index] = val;
-                                  _validateSpecializations();
-                                });
-                              },
-                              labelStyle: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Inter',
-                                fontSize: 14,
-                              ),
-                              selectedColor: primarycolor.withOpacity(0.5),
-                              backgroundColor: Colors.grey.shade800,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            );
-                          }),
-                        ),
-                        if (_showSpecializationError)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: ShakeWidget(
-                              key: const Key('specialization_error'),
-                              duration: const Duration(milliseconds: 700),
-                              child: const Text(
-                                'Please select at least one specialization',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    DropdownButtonFormField2<String>(
-                      value: _selectedIndustryType,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        filled: true,
-                        fillColor: const Color(0xff363636),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      hint: const Text(
-                        'Select industry type',
-                        style: TextStyle(color: Colors.white38),
-                      ),
-                      items: _industryTypes.map((String type) {
-                        return DropdownMenuItem<String>(
-                          value: type,
-                          child: Text(
-                            type,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedIndustryType = value;
-                          _validateIndustryType();
-                        });
-                      },
-                      dropdownStyleData: DropdownStyleData(
-                        useSafeArea: true,
-                        offset: const Offset(0, -8),
-                        maxHeight: 200,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff363636),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      iconStyleData: const IconStyleData(
-                        icon: Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.white,
-                        ),
-                      ),
-                      menuItemStyleData: const MenuItemStyleData(
-                        overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
                     ),
-                    if (_showtypes)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Text(
-                          'Please select industry type',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 12,
-                            color: Colors.red,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                    const SizedBox(height: 8),
+                    LinearProgressIndicator(
+                      minHeight: 8,
+                      value: 1,
+                      backgroundColor: const Color(0xff4D4D4D),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Colors.white,
                       ),
-                    const SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Upload Portfolio',
-                          style: TextStyle(
-                            color: Color(0xFFD8D8D8),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ],
+
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildTextField(
+                            label: 'Company Description',
+                            hint: 'Tell about your company',
+                            controller: _descriptionController,
+                            showError: _showDescriptionError,
+                            errorMessage: _descriptionErrorMessage,
+                            validate: _validateDescription,
+                            keyboardType: TextInputType.multiline,
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            _showFileSourceSelection();
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2E2E2E),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _portfolioFiles.isNotEmpty
-                                    ? Colors.green
-                                    : Colors.grey.withOpacity(0.4),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: _portfolioFiles.isEmpty
-                                ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.upload_file_rounded,
-                                  color: Colors.white70,
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Tap to Upload Portfolio',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            )
-                                : Center(
-                              child: Text(
-                                '${_portfolioFiles.length} file(s) selected',
+                          const SizedBox(height: 20),
+                          _buildTextField(
+                            label: 'Year of Experience',
+                            hint: 'Enter industry experience',
+                            controller: _experienceController,
+                            showError: _showExperienceError,
+                            errorMessage: _experienceErrorMessage,
+                            validate: _validateExperience,
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 20),
+                          _buildTextField(
+                            label: 'Number of Projects',
+                            hint: 'Enter number of projects completed',
+                            controller: _projectsController,
+                            showError: _showProjectsError,
+                            errorMessage: _projectsErrorMessage,
+                            validate: _validateProjects,
+                            keyboardType: TextInputType.number,
+                          ),
+                          const SizedBox(height: 20),
+                          _buildTextField(
+                            label: 'Contact Number',
+                            hint: 'Enter contact number (e.g., +1234567890)',
+                            controller: _contactController,
+                            showError: _showContactError,
+                            errorMessage: _contactErrorMessage,
+                            validate: _validateContact,
+                            keyboardType: TextInputType.phone,
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Text(
+                                'WhatsApp Number',
                                 style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFFD8D8D8),
+                                  fontSize: 16,
                                   fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        if (_portfolioFiles.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Column(
-                              children: List.generate(_portfolioFiles.length, (index) {
-                                final file = _portfolioFiles[index];
-                                final isImage = ['.jpg', '.jpeg', '.png']
-                                    .contains(path.extension(file.path).toLowerCase());
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF2E2E2E),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: ListTile(
-                                      leading: isImage
-                                          ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.file(
-                                          file,
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                          : const Icon(
-                                        Icons.picture_as_pdf,
-                                        color: Colors.white70,
-                                      ),
-                                      title: Text(
-                                        path.basename(file.path),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'Inter',
-                                          fontSize: 14,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _portfolioFiles.removeAt(index);
-                                            _validatePortfolio();
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        if (_showPortfolioError)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: ShakeWidget(
-                              key: Key(_portfolioErrorMessage),
-                              duration: const Duration(milliseconds: 700),
-                              child: Text(
-                                _portfolioErrorMessage,
+                              Spacer(),
+                              Text(
+                                'same as contact no',
                                 style: const TextStyle(
+                                  color: Color(0xFFD8D8D8),
+                                  fontSize: 10,
                                   fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  color: Colors.redAccent,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Upload Document (PDF)',
-                          style: TextStyle(
-                            color: Color(0xFFD8D8D8),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            _showFileSourceSelection(isDocument: true);
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2E2E2E),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _documentFile != null
-                                    ? Colors.green
-                                    : Colors.grey.withOpacity(0.4),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: _documentFile == null
-                                ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
-                                  Icons.upload_file_rounded,
-                                  color: Colors.white70,
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Tap to Upload Document',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            )
-                                : Center(
-                              child: Text(
-                                path.basename(_documentFile!.path),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (_documentFile != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF2E2E2E),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: ListTile(
-                                leading: const Icon(
-                                  Icons.picture_as_pdf,
-                                  color: Colors.white70,
-                                ),
-                                title: Text(
-                                  path.basename(_documentFile!.path),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter',
-                                    fontSize: 14,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                trailing: IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
+                              const SizedBox(width: 5),
+                              Transform.scale(
+                                scale: 0.75,
+                                child: Switch(
+                                  inactiveTrackColor: Colors.grey.shade800,
+                                  activeColor: Colors.greenAccent,
+                                  activeTrackColor: Colors.green.shade700,
+                                  value: sameAsContact,
+                                  onChanged: (bool val) {
                                     setState(() {
-                                      _documentFile = null;
-                                      _validateDocument();
+                                      sameAsContact = val;
+                                      if (val) {
+                                        _whatsappController.text =
+                                            _contactController.text.trim();
+                                      } else {
+                                        _whatsappController.clear();
+                                      }
+                                      _validateWhatsApp();
                                     });
                                   },
                                 ),
                               ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          TextField(
+                            cursorColor: Colors.white,
+                            controller: _whatsappController,
+                            keyboardType: TextInputType.phone,
+                            maxLines: 1,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                            ),
+                            decoration: InputDecoration(
+                              hintText:
+                                  'Enter WhatsApp number (e.g., +1234567890)',
+                              hintStyle: const TextStyle(color: Colors.white70),
+                              filled: true,
+                              fillColor: const Color(0xFF2E2E2E),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                            ),
+                            enabled:
+                                !sameAsContact, // Disable input when sameAsContact is true
+                            onTap: () {
+                              setState(() {
+                                _whatsappTouched = true;
+                                _validateWhatsApp();
+                              });
+                            },
+                            onChanged: (_) {
+                              if (_whatsappTouched) {
+                                setState(() {
+                                  _validateWhatsApp();
+                                });
+                              }
+                            },
+                            onEditingComplete: () {
+                              setState(() {
+                                _validateWhatsApp();
+                              });
+                            },
+                          ),
+                          if (_showWhatsAppError)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: ShakeWidget(
+                                key: Key(_whatsAppErrorMessage),
+                                duration: const Duration(milliseconds: 700),
+                                child: Text(
+                                  _whatsAppErrorMessage,
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    color: Colors.redAccent,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Specializations',
+                                style: TextStyle(
+                                  color: Color(0xFFD8D8D8),
+                                  fontSize: 16,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: List.generate(
+                                  specializations.length,
+                                  (index) {
+                                    return ChoiceChip(
+                                      label: Text(specializations[index]),
+                                      selected: selectedSpecs[index],
+                                      onSelected: (val) {
+                                        setState(() {
+                                          selectedSpecs[index] = val;
+                                          _validateSpecializations();
+                                        });
+                                      },
+                                      labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontSize: 14,
+                                      ),
+                                      selectedColor: primarycolor.withOpacity(
+                                        0.5,
+                                      ),
+                                      backgroundColor: Colors.grey.shade800,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              if (_showSpecializationError)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: ShakeWidget(
+                                    key: const Key('specialization_error'),
+                                    duration: const Duration(milliseconds: 700),
+                                    child: const Text(
+                                      'Please select at least one specialization',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        color: Colors.redAccent,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          DropdownButtonFormField2<String>(
+                            value: _selectedIndustryType,
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              filled: true,
+                              fillColor: const Color(0xff363636),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            hint: const Text(
+                              'Select industry type',
+                              style: TextStyle(color: Colors.white38),
+                            ),
+                            items: _industryTypes.map((String type) {
+                              return DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(
+                                  type,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedIndustryType = value;
+                                _validateIndustryType();
+                              });
+                            },
+                            dropdownStyleData: DropdownStyleData(
+                              useSafeArea: true,
+                              offset: const Offset(0, -8),
+                              maxHeight: 200,
+                              decoration: BoxDecoration(
+                                color: const Color(0xff363636),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            iconStyleData: const IconStyleData(
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.white,
+                              ),
+                            ),
+                            menuItemStyleData: const MenuItemStyleData(
+                              overlayColor: MaterialStatePropertyAll(
+                                Colors.transparent,
+                              ),
                             ),
                           ),
-                        if (_showDocumentError)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: ShakeWidget(
-                              key: Key(_documentErrorMessage),
-                              duration: const Duration(milliseconds: 700),
+                          if (_showtypes)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 5),
                               child: Text(
-                                _documentErrorMessage,
-                                style: const TextStyle(
+                                'Please select industry type',
+                                style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 12,
-                                  color: Colors.redAccent,
+                                  color: Colors.red,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
+                          const SizedBox(height: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Upload Portfolio',
+                                style: TextStyle(
+                                  color: Color(0xFFD8D8D8),
+                                  fontSize: 16,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              GestureDetector(
+                                onTap: () {
+                                  _showFileSourceSelection();
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF2E2E2E),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: _portfolioFiles.isNotEmpty
+                                          ? Colors.green
+                                          : Colors.grey.withOpacity(0.4),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: _portfolioFiles.isEmpty
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(
+                                              Icons.upload_file_rounded,
+                                              color: Colors.white70,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Tap to Upload Portfolio',
+                                              style: TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Inter',
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            '${_portfolioFiles.length} file(s) selected',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: 'Inter',
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                              if (_portfolioFiles.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    children: List.generate(
+                                      _portfolioFiles.length,
+                                      (index) {
+                                        final file = _portfolioFiles[index];
+                                        final isImage =
+                                            ['.jpg', '.jpeg', '.png'].contains(
+                                              path
+                                                  .extension(file.path)
+                                                  .toLowerCase(),
+                                            );
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 8,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF2E2E2E),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: ListTile(
+                                              leading: isImage
+                                                  ? ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      child: Image.file(
+                                                        file,
+                                                        width: 40,
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    )
+                                                  : const Icon(
+                                                      Icons.picture_as_pdf,
+                                                      color: Colors.white70,
+                                                    ),
+                                              title: Text(
+                                                path.basename(file.path),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Inter',
+                                                  fontSize: 14,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              trailing: IconButton(
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _portfolioFiles.removeAt(
+                                                      index,
+                                                    );
+                                                    _validatePortfolio();
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              if (_showPortfolioError)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: ShakeWidget(
+                                    key: Key(_portfolioErrorMessage),
+                                    duration: const Duration(milliseconds: 700),
+                                    child: Text(
+                                      _portfolioErrorMessage,
+                                      style: const TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        color: Colors.redAccent,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            );
+          } else if (state is ArchitechProfileDetailsError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+              ),
+            );
+          }
+          return const Center(
+            child: Text(
+              'Something went wrong',
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -1983,19 +973,32 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              BlocConsumer<ArchitechAditionalInfoCubit, ArchitechAditionalInfoState>(
+              BlocConsumer<
+                ArchitechAditionalInfoCubit,
+                ArchitechAditionalInfoState
+              >(
                 listener: (context, state) {
                   if (state is ArchitechAditionalInfoSucess) {
                     context.pushReplacement('/profile_created');
+                  } else if (state is ArchitechAditionalInfoUpdateSucess) {
+                    context.pop();
                   } else if (state is ArchitechAditionalInfoError) {
-                         CustomSnackBar.show(context, state.message);
+                    CustomSnackBar.show(context, state.message);
                   }
                 },
                 builder: (context, state) {
                   return CustomAppButton1(
-                    isLoading: state is ArchitechAditionalInfoLoading,
-                    text: state is ArchitechAditionalInfoLoading ? 'Submitting...' : 'Done',
-                    onPlusTap: state is ArchitechAditionalInfoLoading ? null : () => _validateForm(),
+                    isLoading:
+                        state is ArchitechAditionalInfoLoading ||
+                        state is ArchitechAditionalInfoUpdateLoading,
+                    text:
+                        state is ArchitechAditionalInfoLoading ||
+                            state is ArchitechAditionalInfoUpdateLoading
+                        ? 'Submitting...'
+                        : 'Done',
+                    onPlusTap: state is ArchitechAditionalInfoLoading
+                        ? null
+                        : () => _validateForm(),
                   );
                 },
               ),

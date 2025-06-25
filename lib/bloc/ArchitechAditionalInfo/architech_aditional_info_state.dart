@@ -11,10 +11,15 @@ abstract class ArchitechAditionalInfoState extends Equatable {
 class ArchitechAditionalInfoIntially extends ArchitechAditionalInfoState {}
 
 class ArchitechAditionalInfoLoading extends ArchitechAditionalInfoState {}
+class ArchitechAditionalInfoUpdateLoading extends ArchitechAditionalInfoState {}
 
 class ArchitechAditionalInfoSucess extends ArchitechAditionalInfoState {
   final SuccessModel successModel;
   ArchitechAditionalInfoSucess({required this.successModel});
+}
+class ArchitechAditionalInfoUpdateSucess extends ArchitechAditionalInfoState {
+  final SuccessModel successModel;
+  ArchitechAditionalInfoUpdateSucess({required this.successModel});
 }
 
 class ArchitechAditionalInfoError extends ArchitechAditionalInfoState {

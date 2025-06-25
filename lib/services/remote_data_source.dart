@@ -38,6 +38,9 @@ abstract class RemoteDataSource {
   Future<SuccessModel?> ArchitechCompanyAdditionalInfoPost(
     Map<String, dynamic> data,
   );
+  Future<SuccessModel?> ArchitechCompanyAdditionalInfoUpdate(
+      Map<String, dynamic> data,
+      );
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -282,6 +285,27 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error comapny Additional Post ::$e');
+      return null;
+    }
+  }
+  @override
+  Future<SuccessModel?> ArchitechCompanyAdditionalInfoUpdate(
+    Map<String, dynamic> data,
+  ) async {
+    var formdata = await buildFormData(data);
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.architech_company_additional_info_update}",
+        data: formdata,
+      );
+      if (res.statusCode == 200) {
+        debugPrint('create comapny Additional Update:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error comapny Additional Update ::$e');
       return null;
     }
   }
