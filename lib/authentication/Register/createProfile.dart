@@ -786,6 +786,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           "state": _selectState,
 
                           "location": _selectCity,
+                          "logo": _logoImage,
                         };
                         context.read<CreateProfileCubit>().createProfileApi(
                           data,

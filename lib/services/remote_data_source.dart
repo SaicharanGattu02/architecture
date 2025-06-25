@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:architect/models/ActiveSubscriptionmodel.dart';
 import 'package:architect/models/SubscriptionModel.dart';
@@ -44,23 +43,35 @@ abstract class RemoteDataSource {
 class RemoteDataSourceImpl implements RemoteDataSource {
   Future<FormData> buildFormData(Map<String, dynamic> data) async {
     final formMap = <String, dynamic>{};
+
     for (final entry in data.entries) {
       final key = entry.key;
       final value = entry.value;
 
       if (value == null) continue;
 
-      if (value is File &&
-          (key.contains('image') ||
-              key.contains('file') ||
-              key.contains('picture') ||
-              key.contains('payment_screenshot'))) {
+      // Handle list of files (e.g., portfolio[])
+      if (value is List<File> && key == 'portfolio') {
+        formMap.addAll({
+          for (int i = 0; i < value.length; i++)
+            'portfolio[]': await MultipartFile.fromFile(
+              value[i].path,
+              filename: value[i].path.split('/').last,
+            ),
+        });
+      } else if (value is List<String> && key == 'specializations') {
+        formMap.addAll({for (final item in value) 'specializations[]': item});
+      }
+      // Handle single file (e.g., document)
+      else if (value is File) {
         formMap[key] = await MultipartFile.fromFile(
           value.path,
           filename: value.path.split('/').last,
         );
-      } else {
-        formMap[key] = value.toString();
+      }
+      // Handle normal fields
+      else {
+        formMap[key] = value.toString().trim();
       }
     }
 
@@ -217,8 +228,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<SuccessModel?> createProfile(Map<String, dynamic> data) async {
     try {
+      var formdata = await buildFormData(data);
       Response res = await ApiClient.post(
-        "${APIEndpointUrls.create_profile}?company_name=${data["company_name"]}&company_email=${data["company_email"]}&contact_person_name=${data["contact_person_name"]}&state=${data["state"]}&location=${data["location"]}&established_year=${data["established_year"]}",
+        "${APIEndpointUrls.create_profile}",
+        data: formdata,
       );
       if (res.statusCode == 200) {
         debugPrint('createProfile:${res.data}');
@@ -255,10 +268,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<SuccessModel?> ArchitechCompanyAdditionalInfoPost(
     Map<String, dynamic> data,
   ) async {
+    var formdata = await buildFormData(data);
     try {
       Response res = await ApiClient.post(
         "${APIEndpointUrls.architech_company_additional_info}",
-        data: data,
+        data: formdata,
       );
       if (res.statusCode == 200) {
         debugPrint('create comapny Additional Post:${res.data}');
