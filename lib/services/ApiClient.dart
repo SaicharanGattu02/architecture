@@ -67,11 +67,9 @@ class ApiClient {
               );
               return handler.next(options);
             }
-
             // Check token expiration
             final isExpired = await AuthService.isTokenExpired();
             logger.d('[Interceptor] Token expired: $isExpired');
-
             if (isExpired) {
               logger.d('[Interceptor] Token expired, attempting logout...');
               await AuthService.logout();
@@ -83,7 +81,6 @@ class ApiClient {
                 ),
               );
             }
-
             // Get access token from storage
             final accessToken = await AuthService.getAccessToken();
             logger.d('[Interceptor] Access token: $accessToken');

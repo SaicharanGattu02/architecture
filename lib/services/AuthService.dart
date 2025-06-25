@@ -42,11 +42,15 @@ class AuthService {
       return true;
     }
 
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; // current time in seconds
+    final now =
+        DateTime.now().millisecondsSinceEpoch ~/
+        1000; // current time in seconds
 
     final isExpired = now >= expiryTimestamp;
 
-    debugPrint('Token expiry check: now=$now, expiry=$expiryTimestamp, isExpired=$isExpired');
+    debugPrint(
+      'Token expiry check: now=$now, expiry=$expiryTimestamp, isExpired=$isExpired',
+    );
     return isExpired;
   }
 
@@ -117,22 +121,22 @@ class AuthService {
   /// Logout and clear tokens, redirect to sign-in screen
   static Future<void> logout() async {
     await _storage.deleteAll(); // clear all tokens
-
     debugPrint('Tokens cleared, user logged out');
 
-    if (navigatorKey.currentState != null) {
-      navigatorKey.currentState!.pushNamedAndRemoveUntil('/onboarding', (route) => false);
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      GoRouter.of(context).go('/onboarding');
     } else {
-      debugPrint('Navigator state is null, scheduling navigation after frame');
+      debugPrint('Context is null, scheduling GoRouter navigation after frame');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (navigatorKey.currentState != null) {
-          navigatorKey.currentState!.pushNamedAndRemoveUntil('/onboarding', (route) => false);
+        final postFrameContext = navigatorKey.currentContext;
+        if (postFrameContext != null) {
+          GoRouter.of(postFrameContext).go('/onboarding');
         } else {
-          debugPrint('Still no navigator state after delay');
-          // Optional: fallback, maybe restart app or notify user
+          debugPrint('Still no context available after frame');
+          // Optional: consider forcing rebuild or restarting app
         }
       });
     }
   }
-
 }
