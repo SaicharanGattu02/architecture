@@ -1,19 +1,20 @@
 import 'package:architect/utils/color_constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../Components/CustomAppButton.dart';
 import '../../Components/CutomAppBar.dart';
 
 class Payment extends StatefulWidget {
-  const Payment({Key? key}) : super(key: key);
+  final Map<String, dynamic> data;
+  const Payment({Key? key, required this.data}) : super(key: key);
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<Payment> {
-  String? _method = 'Credit Card';
+  String? _method = 'Google Pay';
+  bool _paymentDone = false;
 
   Widget _buildOption(String label) {
     final bool selected = _method == label;
@@ -31,7 +32,7 @@ class _PaymentScreenState extends State<Payment> {
             Expanded(
               child: Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 16,
                   color: Colors.white,
@@ -53,41 +54,48 @@ class _PaymentScreenState extends State<Payment> {
     return Scaffold(
       backgroundColor: primarycolor,
       appBar: CustomAppBar1(title: 'Payment', actions: []),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Select a payment method',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Text(
+              'Select a payment method',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 16),
-            _buildOption('Credit Card'),
-            _buildOption('Paypal'),
-            _buildOption('Apple Pay'),
-          ],
-        ),
+          ),
+          _buildOption('Google Pay'),
+          _buildOption('Razor Pay'),
+          _buildOption('Phone Pay'),
+
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: CustomAppButton1(
             text: 'Continue',
             onPlusTap: _method == null
                 ? null
                 : () {
-                    context.push('/architect_profile_setup');
-                  },
+              setState(() {
+                _paymentDone = true;
+              });
+
+              final updatedData = {
+                ...widget.data,
+                "payment_method": _method,
+                "status": "completed",
+              };
+              Future.delayed(const Duration(seconds: 1), () {
+                context.push('/architect_profile_setup', extra: updatedData);
+              });
+            },
           ),
         ),
       ),

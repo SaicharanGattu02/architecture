@@ -1,5 +1,6 @@
 import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
 import 'package:architect/bloc/city/city_cubit.dart';
+import 'package:architect/bloc/create_payment/create_payment_cubit.dart';
 import 'package:architect/bloc/state/state_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
@@ -16,6 +17,7 @@ import '../bloc/add_edit_post/add_edit_post_repository.dart';
 import '../bloc/architect_list/architect_cubit.dart';
 import '../bloc/architect_list/architect_repository.dart';
 import '../bloc/city/city_repository.dart';
+import '../bloc/create_payment/create_payment_repository.dart';
 import '../bloc/create_posted/create_post_cubit.dart';
 import '../bloc/create_posted/create_post_repository.dart';
 import '../bloc/login/login_cubit.dart';
@@ -25,6 +27,8 @@ import '../bloc/register/register_repository.dart';
 import '../bloc/state/state_repository.dart';
 import '../bloc/user_posts/user_posts_cubit.dart';
 import '../bloc/user_posts/user_posts_repository.dart';
+import '../bloc/user_posts_delete/user_post_deatails_cubit.dart';
+import '../bloc/user_posts_delete/user_post_details_repository.dart';
 import '../services/remote_data_source.dart';
 
 class StateInjector {
@@ -91,6 +95,15 @@ class StateInjector {
         remoteDataSource: context.read<RemoteDataSource>(),
       ),
     ),
+    RepositoryProvider<UserPostsDetailsRepository>(
+      create: (context) => UserPostDetailsImpl(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
+    ),
+    RepositoryProvider<CreatePaymentRepository>(
+      create: (context) =>
+          CreatePaymentImpl(remoteDataSource: context.read<RemoteDataSource>()),
+    ),
   ];
 
   static final blocProviders = <BlocProvider>[
@@ -141,6 +154,14 @@ class StateInjector {
       create: (context) => ArchitechAditionalInfoCubit(
         context.read<ArchitechAditionalInfoRepository>(),
       ),
+    ),
+    BlocProvider<UserPostDetailsCubit>(
+      create: (context) =>
+          UserPostDetailsCubit(context.read<UserPostsDetailsRepository>()),
+    ),
+    BlocProvider<CreatePaymentCubit>(
+      create: (context) =>
+          CreatePaymentCubit(context.read<CreatePaymentRepository>()),
     ),
   ];
 }

@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   BlocConsumer<LoginOTPCubit, LoginOtpState>(
                     listener: (context, state) {
                       if (state is LoginOtpSucess) {
-                        context.pushReplacement(
+                        context.push(
                           "/otp?mailId=${_emailController.text.trim()}&type=${"LogInVerify"}",
                         );
                       } else if (state is LoginOtpError) {

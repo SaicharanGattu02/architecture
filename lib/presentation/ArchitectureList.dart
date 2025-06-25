@@ -21,7 +21,7 @@ class SelectArchitecture extends StatefulWidget {
 class _SelectArchitectureScreenState extends State<SelectArchitecture> {
   @override
   void initState() {
-    print("vabnxz:${ widget.industryType},${widget.location},");
+    print("vabnxz:${widget.industryType},${widget.location},");
     context.read<ArchitectCubit>().getArchitect(
       widget.industryType,
       widget.location,
@@ -34,7 +34,18 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'Architecture', actions: []),
+      appBar: CustomAppBar1(
+        title: 'Architecture',
+        actions: [
+          IconButton.outlined(
+            onPressed: () {
+              context.go('/onboarding');
+            },
+            icon: Icon(Icons.home, color: Colors.white, size: 24),
+          ),
+        ],
+      ),
+
       body: BlocBuilder<ArchitectCubit, ArchitectState>(
         builder: (context, state) {
           if (state is ArchitectLoading) {
@@ -43,7 +54,7 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
             );
           } else if (state is ArchitectLoaded) {
             if (state.architectModel.data?.architechData == null ||
-                state.architectModel.data?.architechData?.length==0) {
+                state.architectModel.data?.architechData?.length == 0) {
               return const Center(
                 child: Text(
                   'No Architects available',
@@ -56,10 +67,13 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
               child: ListView.builder(
                 itemCount: state.architectModel.data?.architechData?.length,
                 itemBuilder: (context, index) {
-                  final architechList=state.architectModel.data?.architechData![index];
+                  final architechList =
+                      state.architectModel.data?.architechData![index];
                   return GestureDetector(
                     onTap: () {
-                      context.push('/architecture_details?id=${architechList?.id ?? 0}');
+                      context.push(
+                        '/architecture_details?id=${architechList?.id ?? 0}',
+                      );
                     },
                     child: Container(
                       padding: const EdgeInsets.all(16),
@@ -89,19 +103,21 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                 Text(
-                                   architechList?.companyName??"",
+                                Text(
+                                  architechList?.companyName ?? "",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,fontFamily: 'Inter'
+                                    color: Colors.white,
+                                    fontFamily: 'Inter',
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                 Text(
-                                   architechList?.companyEmail??"",
+                                Text(
+                                  architechList?.companyEmail ?? "",
                                   style: TextStyle(
-                                    color: Colors.white70,fontFamily: 'Inter',
+                                    color: Colors.white70,
+                                    fontFamily: 'Inter',
                                     fontSize: 14,
                                   ),
                                 ),

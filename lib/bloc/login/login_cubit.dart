@@ -25,6 +25,42 @@ class LoginOTPCubit extends Cubit<LoginOtpState> {
     }
   }
 
+  Future<void> logInResendOtpApi(Map<String, dynamic> data) async {
+    emit(LoginOtpLoading());
+    try {
+      final res = await loginotpRepository.loginResendOtpApi(data);
+      if (res != null) {
+        if (res.status == true) {
+          emit(LoginOtpSucess(successModel: res));
+        } else {
+          emit(LoginOtpError(message: "${res.message}"));
+        }
+      } else {
+        emit(LoginOtpError(message: "No data available"));
+      }
+    } catch (e) {
+      emit(LoginOtpError(message: "An error occurred: $e"));
+    }
+  }
+
+  Future<void> resendCompanyCreateOtp(Map<String, dynamic> data) async {
+    emit(LoginOtpLoading());
+    try {
+      final res = await loginotpRepository.resendVerifyCompanyOtp(data);
+      if (res != null) {
+        if (res.status == true) {
+          emit(LoginOtpSucess(successModel: res));
+        } else {
+          emit(LoginOtpError(message: "${res.message}"));
+        }
+      } else {
+        emit(LoginOtpError(message: "No data available"));
+      }
+    } catch (e) {
+      emit(LoginOtpError(message: "An error occurred: $e"));
+    }
+  }
+
   Future<void> logInVerifyOtpApi(Map<String, dynamic> data) async {
     emit(LoginVerifyOtpLoading());
     try {

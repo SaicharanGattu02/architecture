@@ -9,7 +9,7 @@ import '../../Components/CutomAppBar.dart';
 
 class Subscription extends StatefulWidget {
   final int id;
-  const Subscription({Key? key,required this.id}) : super(key: key);
+  const Subscription({Key? key, required this.id}) : super(key: key);
 
   @override
   _SubscriptionScreenState createState() => _SubscriptionScreenState();
@@ -46,18 +46,17 @@ class _SubscriptionScreenState extends State<Subscription> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'Subscription', actions: const []),
-      body: BlocBuilder<SubscriptionCubit, SubscriptionState>(
-        builder: (context, state) {
-          if (state is SubscriptionLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is SubscriptionLoaded) {
-            final plans = state.subscriptionModel.data;
-
-            return Column(
+    return BlocBuilder<SubscriptionCubit, SubscriptionState>(
+      builder: (context, state) {
+        if (state is SubscriptionLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is SubscriptionLoaded) {
+          final plans = state.subscriptionModel.data;
+          return Scaffold(
+            backgroundColor: primarycolor,
+            appBar: CustomAppBar1(title: 'Subscription', actions: const []),
+            body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
@@ -151,37 +150,45 @@ class _SubscriptionScreenState extends State<Subscription> {
                   ),
                 ),
               ],
-            );
-          }
+            ),
+            bottomNavigationBar: _selectedIndex != -1
+                ? SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 20,
+                      ),
+                      child: CustomAppButton1(
+                        text: 'Continue',
+                        onPlusTap: () {
+                          final selectedPlan = plans[_selectedIndex];
+                          final Map<String, dynamic> data = {
+                            "plan_id": selectedPlan.id,
+                            "amount": selectedPlan.price,
+                            "company_id": widget.id,
+                          };
+                          context.push('/payment', extra: data);
 
-          if (state is SubscriptionError) {
-            return Center(
-              child: Text(
-                state.message,
-                style: const TextStyle(color: Colors.white),
-              ),
-            );
-          }
+                          context.push('/payment');
+                        },
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          );
+        }
 
-          return const SizedBox.shrink();
-        },
-      ),
-      bottomNavigationBar: _selectedIndex != -1
-          ? SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 20,
-                ),
-                child: CustomAppButton1(
-                  text: 'Continue',
-                  onPlusTap: () {
-                    context.push('/payment');
-                  },
-                ),
-              ),
-            )
-          : const SizedBox.shrink(),
+        if (state is SubscriptionError) {
+          return Center(
+            child: Text(
+              state.message,
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }

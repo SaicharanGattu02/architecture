@@ -327,8 +327,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               BlocConsumer<CreateProfileCubit, CreateProfileState>(
                 listener: (context, state) {
                   if (state is CreateProfileSucess) {
-                    context.pushReplacement(
-                      "/otp?mailId=${_emailController.text.trim()}&type=ProfileVerify",
+                    context.push(
+                      "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
                     );
                   } else if (state is UpdateCompanyProfileSucess) {
                     context.push('/architect_profile_setup?id=${widget.id}');
