@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../bloc/register/register_cubit.dart';
-import '../bloc/register/register_state.dart';
-import '../utils/Validator.dart';
+import '../../bloc/register/register_cubit.dart';
+import '../../bloc/register/register_state.dart';
+import '../../utils/Validator.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});

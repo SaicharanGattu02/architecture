@@ -1,13 +1,13 @@
-import 'package:architect/Components/CustomAppButton.dart';
-import 'package:architect/Components/CustomSnackBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../Components/ShakeWidget.dart';
-import '../bloc/login/login_cubit.dart';
-import '../bloc/login/login_state.dart';
-import '../utils/Validator.dart';
+import '../../bloc/login/login_cubit.dart';
+import '../../bloc/login/login_state.dart';
+import '../../utils/ShakeWidget.dart';
+import '../../utils/Validator.dart';
+import '../Components/CustomAppButton.dart';
+import '../Components/CustomSnackBar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

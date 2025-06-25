@@ -1,5 +1,3 @@
-import 'package:architect/Components/CustomAppButton.dart';
-import 'package:architect/Components/CustomSnackBar.dart';
 import 'package:architect/bloc/CreateProfile/create_profile_cubit.dart';
 import 'package:architect/bloc/CreateProfile/create_profile_state.dart';
 import 'package:architect/bloc/login/login_cubit.dart';
@@ -9,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-
+import '../../../services/AuthService.dart';
+import '../../../utils/ShakeWidget.dart';
+import '../../Components/CustomAppButton.dart';
+import '../../Components/CustomSnackBar.dart';
 import '../../Components/CutomAppBar.dart';
-import '../../Components/ShakeWidget.dart';
-import '../../bloc/login/login_state.dart';
-import '../../services/AuthService.dart';
 
 class Otp extends StatefulWidget {
   final String mailId;
@@ -195,7 +193,7 @@ class _OtpVerificationScreenState extends State<Otp> {
 
             await AuthService.saveTokens(
               state.successModel.accessToken ?? "",
-               "",
+              "",
               expiryTimestamp,
             );
             context.pushReplacement('/user_posts');

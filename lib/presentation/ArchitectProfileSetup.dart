@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:architect/Components/CustomSnackBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,11 +8,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as path;
-import '../Components/CustomAppButton.dart';
-import '../Components/CutomAppBar.dart';
-import '../Components/ShakeWidget.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_state.dart';
+import '../utils/ShakeWidget.dart';
+import 'Components/CustomAppButton.dart';
+import 'Components/CustomSnackBar.dart';
+import 'Components/CutomAppBar.dart';
 
 class ArchitectProfileSetup extends StatefulWidget {
   final int id;
@@ -865,7 +865,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                       '/profile_created',
                     ); // Use pushReplacement to avoid back navigation
                   } else if (state is ArchitechAditionalInfoError) {
-                    CustomSnackBar.show(context, state.message);
+                         CustomSnackBar.show(context, state.message);
                   }
                 },
                 builder: (context, state) {

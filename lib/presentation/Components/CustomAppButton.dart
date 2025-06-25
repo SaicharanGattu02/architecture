@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/color_constants.dart';
+import '../../utils/color_constants.dart';
 
 class CustomAppButton extends StatelessWidget implements PreferredSizeWidget {
   final String text;

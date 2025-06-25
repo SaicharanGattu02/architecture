@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utils/color_constants.dart';
+import '../../utils/color_constants.dart';
 import 'CustomAppButton.dart';
 
-class Nointernet extends StatelessWidget {
-  const Nointernet({super.key});
+class Serverdown extends StatelessWidget {
+  const Serverdown({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class Nointernet extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: "The internet took a break",
+                      text: "The server’s on a coffee break.",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
@@ -39,7 +39,7 @@ class Nointernet extends StatelessWidget {
                 ),
               ),
             ),
-            Image.asset("assets/no_internet.png"),
+            Image.asset("assets/images/server_error.png"),
           ],
         ),
       ),
@@ -48,7 +48,7 @@ class Nointernet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CustomAppButton(text: "Retry", onPlusTap: (){
+            CustomAppButton(text: "Try later", onPlusTap: (){
 
             }),
           ],
