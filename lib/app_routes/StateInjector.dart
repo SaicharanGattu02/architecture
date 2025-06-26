@@ -20,6 +20,7 @@ import '../bloc/city/city_repository.dart';
 import '../bloc/create_payment/create_payment_repository.dart';
 import '../bloc/create_posted/create_post_cubit.dart';
 import '../bloc/create_posted/create_post_repository.dart';
+import '../bloc/internet_status/internet_status_bloc.dart';
 import '../bloc/login/login_cubit.dart';
 import '../bloc/login/login_repository.dart';
 import '../bloc/register/register_cubit.dart';
@@ -163,5 +164,6 @@ class StateInjector {
       create: (context) =>
           CreatePaymentCubit(context.read<CreatePaymentRepository>()),
     ),
+    BlocProvider<InternetStatusBloc>(create: (context) => InternetStatusBloc()),
   ];
 }

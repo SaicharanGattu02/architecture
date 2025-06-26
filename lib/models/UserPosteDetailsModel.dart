@@ -27,10 +27,10 @@ class Data {
   String? name;
   String? email;
   String? phone;
-  Null? state;
+  String? state;
   String? location;
   String? landDetails;
-  Null? timeFrame;
+  String? timeFrame;
   String? createdAt;
   String? updatedAt;
 

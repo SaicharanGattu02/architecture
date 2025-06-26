@@ -488,7 +488,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<UserPosteDetailsModel?> getUserPostDetails(int id) async {
     try {
-      Response res = await ApiClient.get("${APIEndpointUrls.user_posts}/${id}");
+      Response res = await ApiClient.get("${APIEndpointUrls.user_posts_detail}/${id}");
       if (res.statusCode == 200) {
         debugPrint('get getUserPostDetails: ${res.data}');
         return UserPosteDetailsModel.fromJson(res.data);

@@ -2,6 +2,7 @@ import 'package:architect/bloc/CreateProfile/create_profile_cubit.dart';
 import 'package:architect/bloc/CreateProfile/create_profile_state.dart';
 import 'package:architect/bloc/city/city_cubit.dart';
 import 'package:architect/bloc/city/city_states.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import '../../../bloc/ArchitechProfile/architech_profile_cubit.dart';
 import '../../../bloc/ArchitechProfile/architech_profile_state.dart';
 import '../../../bloc/state/state_cubit.dart';
 import '../../../bloc/state/state_states.dart';
+import '../../../utils/ImageUtils.dart';
 import '../../../utils/ShakeWidget.dart';
 import '../../../utils/color_constants.dart';
 import '../../Components/CustomAppButton.dart';
@@ -49,6 +51,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   String? _selectedYear;
   File? _logoImage;
   File? _coverImage;
+  String? _logoUrl;
+  String? _coverPhotoUrl;
   bool _showCompanyError = false;
   bool _showContactPersonError = false;
   bool _showEmailError = false;
@@ -95,27 +99,43 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         _validateYear() &&
         _validateLogo();
   }
-
   Future<void> _pickImage(ImageSource source, {bool isLogo = true}) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
-        setState(() {
-          if (isLogo) {
-            _logoImage = File(pickedFile.path);
-            _showLogoError = !_validateLogo();
-          } else {
-            _coverImage = File(pickedFile.path);
-          }
-        });
+        // Compress the picked image using your utility
+        File? compressedFile = await ImageUtils.compressImage(File(pickedFile.path));
+
+        if (compressedFile != null) {
+          setState(() {
+            if (isLogo) {
+              _logoImage = compressedFile;
+              _showLogoError = !_validateLogo();
+            } else {
+              _coverImage = compressedFile;
+            }
+          });
+        } else {
+          // If compression failed, fall back to original file
+          setState(() {
+            if (isLogo) {
+              _logoImage = File(pickedFile.path);
+              _showLogoError = !_validateLogo();
+            } else {
+              _coverImage = File(pickedFile.path);
+            }
+          });
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
     }
-    context.pop();
+
+    context.pop(); // assuming this closes a modal or bottom sheet
   }
+
 
   void _showImageSourceSelection({bool isLogo = true}) {
     showModalBottomSheet(
@@ -299,11 +319,13 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           _selectState = profile?.state ?? "";
                           _selectCity = profile?.location ?? "";
                           _selectedYear = profile?.establishedYear ?? "";
-
+                          _logoUrl = profile?.logo ?? "";
+                          _coverPhotoUrl = profile?.coverPhoto ?? "";
                           if (_selectState != null &&
                               _selectState!.isNotEmpty) {
                             context.read<CityCubit>().getCity(_selectState!);
                           }
+
                         });
                       });
                     }
@@ -491,6 +513,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             onTap: () => _showImageSourceSelection(isLogo: true),
             onRemove: () => setState(() {
               _logoImage = null;
+              _logoUrl = '';
               _showLogoError = false;
             }),
           ),
@@ -503,6 +526,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             onTap: () => _showImageSourceSelection(isLogo: false),
             onRemove: () => setState(() {
               _coverImage = null;
+              _coverPhotoUrl="";
             }),
           ),
         ],
@@ -779,7 +803,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       ],
     );
   }
-
   Widget _buildImagePicker({
     required String label,
     required File? image,
@@ -787,7 +810,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     required String errorMessage,
     required VoidCallback onTap,
     required VoidCallback onRemove,
+    bool isLogo = true, // Add parameter to determine if it's logo or cover photo
   }) {
+    final String? networkImageUrl = isLogo ? _logoUrl : _coverPhotoUrl;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -810,59 +835,76 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               color: const Color(0xFF2E2E2E),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: image != null
+                color: image != null || (networkImageUrl != null && networkImageUrl.isNotEmpty)
                     ? Colors.green
                     : Colors.grey.withOpacity(0.4),
                 width: 1.5,
               ),
             ),
-            child: image == null
+            child: image == null && (networkImageUrl == null || networkImageUrl.isEmpty)
                 ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.upload_file_rounded, color: Colors.white70),
-                      SizedBox(width: 10),
-                      Text(
-                        'Tap to Upload',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  )
-                : Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(
-                          image,
-                          width: double.infinity,
-                          height: 120,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: GestureDetector(
-                          onTap: onRemove,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.black54,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.upload_file_rounded, color: Colors.white70),
+                SizedBox(width: 10),
+                Text(
+                  'Tap to Upload',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
                   ),
+                ),
+              ],
+            )
+                : Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: image != null
+                      ? Image.file(
+                    image,
+                    width: double.infinity,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  )
+                      : CachedNetworkImage(
+                    imageUrl: networkImageUrl!,
+                    width: double.infinity,
+                    height: 120,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white70,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error,
+                      color: Colors.redAccent,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: GestureDetector(
+                    onTap: onRemove,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         if (showError)
@@ -885,4 +927,5 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       ],
     );
   }
+
 }

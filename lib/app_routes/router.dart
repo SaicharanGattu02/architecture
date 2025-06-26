@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../presentation/ArchitechProfile.dart';
 import '../presentation/ArchitectProfileSetup.dart';
+import '../presentation/Components/NoInternet.dart';
 import '../presentation/PostYourRequirement.dart';
 import '../presentation/PostYourRequirementSuccessfully.dart';
 import '../presentation/SplashScreen.dart';
@@ -43,6 +44,11 @@ final GoRouter appRouter = GoRouter(
       path: '/onboarding',
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(Onboarding(), state),
+    ),
+    GoRoute(
+      path: '/no_internet',
+      pageBuilder: (context, state) =>
+          buildSlideTransitionPage(Nointernet(), state),
     ),
     GoRoute(
       path: '/user_posted_details',

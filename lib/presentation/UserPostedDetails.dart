@@ -24,7 +24,7 @@ class _UserPostedDetailsState extends State<UserPostedDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'Detail', actions: []),
+      appBar: CustomAppBar1(title: 'Post Detail', actions: []),
       body: BlocBuilder<UserPostDetailsCubit, UserPostDetailsState>(
         builder: (context, state) {
           if (state is UserPostDetailsLoading) {
@@ -134,7 +134,7 @@ class _UserPostedDetailsState extends State<UserPostedDetails> {
                       ),
                       SizedBox(height: 12),
                       Text(
-                        'In ${state.userPosteDetailsModel.data?.timeFrame ?? ""} Months',
+                        'In ${state.userPosteDetailsModel.data?.timeFrame ?? ""}',
                         style: TextStyle(
                           color: Color(0xffFAFAFA).withOpacity(0.8),
                           fontSize: 12,

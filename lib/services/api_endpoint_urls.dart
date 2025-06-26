@@ -27,6 +27,7 @@ class APIEndpointUrls {
   static const String create_post = '${apiUrl}create-post';
   static const String create_payment = '${apiUrl}create-payment';
   static const String user_posts = '${apiUrl}customer-posts';
+  static const String user_posts_detail = '${apiUrl}customer-post';
   static const String architech_profile = '${apiUrl}getProfile';
   static const String architech_profile_details =
       '${apiUrl}get-architect-by-id';

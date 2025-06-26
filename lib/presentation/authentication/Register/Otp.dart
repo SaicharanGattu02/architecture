@@ -255,7 +255,7 @@ class _OtpVerificationScreenState extends State<Otp> {
             );
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.pushReplacement('/user_posts');
+              context.go('/user_posts');
             });
           } else if (state is LoginOtpError) {
             CustomSnackBar.show(context, state.message);
@@ -274,7 +274,7 @@ class _OtpVerificationScreenState extends State<Otp> {
         listener: (context, state) {
           if (state is CreateProfileVerifyOTPSucess) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.pushReplacement(
+              context.go(
                 '/subscription?id=${state.successModel.companyId}&type=${"New"}',
               );
             });

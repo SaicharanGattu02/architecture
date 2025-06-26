@@ -116,7 +116,7 @@ class ArchitectData {
   String? contactNumber;
   String? whatsappNumber;
   List<String>? specializations;
-  String? portfolio;
+  List<dynamic>? portfolio;
   String? createdAt;
   String? updatedAt;
 

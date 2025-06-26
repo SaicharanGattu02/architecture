@@ -34,7 +34,15 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'Architecture', actions: []),
+      appBar: CustomAppBar1(title: 'Architecture', actions: [Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: IconButton(
+          onPressed: () {
+            context.go('/onboarding');
+          },
+          icon: Icon(Icons.home, color: Colors.white),
+        ),
+      ),]),
       body: BlocBuilder<ArchitectCubit, ArchitectState>(
         builder: (context, state) {
           if (state is ArchitectLoading) {

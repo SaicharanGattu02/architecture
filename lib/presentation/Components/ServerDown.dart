@@ -23,7 +23,7 @@ class Serverdown extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
                     color: primarycolor,
-                    fontFamily: "lexend",
+                    fontFamily: "Inter",
                   ),
                   children: [
                     TextSpan(
@@ -32,7 +32,7 @@ class Serverdown extends StatelessWidget {
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color:Color(0xff9E9E9E),
-                        fontFamily: "lexend",
+                        fontFamily: "Inter",
                       ),
                     ),
                   ],

@@ -43,27 +43,6 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
     );
   }
 
-  void _launchDialer(String phoneNumber) async {
-    final Uri url = Uri(scheme: 'tel', path: phoneNumber);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  void launchWhatsApp(String phoneNumber, {String message = ''}) async {
-    print('hiii');
-    final whatsappUrl = Uri.parse(
-      "https://wa.me/$phoneNumber${message.isNotEmpty ? '?text=${Uri.encodeComponent(message)}' : ''}",
-    );
-
-    if (await canLaunchUrl(whatsappUrl)) {
-      await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch WhatsApp';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

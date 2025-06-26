@@ -1,4 +1,5 @@
 import 'package:architect/utils/color_constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -59,11 +60,29 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                 color: Color(0xff010101),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: const Icon(
-                                Icons.image,
-                                size: 48,
-                                color: Colors.white30,
-                              ),
+                              child:  CachedNetworkImage(
+                                imageUrl:
+                                state.architechProfileModel.data?.logo ??
+                                    "",
+                                imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                placeholder: (context, url) => Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: primarycolor,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  "assets/profile.png",
+                                  fit: BoxFit.cover,
+                                ),
+                              )
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -402,7 +421,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                   "No",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: "lexend",
+                                    fontFamily: "Inter",
                                   ),
                                 ),
                               ),
@@ -430,7 +449,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                   "Yes",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: "lexend",
+                                    fontFamily: "Inter",
                                   ),
                                 ),
                               ),
