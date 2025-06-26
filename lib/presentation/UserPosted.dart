@@ -25,7 +25,9 @@ class _UserPostedState extends State<UserPosted> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: AppBar(automaticallyImplyLeading: true,centerTitle: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        centerTitle: true,
         title: Text(
           'User Posted',
           style: const TextStyle(
@@ -82,7 +84,9 @@ class _UserPostedState extends State<UserPosted> {
                         final userPosts = state.userPostedModel.data![index];
                         return GestureDetector(
                           onTap: () {
-                            context.push('/user_posted_details');
+                            context.push(
+                              '/user_posted_details?id=${userPosts.id}',
+                            );
                           },
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 12),

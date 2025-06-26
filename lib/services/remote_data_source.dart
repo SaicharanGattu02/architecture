@@ -8,6 +8,7 @@ import '../models/ArchitectModel.dart';
 import '../models/CitiesModel.dart';
 import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
+import '../models/UserPosteDetailsModel.dart';
 import '../models/UserPostedModel.dart';
 import '../models/VerifyLogInOtpModel.dart';
 import '../models/VerifyOtpModel.dart';
@@ -28,12 +29,15 @@ abstract class RemoteDataSource {
   Future<List<CityModel>?> getCity(String state);
   Future<Activesubscriptionmodel?> activesubplans(int Id);
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
+  Future<SuccessModel?> resendLoginOtp(Map<String, dynamic> data);
+  Future<SuccessModel?> resendVerifyCompanyOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createProfile(Map<String, dynamic> data);
   Future<SuccessModel?> updateCompanyProfile(Map<String, dynamic> data);
   Future<VerifyLogInOtpModel?> verifyLoginOtp(Map<String, dynamic> data);
   Future<VerifyOtpModel?> companyVerifyOtp(Map<String, dynamic> data);
   Future<SuccessModel?> createPost(Map<String, dynamic> data);
   Future<UserPostedModel?> getUserPosts();
+  Future<UserPosteDetailsModel?> getUserPostDetails(int id);
   Future<ArchitechProfileModel?> getArchitechProfile();
   Future<ArchitechProfileModel?> getArchitechProfileDetails(int id);
   Future<SuccessModel?> ArchitechCompanyAdditionalInfoPost(
@@ -42,6 +46,7 @@ abstract class RemoteDataSource {
   Future<SuccessModel?> ArchitechCompanyAdditionalInfoUpdate(
     Map<String, dynamic> data,
   );
+  Future<SuccessModel?> createPayment(Map<String, dynamic> data);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -178,7 +183,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data) async {
     try {
       Response res = await ApiClient.post(
-        "${APIEndpointUrls.loginotp}?company_email=${data['company_email']}",
+        "${APIEndpointUrls.login_otp}?company_email=${data['company_email']}",
       );
       if (res.statusCode == 200) {
         debugPrint('loginOtp:${res.data}');
@@ -188,6 +193,44 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error loginOtp::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> resendLoginOtp(Map<String, dynamic> data) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.resend_login_otp}?company_email=${data['company_email']}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('resend Login Otp:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error resend Login Otp::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> resendVerifyCompanyOtp(
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.resend_verify_company_otp}?company_email=${data['company_email']}",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('resend Verify Company Otp:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error resend Verify Company Otp::$e');
       return null;
     }
   }
@@ -284,6 +327,25 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error createPost::$e');
+      return null;
+    }
+  }
+
+  @override
+  Future<SuccessModel?> createPayment(Map<String, dynamic> data) async {
+    try {
+      Response res = await ApiClient.post(
+        "${APIEndpointUrls.create_payment}",
+        data: data,
+      );
+      if (res.statusCode == 200) {
+        debugPrint('createPayment:${res.data}');
+        return SuccessModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error createPayment::$e');
       return null;
     }
   }
@@ -419,6 +481,22 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error getUserPosts: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<UserPosteDetailsModel?> getUserPostDetails(int id) async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.user_posts}/${id}");
+      if (res.statusCode == 200) {
+        debugPrint('get getUserPostDetails: ${res.data}');
+        return UserPosteDetailsModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getUserPostDetails: $e');
       return null;
     }
   }

@@ -46,8 +46,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/user_posted_details',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(UserPostedDetails(), state),
+      pageBuilder: (context, state) {
+        final idString = state.uri.queryParameters['id'];
+        final id = int.tryParse(idString ?? '') ?? 0;
+        return buildSlideTransitionPage(UserPostedDetails(id: id), state);
+      },
     ),
     GoRoute(
       path: '/enter_state',
@@ -92,14 +95,17 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) {
         final idString = state.uri.queryParameters['id'];
         final id = int.tryParse(idString ?? '') ?? 0;
-        return buildSlideTransitionPage(CompanyDetails(id: id,), state);
+        return buildSlideTransitionPage(CompanyDetails(id: id), state);
       },
     ),
     GoRoute(
       path: '/payment',
-      pageBuilder: (context, state) =>
-          buildSlideTransitionPage(Payment(), state),
+      builder: (context, state) {
+        final Map<String, dynamic> data = state.extra as Map<String, dynamic>;
+        return Payment(data: data);
+      },
     ),
+
     GoRoute(
       path: '/add_project',
       pageBuilder: (context, state) =>

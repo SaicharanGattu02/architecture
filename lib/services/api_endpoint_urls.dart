@@ -16,12 +16,15 @@ class APIEndpointUrls {
   static const String activesubplans = '${apiUrl}selected-plan';
   static const String get_states = '${apiUrl}states';
   static const String get_city = '${apiUrl}states';
-  static const String loginotp = '${apiUrl}login-otp';
+  static const String login_otp = '${apiUrl}login-otp';
+  static const String resend_login_otp = '${apiUrl}resend-login-otp';
   static const String verify_company_otp = '${apiUrl}company/verify-otp';
   static const String verify_login_otp = '${apiUrl}verify-login-otp';
+  static const String resend_verify_company_otp = '${apiUrl}company/resend-otp';
   static const String create_profile = '${apiUrl}company/register';
   static const String update_company_profile = '${apiUrl}company/update-profile';
   static const String create_post = '${apiUrl}create-post';
+  static const String create_payment = '${apiUrl}create-payment';
   static const String user_posts = '${apiUrl}customer-posts';
   static const String architech_profile = '${apiUrl}getProfile';
   static const String architech_profile_details = '${apiUrl}get-architect-by-id';
