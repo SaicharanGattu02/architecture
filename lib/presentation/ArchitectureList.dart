@@ -21,7 +21,7 @@ class SelectArchitecture extends StatefulWidget {
 class _SelectArchitectureScreenState extends State<SelectArchitecture> {
   @override
   void initState() {
-    print("vabnxz:${ widget.industryType},${widget.location},");
+
     context.read<ArchitectCubit>().getArchitect(
       widget.industryType,
       widget.location,
