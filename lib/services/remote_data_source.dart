@@ -27,7 +27,7 @@ abstract class RemoteDataSource {
   Future<SubscriptionModel?> getsubplans();
   Future<List<StatesModel>?> getStates();
   Future<List<CityModel>?> getCity(String state);
-  Future<Activesubscriptionmodel?> activesubplans(int Id);
+  Future<Activesubscriptionmodel?> activeSubplans(int id);
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> resendLoginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> resendVerifyCompanyOtp(Map<String, dynamic> data);
@@ -538,10 +538,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Activesubscriptionmodel?> activesubplans(int Id) async {
+  Future<Activesubscriptionmodel?> activeSubplans(int id) async {
     try {
       Response res = await ApiClient.get(
-        "${APIEndpointUrls.activesubplans}/Id",
+        "${APIEndpointUrls.get_selected_sub_plans}/Id",
       );
       if (res.statusCode == 200) {
         debugPrint('get Active Subscription plans:${res.data}');

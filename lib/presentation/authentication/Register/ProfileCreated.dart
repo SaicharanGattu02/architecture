@@ -62,7 +62,7 @@ class _ProfileCreatedState extends State<ProfileCreated> {
           child: CustomAppButton1(
             text: 'Go to Profile',
             onPlusTap: () {
-              context.pushReplacement('/architech_profile');
+              context.pushReplacement('/onboarding');
             },
           ),
         ),

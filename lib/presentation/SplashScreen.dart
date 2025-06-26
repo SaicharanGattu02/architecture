@@ -53,7 +53,6 @@ class _SplashState extends State<Splash> {
 
               const SizedBox(height: 16),
 
-              // Arkitek Title with bounceInDown
               BounceInDown(
                 duration: const Duration(milliseconds: 1400),
                 child: Text(

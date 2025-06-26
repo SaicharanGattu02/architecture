@@ -30,6 +30,7 @@ class ApiClient {
     '/api/plans',
     '/api/company/resend-otp',
     '/api/company/additional-info',
+    '/api/create-payment',
   ];
 
   static void setupInterceptors() {

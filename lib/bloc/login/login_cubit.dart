@@ -31,7 +31,7 @@ class LoginOTPCubit extends Cubit<LoginOtpState> {
       final res = await loginotpRepository.loginResendOtpApi(data);
       if (res != null) {
         if (res.status == true) {
-          emit(LoginOtpSucess(successModel: res));
+          emit(LoginResendOtpSucess(successModel: res));
         } else {
           emit(LoginOtpError(message: "${res.message}"));
         }
@@ -49,7 +49,7 @@ class LoginOTPCubit extends Cubit<LoginOtpState> {
       final res = await loginotpRepository.resendVerifyCompanyOtp(data);
       if (res != null) {
         if (res.status == true) {
-          emit(LoginOtpSucess(successModel: res));
+          emit(CompanyResendOtpSucess(successModel: res));
         } else {
           emit(LoginOtpError(message: "${res.message}"));
         }

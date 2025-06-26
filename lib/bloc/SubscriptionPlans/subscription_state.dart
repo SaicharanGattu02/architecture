@@ -1,6 +1,8 @@
 import 'package:architect/models/SubscriptionModel.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../models/ActiveSubscriptionmodel.dart';
+
 
 
 abstract class SubscriptionState extends Equatable {
@@ -11,10 +13,15 @@ abstract class SubscriptionState extends Equatable {
 class SubscriptionIntailly extends SubscriptionState {}
 
 class SubscriptionLoading extends SubscriptionState {}
+class ActiveSubscriptionLoading extends SubscriptionState {}
 
 class SubscriptionLoaded extends SubscriptionState {
   final SubscriptionModel subscriptionModel;
   SubscriptionLoaded({required this.subscriptionModel});
+}
+class ActiveSubscriptionLoaded extends SubscriptionState {
+  final Activesubscriptionmodel activesubscriptionmodel;
+  ActiveSubscriptionLoaded({required this.activesubscriptionmodel});
 }
 
 class SubscriptionError extends SubscriptionState {

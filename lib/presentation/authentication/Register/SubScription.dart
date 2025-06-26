@@ -9,7 +9,8 @@ import '../../Components/CutomAppBar.dart';
 
 class Subscription extends StatefulWidget {
   final int id;
-  const Subscription({Key? key, required this.id}) : super(key: key);
+  final String type;
+  const Subscription({Key? key, required this.id,required this.type}) : super(key: key);
 
   @override
   _SubscriptionScreenState createState() => _SubscriptionScreenState();
@@ -59,31 +60,33 @@ class _SubscriptionScreenState extends State<Subscription> {
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Text(
-                    '3 of 4',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
+                if(widget.type=="New")...[
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Text(
+                      '3 of 4',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: LinearProgressIndicator(
-                    minHeight: 8,
-                    value: 0.75,
-                    backgroundColor: const Color(0xff4D4D4D),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: LinearProgressIndicator(
+                      minHeight: 8,
+                      value: 0.75,
+                      backgroundColor: const Color(0xff4D4D4D),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                const SizedBox(height: 30),
+                  const SizedBox(height: 30),
+                ],
                 Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -167,9 +170,8 @@ class _SubscriptionScreenState extends State<Subscription> {
                             "amount": selectedPlan.price,
                             "company_id": widget.id,
                           };
-                          context.push('/payment', extra: data);
 
-                          context.push('/payment');
+                          context.push('/payment', extra: data);
                         },
                       ),
                     ),

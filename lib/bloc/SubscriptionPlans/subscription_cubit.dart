@@ -22,4 +22,19 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
     }
 
   }
+  Future<void> getActiveSubscriptionPlan(int id) async {
+    emit(ActiveSubscriptionLoading());
+    try {
+      final res = await subscriptionRepository.getsubscriptionplans(id);
+      if (res != null) {
+        emit(ActiveSubscriptionLoaded(activesubscriptionmodel: res));
+      } else {
+        emit(SubscriptionError(message: "No data available"));
+      }
+    } catch (e) {
+      emit(SubscriptionError(message: "An error occurred: $e"));
+
+    }
+
+  }
 }

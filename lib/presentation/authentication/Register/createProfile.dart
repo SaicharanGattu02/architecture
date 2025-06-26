@@ -31,10 +31,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   @override
   void initState() {
     super.initState();
-    // Fetch states
+
     context.read<StateCubit>().getState();
 
-    // Only fetch profile if id is not null and not 0
     final int? companyId = widget.id;
     if (companyId != null && companyId != 0) {
       context.read<ArchitechProfileCubit>().getArchitechProfile();
@@ -92,7 +91,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     return _validateCompany() &&
         _validateContactPerson() &&
         _validateLocation() &&
-
         _validateEmail() &&
         _validateYear() &&
         _validateLogo();
@@ -112,9 +110,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking image: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
     }
     context.pop();
   }
@@ -133,7 +131,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -147,7 +148,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                     ),
                     const SizedBox(height: 20),
                     ListTile(
-                      leading: const Icon(Icons.photo_library, color: Colors.white),
+                      leading: const Icon(
+                        Icons.photo_library,
+                        color: Colors.white,
+                      ),
                       title: const Text(
                         'Choose from Gallery',
                         style: TextStyle(
@@ -156,10 +160,14 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onTap: () => _pickImage(ImageSource.gallery, isLogo: isLogo),
+                      onTap: () =>
+                          _pickImage(ImageSource.gallery, isLogo: isLogo),
                     ),
                     ListTile(
-                      leading: const Icon(Icons.camera_alt, color: Colors.white),
+                      leading: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                      ),
                       title: const Text(
                         'Take Photo',
                         style: TextStyle(
@@ -168,7 +176,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onTap: () => _pickImage(ImageSource.camera, isLogo: isLogo),
+                      onTap: () =>
+                          _pickImage(ImageSource.camera, isLogo: isLogo),
                     ),
                   ],
                 ),
@@ -251,26 +260,27 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
-      appBar: CustomAppBar1(title: 'Create Profile', actions: []),
+      appBar: CustomAppBar1(
+        title: (widget.id != null && widget.id != 0)
+            ? 'Update Profile'
+            : 'Create Profile',
+        actions: [],
+      ),
       body: BlocBuilder<StateCubit, StateStates>(
         builder: (context, stateState) {
           return BlocBuilder<CityCubit, CityStates>(
             builder: (context, cityState) {
               return BlocBuilder<ArchitechProfileCubit, ArchitechProfileState>(
                 builder: (context, profileState) {
-                  // Show loading indicator if states or cities are loading
                   if (stateState is StateLoading || cityState is CityLoading) {
                     return const Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     );
                   }
 
-                  // For new profile creation (id == null or id == 0)
                   if (widget.id == null || widget.id == 0) {
                     return _buildForm(context, stateState, cityState);
                   }
-
-                  // For profile editing (id != null and id != 0)
                   if (profileState is ArchitechProfileLoading) {
                     return const Center(
                       child: CircularProgressIndicator(color: Colors.white),
@@ -280,16 +290,18 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         setState(() {
                           _isInitialized = true;
-                          final profile = profileState.architechProfileModel.data;
+                          final profile =
+                              profileState.architechProfileModel.data;
                           _companyController.text = profile?.companyName ?? "";
-                          _contactPersonController.text = profile?.contactPersonName ?? "";
+                          _contactPersonController.text =
+                              profile?.contactPersonName ?? "";
                           _emailController.text = profile?.companyEmail ?? "";
                           _selectState = profile?.state ?? "";
                           _selectCity = profile?.location ?? "";
                           _selectedYear = profile?.establishedYear ?? "";
 
-
-                          if (_selectState != null && _selectState!.isNotEmpty) {
+                          if (_selectState != null &&
+                              _selectState!.isNotEmpty) {
                             context.read<CityCubit>().getCity(_selectState!);
                           }
                         });
@@ -307,9 +319,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                       ),
                     );
                   }
-
-                  // Default case for profile editing before data is loaded
-                  return const Center(
+                  return Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   );
                 },
@@ -331,7 +341,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                       "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
                     );
                   } else if (state is UpdateCompanyProfileSucess) {
-                    context.push('/architect_profile_setup?id=${widget.id}');
+                    context.push(
+                      '/architect_profile_setup?id=${widget.id}&type=${"Edit"}',
+                    );
                   } else if (state is CreateProfileError) {
                     CustomSnackBar.show(context, state.message);
                   }
@@ -339,25 +351,31 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 builder: (context, state) {
                   return CustomAppButton1(
                     isLoading: state is CreateProfileLoading,
-                    text: widget.id != null && widget.id != 0 ? 'Next' : 'Get OTP',
+                    text: widget.id != null && widget.id != 0
+                        ? 'Next'
+                        : 'Get OTP',
                     onPlusTap: () {
                       if (_validateForm()) {
                         final Map<String, dynamic> data = {
                           "company_name": _companyController.text.trim(),
                           "company_email": _emailController.text.trim(),
-                          "contact_person_name": _contactPersonController.text.trim(),
+                          "contact_person_name": _contactPersonController.text
+                              .trim(),
                           "established_year": _selectedYear,
                           "state": _selectState,
                           "location": _selectCity,
-
                           "logo": _logoImage,
                           "cover_photo": _coverImage,
                         };
                         if (widget.id != null && widget.id != 0) {
                           data['company_id'] = widget.id;
-                          context.read<CreateProfileCubit>().updateComapnyProfileApi(data);
+                          context
+                              .read<CreateProfileCubit>()
+                              .updateComapnyProfileApi(data);
                         } else {
-                          context.read<CreateProfileCubit>().createProfileApi(data);
+                          context.read<CreateProfileCubit>().createProfileApi(
+                            data,
+                          );
                         }
                       }
                     },
@@ -399,7 +417,11 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     );
   }
 
-  Widget _buildForm(BuildContext context, StateStates stateState, CityStates cityState) {
+  Widget _buildForm(
+    BuildContext context,
+    StateStates stateState,
+    CityStates cityState,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Column(
@@ -539,7 +561,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 });
               },
               buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: formfieldColor, width: 0.5),
@@ -623,7 +648,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 });
               },
               buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: formfieldColor, width: 0.5),
@@ -681,19 +709,34 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             isDense: true,
             filled: true,
             fillColor: const Color(0xff363636),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
           ),
-          hint: const Text('Select year', style: TextStyle(color: Colors.white38)),
-          items: List.generate(100, (index) => (DateTime.now().year - index).toString())
-              .map((year) => DropdownMenuItem<String>(
-            value: year,
-            child: Text(year, style: const TextStyle(color: Colors.white)),
-          ))
-              .toList(),
+          hint: const Text(
+            'Select year',
+            style: TextStyle(color: Colors.white38),
+          ),
+          items:
+              List.generate(
+                    100,
+                    (index) => (DateTime.now().year - index).toString(),
+                  )
+                  .map(
+                    (year) => DropdownMenuItem<String>(
+                      value: year,
+                      child: Text(
+                        year,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
+                  .toList(),
           onChanged: (value) {
             setState(() {
               _selectedYear = value;
@@ -767,57 +810,59 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               color: const Color(0xFF2E2E2E),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: image != null ? Colors.green : Colors.grey.withOpacity(0.4),
+                color: image != null
+                    ? Colors.green
+                    : Colors.grey.withOpacity(0.4),
                 width: 1.5,
               ),
             ),
             child: image == null
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.upload_file_rounded, color: Colors.white70),
-                SizedBox(width: 10),
-                Text(
-                  'Tap to Upload',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            )
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.upload_file_rounded, color: Colors.white70),
+                      SizedBox(width: 10),
+                      Text(
+                        'Tap to Upload',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  )
                 : Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.file(
-                    image,
-                    width: double.infinity,
-                    height: 120,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: onRemove,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          image,
+                          width: double.infinity,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 20,
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: onRemove,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
         if (showError)

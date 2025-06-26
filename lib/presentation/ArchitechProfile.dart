@@ -97,38 +97,38 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                   const SizedBox(height: 8),
                                   Row(
                                     children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 4,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 16,
-                                            ),
-                                            SizedBox(width: 2),
-                                            Text(
-                                              '4.9',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      // Container(
+                                      //   padding: EdgeInsets.symmetric(
+                                      //     horizontal: 4,
+                                      //     vertical: 2,
+                                      //   ),
+                                      //   decoration: BoxDecoration(
+                                      //     color: Colors.white,
+                                      //     borderRadius: BorderRadius.circular(
+                                      //       12,
+                                      //     ),
+                                      //   ),
+                                      //   child: Row(
+                                      //     children: [
+                                      //       Icon(
+                                      //         Icons.star,
+                                      //         color: Colors.yellow,
+                                      //         size: 16,
+                                      //       ),
+                                      //       SizedBox(width: 2),
+                                      //       Text(
+                                      //         '4.9',
+                                      //         style: TextStyle(
+                                      //           fontWeight: FontWeight.w600,
+                                      //           color: Colors.black,
+                                      //           fontSize: 12,
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
 
-                                      SizedBox(width: 16),
+                                      // SizedBox(width: 16),
                                       Icon(
                                         Icons.apartment,
                                         color: Colors.white70,
@@ -175,7 +175,9 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                             children: [
                               TextButton.icon(
                                 onPressed: () {
-                                  context.push('/architecture_details?id=${state.architechProfileModel.data?.id ?? 0}');
+                                  context.push(
+                                    '/architecture_details?id=${state.architechProfileModel.data?.id ?? 0}',
+                                  );
                                 },
                                 icon: Icon(
                                   Icons.remove_red_eye,
@@ -194,7 +196,9 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                               Spacer(),
                               TextButton.icon(
                                 onPressed: () {
-                                  context.push('/company_details?id=${state.architechProfileModel.data?.id ?? 0}');
+                                  context.push(
+                                    '/company_details?id=${state.architechProfileModel.data?.id ?? 0}',
+                                  );
                                 },
                                 icon: Icon(
                                   Icons.edit,
@@ -222,29 +226,36 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          spacing: 12,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(26),
-                              decoration: BoxDecoration(
-                                color: Color(0xff363636),
-                                borderRadius: BorderRadius.circular(24),
+                        GestureDetector(
+                          onTap: () {
+                            context.push(
+                              '/subscription?id=${state.architechProfileModel.data?.id ?? 0}&type=${"Renew"}',
+                            );
+                          },
+                          child: Column(
+                            spacing: 12,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(26),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff363636),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Image.asset(
+                                  'assets/subscription.png',
+                                  scale: 5,
+                                ),
                               ),
-                              child: Image.asset(
-                                'assets/subscription.png',
-                                scale: 5,
+                              Text(
+                                'Renew the plan',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xffCCCCCC),
+                                ),
                               ),
-                            ),
-                            Text(
-                              'Renew the plan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xffCCCCCC),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
 
                         GestureDetector(

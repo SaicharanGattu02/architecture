@@ -37,11 +37,14 @@ class _UserPostedState extends State<UserPosted> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.push('/architech_profile');
-            },
-            icon: Icon(Icons.person, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: IconButton(
+              onPressed: () {
+                context.push('/architech_profile');
+              },
+              icon: Icon(Icons.person, color: Colors.white),
+            ),
           ),
         ],
       ),

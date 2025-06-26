@@ -8,7 +8,7 @@ class CreatePaymentCubit extends Cubit<CreatePaymentState> {
 
   CreatePaymentCubit(this.createPostRepository) : super(CreatePaymentIntially());
 
-  Future<void> createPostApi(Map<String, dynamic> data) async {
+  Future<void> createPaymentApi(Map<String, dynamic> data) async {
     emit(CreatePaymentLoading());
     try {
       final res = await createPostRepository.createPayment(data);

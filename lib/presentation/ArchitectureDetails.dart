@@ -6,6 +6,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_cubit.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_state.dart';
+import '../utils/AppLauncher.dart';
 import 'Components/CutomAppBar.dart';
 import 'Components/debugPrint.dart';
 
@@ -89,12 +90,17 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(state.architechProfileModel.data?.coverPhoto??""),
+                            image: CachedNetworkImageProvider(
+                              state.architechProfileModel.data?.coverPhoto ??
+                                  "",
+                            ),
                             fit: BoxFit.cover,
                           ),
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: state.architechProfileModel.data?.coverPhoto??"",
+                          imageUrl:
+                              state.architechProfileModel.data?.coverPhoto ??
+                              "",
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -104,7 +110,10 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                             ),
                           ),
                           placeholder: (context, url) => Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: primarycolor,
+                            ),
                           ),
                           errorWidget: (context, url, error) => Image.asset(
                             'assets/architecturebc.png',
@@ -130,6 +139,7 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                               child: Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
+                                  color: primarycolor,
                                 ),
                               ),
                             ),
@@ -145,13 +155,13 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
 
                       Positioned(
                         right: 60,
-                        bottom: -50,
+                        bottom: 0,
                         child: Row(
                           children: [
                             IconButton.outlined(
                               style: ButtonStyle(
                                 backgroundColor: WidgetStateProperty.all(
-                                  Color(0xff191919),
+                                  Colors.white,
                                 ),
                                 shape: WidgetStateProperty.all(CircleBorder()),
                               ),
@@ -167,7 +177,7 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                                         .data
                                         ?.contactNumber ??
                                     '';
-                                _launchDialer(phone);
+                                AppLauncher.call(phone);
                               },
                             ),
                           ],
@@ -176,13 +186,13 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
 
                       Positioned(
                         right: 10,
-                        bottom: -50,
+                        bottom: 0,
                         child: Row(
                           children: [
                             IconButton.outlined(
                               style: ButtonStyle(
                                 backgroundColor: WidgetStateProperty.all(
-                                  Color(0xff191919),
+                                  Colors.white,
                                 ),
                                 shape: WidgetStateProperty.all(CircleBorder()),
                               ),
@@ -195,13 +205,14 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                                 ),
                               ),
                               onPressed: () {
+                                print('Tapped on Whatapp');
                                 final phone =
                                     state
                                         .architechProfileModel
                                         .data
                                         ?.contactNumber ??
                                     '';
-                                launchWhatsApp(phone);
+                                AppLauncher.openWhatsApp(phone);
                               },
                             ),
                           ],
@@ -369,10 +380,14 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
-                      children:List.generate(
-                        state.architechProfileModel.data?.portfolio?.length ?? 0,
-                            (index) {
-                          final imageUrl = state.architechProfileModel.data!.portfolio![index];
+                      children: List.generate(
+                        state.architechProfileModel.data?.portfolio?.length ??
+                            0,
+                        (index) {
+                          final imageUrl = state
+                              .architechProfileModel
+                              .data!
+                              .portfolio![index];
 
                           return Container(
                             margin: const EdgeInsets.symmetric(vertical: 12),
@@ -394,20 +409,22 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                                     height: 140,
                                     color: Colors.grey.shade200,
                                     child: const Center(
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     ),
                                   ),
-                                  errorWidget: (context, url, error) => Image.asset(
-                                    'assets/portfolio.png',
-                                    fit: BoxFit.cover,
-                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                        'assets/portfolio.png',
+                                        fit: BoxFit.cover,
+                                      ),
                                 ),
                               ),
                             ),
                           );
                         },
                       ),
-
                     ),
                   ),
 

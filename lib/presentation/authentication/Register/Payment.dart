@@ -1,6 +1,10 @@
+import 'package:architect/presentation/Components/CustomSnackBar.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../bloc/create_payment/create_payment_cubit.dart';
+import '../../../bloc/create_payment/create_payment_state.dart';
 import '../../Components/CustomAppButton.dart';
 import '../../Components/CutomAppBar.dart';
 
@@ -13,8 +17,9 @@ class Payment extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<Payment> {
-  String? _method = 'Google Pay';
-  bool _paymentDone = false;
+  String _method = 'RazorPay';
+
+  final List<String> _paymentMethods = ['GooglePay', 'RazorPay', 'PhonePay'];
 
   Widget _buildOption(String label) {
     final bool selected = _method == label;
@@ -69,32 +74,36 @@ class _PaymentScreenState extends State<Payment> {
               ),
             ),
           ),
-          _buildOption('Google Pay'),
-          _buildOption('Razor Pay'),
-          _buildOption('Phone Pay'),
-
+          ..._paymentMethods.map((method) => _buildOption(method)).toList(),
         ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          child: CustomAppButton1(
-            text: 'Continue',
-            onPlusTap: _method == null
-                ? null
-                : () {
-              setState(() {
-                _paymentDone = true;
-              });
-
-              final updatedData = {
-                ...widget.data,
-                "payment_method": _method,
-                "status": "completed",
-              };
-              Future.delayed(const Duration(seconds: 1), () {
-                context.push('/architect_profile_setup', extra: updatedData);
-              });
+          child: BlocConsumer<CreatePaymentCubit, CreatePaymentState>(
+            listener: (context, state) {
+              if (state is CreatePaymentSucess) {
+                Future.delayed(const Duration(seconds: 1), () {
+                  context.go('/architect_profile_setup?id=${widget.data['company_id']}&type=New');
+                });
+              } else if (state is CreatePaymentError) {
+                CustomSnackBar.show(context, state.message);
+              }
+            },
+            builder: (context, state) {
+              return CustomAppButton1(
+                isLoading: state is CreatePaymentLoading,
+                text: 'Continue',
+                onPlusTap: () {
+                  final updatedData = {
+                    ...widget.data,
+                    "payment_method": _method,
+                    "status": "completed",
+                  };
+                  context.read<CreatePaymentCubit>().createPaymentApi(updatedData);
+                  print("selectedPlan data: $updatedData");
+                },
+              );
             },
           ),
         ),
@@ -102,3 +111,4 @@ class _PaymentScreenState extends State<Payment> {
     );
   }
 }
+
