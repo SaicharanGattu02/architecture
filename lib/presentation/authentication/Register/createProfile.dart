@@ -33,9 +33,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   @override
   void initState() {
     super.initState();
-
     context.read<StateCubit>().getState();
-
     final int? companyId = widget.id;
     if (companyId != null && companyId != 0) {
       context.read<ArchitechProfileCubit>().getArchitechProfile();
@@ -45,7 +43,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   final _companyController = TextEditingController();
   final _contactPersonController = TextEditingController();
   final _locationController = TextEditingController();
-
   final _emailController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   String? _selectedYear;
@@ -67,21 +64,16 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     _companyController.dispose();
     _contactPersonController.dispose();
     _locationController.dispose();
-
     _emailController.dispose();
     super.dispose();
   }
 
   bool _validateCompany() => _companyController.text.trim().isNotEmpty;
-  bool _validateContactPerson() =>
-      _contactPersonController.text.trim().isNotEmpty;
+  bool _validateContactPerson() => _contactPersonController.text.trim().isNotEmpty;
   bool _validateLocation() => _selectCity != null && _selectCity!.isNotEmpty;
-
-  bool _validateEmail() => RegExp(
-    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-  ).hasMatch(_emailController.text.trim());
+  bool _validateEmail() => RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_emailController.text.trim());
   bool _validateYear() => _selectedYear != null;
-  bool _validateLogo() => _logoImage != null;
+  bool _validateLogo() => _logoImage != null || (_logoUrl != null && _logoUrl!.isNotEmpty);
 
   bool _validateForm() {
     setState(() {
@@ -99,13 +91,12 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         _validateYear() &&
         _validateLogo();
   }
+
   Future<void> _pickImage(ImageSource source, {bool isLogo = true}) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
-        // Compress the picked image using your utility
         File? compressedFile = await ImageUtils.compressImage(File(pickedFile.path));
-
         if (compressedFile != null) {
           setState(() {
             if (isLogo) {
@@ -116,7 +107,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             }
           });
         } else {
-          // If compression failed, fall back to original file
           setState(() {
             if (isLogo) {
               _logoImage = File(pickedFile.path);
@@ -128,14 +118,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
     }
-
-    context.pop(); // assuming this closes a modal or bottom sheet
+    context.pop();
   }
-
 
   void _showImageSourceSelection({bool isLogo = true}) {
     showModalBottomSheet(
@@ -151,10 +137,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 24,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -168,36 +151,20 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                     ),
                     const SizedBox(height: 20),
                     ListTile(
-                      leading: const Icon(
-                        Icons.photo_library,
-                        color: Colors.white,
-                      ),
+                      leading: const Icon(Icons.photo_library, color: Colors.white),
                       title: const Text(
                         'Choose from Gallery',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
                       ),
-                      onTap: () =>
-                          _pickImage(ImageSource.gallery, isLogo: isLogo),
+                      onTap: () => _pickImage(ImageSource.gallery, isLogo: isLogo),
                     ),
                     ListTile(
-                      leading: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                      ),
+                      leading: const Icon(Icons.camera_alt, color: Colors.white),
                       title: const Text(
                         'Take Photo',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
                       ),
-                      onTap: () =>
-                          _pickImage(ImageSource.camera, isLogo: isLogo),
+                      onTap: () => _pickImage(ImageSource.camera, isLogo: isLogo),
                     ),
                   ],
                 ),
@@ -250,7 +217,17 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             fontSize: 16,
             fontFamily: "Inter",
           ),
-          decoration: InputDecoration(hintText: hint),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.white70),
+            filled: true,
+            fillColor: const Color(0xFF2E2E2E),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          ),
           onTap: () => setState(() => validate()),
           onChanged: (_) => setState(() => validate()),
         ),
@@ -265,7 +242,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
-                  color: Colors.red,
+                  color: Colors.redAccent,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -281,9 +258,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       appBar: CustomAppBar1(
-        title: (widget.id != null && widget.id != 0)
-            ? 'Update Profile'
-            : 'Create Profile',
+        title: (widget.id != null && widget.id != 0) ? 'Update Profile' : 'Create Profile',
         actions: [],
       ),
       body: BlocBuilder<StateCubit, StateStates>(
@@ -293,39 +268,33 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               return BlocBuilder<ArchitechProfileCubit, ArchitechProfileState>(
                 builder: (context, profileState) {
                   if (stateState is StateLoading || cityState is CityLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const Center(child: CircularProgressIndicator(color: Colors.white));
                   }
 
                   if (widget.id == null || widget.id == 0) {
                     return _buildForm(context, stateState, cityState);
                   }
                   if (profileState is ArchitechProfileLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const Center(child: CircularProgressIndicator(color: Colors.white));
                   } else if (profileState is ArchitechProfileLoaded) {
                     if (!_isInitialized) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         setState(() {
                           _isInitialized = true;
-                          final profile =
-                              profileState.architechProfileModel.data;
+                          final profile = profileState.architechProfileModel.data;
                           _companyController.text = profile?.companyName ?? "";
-                          _contactPersonController.text =
-                              profile?.contactPersonName ?? "";
+                          _contactPersonController.text = profile?.contactPersonName ?? "";
                           _emailController.text = profile?.companyEmail ?? "";
                           _selectState = profile?.state ?? "";
                           _selectCity = profile?.location ?? "";
                           _selectedYear = profile?.establishedYear ?? "";
                           _logoUrl = profile?.logo ?? "";
                           _coverPhotoUrl = profile?.coverPhoto ?? "";
-                          if (_selectState != null &&
-                              _selectState!.isNotEmpty) {
+                          debugPrint('Logo URL: $_logoUrl');
+                          debugPrint('Cover Photo URL: $_coverPhotoUrl');
+                          if (_selectState != null && _selectState!.isNotEmpty) {
                             context.read<CityCubit>().getCity(_selectState!);
                           }
-
                         });
                       });
                     }
@@ -334,16 +303,11 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                     return Center(
                       child: Text(
                         profileState.message,
-                        style: const TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 16,
-                        ),
+                        style: const TextStyle(color: Colors.redAccent, fontSize: 16),
                       ),
                     );
                   }
-                  return Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  );
+                  return const Center(child: CircularProgressIndicator(color: Colors.white));
                 },
               );
             },
@@ -359,13 +323,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               BlocConsumer<CreateProfileCubit, CreateProfileState>(
                 listener: (context, state) {
                   if (state is CreateProfileSucess) {
-                    context.push(
-                      "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
-                    );
+                    context.push("/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}");
                   } else if (state is UpdateCompanyProfileSucess) {
-                    context.push(
-                      '/architect_profile_setup?id=${widget.id}&type=${"Edit"}',
-                    );
+                    context.push('/architect_profile_setup?id=${widget.id}&type=${"Edit"}');
                   } else if (state is CreateProfileError) {
                     CustomSnackBar.show(context, state.message);
                   }
@@ -373,31 +333,42 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 builder: (context, state) {
                   return CustomAppButton1(
                     isLoading: state is CreateProfileLoading,
-                    text: widget.id != null && widget.id != 0
-                        ? 'Next'
-                        : 'Get OTP',
+                    text: widget.id != null && widget.id != 0 ? 'Next' : 'Get OTP',
                     onPlusTap: () {
                       if (_validateForm()) {
                         final Map<String, dynamic> data = {
                           "company_name": _companyController.text.trim(),
                           "company_email": _emailController.text.trim(),
-                          "contact_person_name": _contactPersonController.text
-                              .trim(),
+                          "contact_person_name": _contactPersonController.text.trim(),
                           "established_year": _selectedYear,
                           "state": _selectState,
                           "location": _selectCity,
-                          "logo": _logoImage,
-                          "cover_photo": _coverImage,
                         };
-                        if (widget.id != null && widget.id != 0) {
-                          data['company_id'] = widget.id;
-                          context
-                              .read<CreateProfileCubit>()
-                              .updateComapnyProfileApi(data);
+
+                        if (widget.id == null || widget.id == 0) {
+                          data["logo"] = _logoImage;
+                          if (_coverImage != null) {
+                            data["cover_photo"] = _coverImage;
+                          }
                         } else {
-                          context.read<CreateProfileCubit>().createProfileApi(
-                            data,
-                          );
+                          if (_logoImage != null) {
+                            data["logo"] = _logoImage;
+                          } else if (_logoUrl != null && _logoUrl!.isNotEmpty) {
+                            data["logo_url"] = _logoUrl;
+                          }
+                          if (_coverImage != null) {
+                            data["cover_photo"] = _coverImage;
+                          } else if (_coverPhotoUrl != null && _coverPhotoUrl!.isNotEmpty) {
+                            data["cover_photo_url"] = _coverPhotoUrl;
+                          }
+                          data['company_id'] = widget.id;
+                        }
+
+                        debugPrint('Form Data: $data');
+                        if (widget.id != null && widget.id != 0) {
+                          context.read<CreateProfileCubit>().updateComapnyProfileApi(data);
+                        } else {
+                          context.read<CreateProfileCubit>().createProfileApi(data);
                         }
                       }
                     },
@@ -439,11 +410,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     );
   }
 
-  Widget _buildForm(
-    BuildContext context,
-    StateStates stateState,
-    CityStates cityState,
-  ) {
+  Widget _buildForm(BuildContext context, StateStates stateState, CityStates cityState) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Column(
@@ -496,38 +463,44 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             errorMessage: 'Please enter a valid email',
             validate: () => _showEmailError = !_validateEmail(),
           ),
-
           const SizedBox(height: 16),
           _buildStateDropdown(stateState),
           const SizedBox(height: 16),
-          if (_selectState != null && _selectState!.isNotEmpty)
-            _buildCityDropdown(cityState),
+          if (_selectState != null && _selectState!.isNotEmpty) _buildCityDropdown(cityState),
           const SizedBox(height: 16),
           _buildYearDropdown(),
           const SizedBox(height: 16),
           _buildImagePicker(
             label: 'Logo',
             image: _logoImage,
+            networkImageUrl: _logoUrl,
             showError: _showLogoError,
             errorMessage: 'Please upload a logo',
             onTap: () => _showImageSourceSelection(isLogo: true),
             onRemove: () => setState(() {
               _logoImage = null;
-              _logoUrl = '';
-              _showLogoError = false;
+              if (widget.id == null || widget.id == 0) {
+                _logoUrl = '';
+              }
+              _showLogoError = !_validateLogo();
             }),
+            isLogo: true,
           ),
           const SizedBox(height: 16),
           _buildImagePicker(
             label: 'Cover Photo',
             image: _coverImage,
+            networkImageUrl: _coverPhotoUrl,
             showError: false,
             errorMessage: 'Please upload a cover photo',
             onTap: () => _showImageSourceSelection(isLogo: false),
             onRemove: () => setState(() {
               _coverImage = null;
-              _coverPhotoUrl="";
+              if (widget.id == null || widget.id == 0) {
+                _coverPhotoUrl = '';
+              }
             }),
+            isLogo: false,
           ),
         ],
       ),
@@ -554,11 +527,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               isExpanded: true,
               hint: const Text(
                 'Select State',
-                style: TextStyle(
-                  fontFamily: 'roboto_serif',
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontFamily: 'roboto_serif', fontSize: 16, color: Colors.grey),
                 overflow: TextOverflow.ellipsis,
               ),
               items: stateState.statesList.map((e) {
@@ -566,11 +535,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   value: e.name,
                   child: Text(
                     e.name ?? "",
-                    style: const TextStyle(
-                      fontFamily: 'roboto_serif',
-                      fontSize: 15,
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(fontFamily: 'roboto_serif', fontSize: 15, color: Colors.white),
                   ),
                 );
               }).toList(),
@@ -578,17 +543,14 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               onChanged: (String? value) {
                 setState(() {
                   _selectState = value;
-                  _selectCity = null; // Reset city when state changes
+                  _selectCity = null;
                   if (_selectState != null && _selectState!.isNotEmpty) {
                     context.read<CityCubit>().getCity(_selectState!);
                   }
                 });
               },
               buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: formfieldColor, width: 0.5),
@@ -615,12 +577,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             ),
           )
         else
-          const Center(
-            child: Text(
-              'Failed to load states',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-          ),
+          const Center(child: Text('Failed to load states', style: TextStyle(color: Colors.redAccent))),
       ],
     );
   }
@@ -645,11 +602,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               isExpanded: true,
               hint: const Text(
                 'Select City',
-                style: TextStyle(
-                  fontFamily: 'roboto_serif',
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontFamily: 'roboto_serif', fontSize: 16, color: Colors.grey),
                 overflow: TextOverflow.ellipsis,
               ),
               items: cityState.cityList.map((e) {
@@ -657,11 +610,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   value: e.name,
                   child: Text(
                     e.name ?? "",
-                    style: const TextStyle(
-                      fontFamily: 'roboto_serif',
-                      fontSize: 15,
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(fontFamily: 'roboto_serif', fontSize: 15, color: Colors.white),
                   ),
                 );
               }).toList(),
@@ -672,10 +621,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 });
               },
               buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: formfieldColor, width: 0.5),
@@ -702,12 +648,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             ),
           )
         else
-          const Center(
-            child: Text(
-              'Failed to load cities',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-          ),
+          const Center(child: Text('Failed to load cities', style: TextStyle(color: Colors.redAccent))),
       ],
     );
   }
@@ -733,34 +674,19 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             isDense: true,
             filled: true,
             fillColor: const Color(0xff363636),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
           ),
-          hint: const Text(
-            'Select year',
-            style: TextStyle(color: Colors.white38),
-          ),
-          items:
-              List.generate(
-                    100,
-                    (index) => (DateTime.now().year - index).toString(),
-                  )
-                  .map(
-                    (year) => DropdownMenuItem<String>(
-                      value: year,
-                      child: Text(
-                        year,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
-                  .toList(),
+          hint: const Text('Select year', style: TextStyle(color: Colors.white38)),
+          items: List.generate(100, (index) => (DateTime.now().year - index).toString())
+              .map((year) => DropdownMenuItem<String>(
+            value: year,
+            child: Text(year, style: const TextStyle(color: Colors.white)),
+          ))
+              .toList(),
           onChanged: (value) {
             setState(() {
               _selectedYear = value;
@@ -776,12 +702,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          iconStyleData: const IconStyleData(
-            icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-          ),
-          menuItemStyleData: const MenuItemStyleData(
-            overlayColor: MaterialStatePropertyAll(Colors.transparent),
-          ),
+          iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down, color: Colors.white)),
+          menuItemStyleData: const MenuItemStyleData(overlayColor: MaterialStatePropertyAll(Colors.transparent)),
         ),
         if (_showYearError)
           Padding(
@@ -791,28 +713,24 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               duration: const Duration(milliseconds: 700),
               child: const Text(
                 'Please select a year',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 12,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: Colors.redAccent, fontWeight: FontWeight.w500),
               ),
             ),
           ),
       ],
     );
   }
+
   Widget _buildImagePicker({
     required String label,
     required File? image,
+    String? networkImageUrl,
     required bool showError,
     required String errorMessage,
     required VoidCallback onTap,
     required VoidCallback onRemove,
-    bool isLogo = true, // Add parameter to determine if it's logo or cover photo
+    required bool isLogo,
   }) {
-    final String? networkImageUrl = isLogo ? _logoUrl : _coverPhotoUrl;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -849,11 +767,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 SizedBox(width: 10),
                 Text(
                   'Tap to Upload',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 15, fontWeight: FontWeight.w500),
                 ),
               ],
             )
@@ -874,9 +788,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                     height: 120,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white70,
-                      ),
+                      child: CircularProgressIndicator(color: Colors.white70),
                     ),
                     errorWidget: (context, url, error) => const Icon(
                       Icons.error,
@@ -895,11 +807,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                         color: Colors.black54,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                      child: const Icon(Icons.close, color: Colors.white, size: 20),
                     ),
                   ),
                 ),
@@ -927,5 +835,4 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       ],
     );
   }
-
 }

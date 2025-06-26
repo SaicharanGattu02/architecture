@@ -27,6 +27,7 @@ class ApiClient {
     '/api/resend-login-otp',
     '/api/states',
     '/api/get-architects',
+    // '/api/get-architect-by-id',
     '/api/plans',
     '/api/company/resend-otp',
     '/api/company/additional-info',

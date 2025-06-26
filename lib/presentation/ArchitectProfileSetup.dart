@@ -37,7 +37,9 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
   void initState() {
     super.initState();
     if (widget.type == "Edit") {
-      context.read<ArchitechProfileDetailsCubit>().getArchitechProfileDetails(widget.id);
+      context.read<ArchitechProfileDetailsCubit>().getArchitechProfileDetails(
+        widget.id,
+      );
     }
   }
 
@@ -100,6 +102,32 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     super.dispose();
   }
 
+  // bool _validatePortfolio() {
+  //   if (widget.type == "Edit" && _portfolioUrls.isNotEmpty) {
+  //     // In update mode, allow validation to pass if there are existing portfolio URLs
+  //     _portfolioErrorMessage = '';
+  //     _showPortfolioError = false;
+  //     return true;
+  //   }
+  //   if (_portfolioFiles.isEmpty) {
+  //     _portfolioErrorMessage = 'Please upload at least one portfolio file';
+  //     _showPortfolioError = true;
+  //     return false;
+  //   }
+  //   _portfolioErrorMessage = '';
+  //   _showPortfolioError = false;
+  //   return true;
+  // }
+  bool _validatePortfolio() {
+    if (_portfolioFiles.isEmpty && _portfolioUrls.isEmpty) {
+      _portfolioErrorMessage = 'Please upload at least one portfolio item';
+      _showPortfolioError = true;
+      return false;
+    }
+    _portfolioErrorMessage = '';
+    _showPortfolioError = false;
+    return true;
+  }
   bool _validateDescription() {
     final text = _descriptionController.text.trim();
     if (text.isEmpty) {
@@ -197,17 +225,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     return true;
   }
 
-  bool _validatePortfolio() {
-    if (_portfolioFiles.isEmpty) {
-      _portfolioErrorMessage = 'Please upload at least one portfolio file';
-      _showPortfolioError = true;
-      return false;
-    }
-    _portfolioErrorMessage = '';
-    _showPortfolioError = false;
-    return true;
-  }
-
   bool _validateForm() {
     print("Validating form...");
 
@@ -217,7 +234,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     final contactValid = _validateContact();
     final whatsappValid = _validateWhatsApp();
     final portfolioValid = _validatePortfolio();
-
     final specializationValid = _validateSpecializations();
     final industryTypeValid = _validateIndustryType();
 
@@ -228,7 +244,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         contactValid &&
         whatsappValid &&
         portfolioValid &&
-        // documentValid &&
         specializationValid &&
         industryTypeValid;
 
@@ -265,23 +280,41 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
       for (int i = 0; i < selectedSpecializations.length; i++) {
         data['specializations[$i]'] = selectedSpecializations[i];
       }
-
-      // ✅ Add indexed portfolio files
-      for (int i = 0; i < _portfolioFiles.length; i++) {
-        data['portfolio[$i]'] = _portfolioFiles[i];
+      // Add portfolio items
+      if (widget.type == "New") {
+        // For new profile, send only new files
+        for (int i = 0; i < _portfolioFiles.length; i++) {
+          data['portfolio[$i]'] = _portfolioFiles[i];
+        }
+      } else {
+        // For edit profile, send remaining URLs and new files
+        int portfolioIndex = 0;
+        // Add remaining existing URLs
+        for (int i = 0; i < _portfolioUrls.length; i++) {
+          data['portfolio[$portfolioIndex]'] = _portfolioUrls[i];
+          portfolioIndex++;
+        }
+        // Add new files
+        for (int i = 0; i < _portfolioFiles.length; i++) {
+          data['portfolio[$portfolioIndex]'] = _portfolioFiles[i];
+          portfolioIndex++;
+        }
       }
 
       if (widget.type == "New") {
         debugPrint('create Data: $data');
-        context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfo(data);
+        context
+            .read<ArchitechAditionalInfoCubit>()
+            .createArchitechAditionalInfo(data);
       } else {
         debugPrint('create Edit Data: $data');
-        context.read<ArchitechAditionalInfoCubit>().createArchitechAditionalInfoUpdate(data);
+        context
+            .read<ArchitechAditionalInfoCubit>()
+            .createArchitechAditionalInfoUpdate(data);
       }
     } else {
       print("Form validation failed");
     }
-
 
     return isValid;
   }
@@ -291,7 +324,9 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
         // Attempt to compress the image
-        File? compressedFile = await ImageUtils.compressImage(File(pickedFile.path));
+        File? compressedFile = await ImageUtils.compressImage(
+          File(pickedFile.path),
+        );
 
         // Use compressed image if available, otherwise fallback to original
         File finalFile = compressedFile ?? File(pickedFile.path);
@@ -976,8 +1011,9 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                         orElse: () => "",
                       );
                     }
-                    _portfolioUrls = List<String>.from(state.architechProfileModel.data?.portfolio ?? []);
-
+                    _portfolioUrls = List<String>.from(
+                      state.architechProfileModel.data?.portfolio ?? [],
+                    );
 
                     _isInitialized = true;
                   }
@@ -1295,285 +1331,212 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                     ),
                                   ),
                                 const SizedBox(height: 16),
-                                if (_portfolioFiles.isNotEmpty || _portfolioUrls.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Column(
-                                      children: [
-                                        // Show remote (fetched) portfolio images
-                                        ...List.generate(_portfolioUrls.length, (index) {
-                                          final url = _portfolioUrls[index];
-                                          final isImage = url.toLowerCase().endsWith('.jpg') ||
-                                              url.toLowerCase().endsWith('.jpeg') ||
-                                              url.toLowerCase().endsWith('.png');
-                                          return Padding(
-                                            padding: const EdgeInsets.only(bottom: 8),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFF2E2E2E),
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                              child: ListTile(
-                                                leading: isImage
-                                                    ? ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  child: Image.network(
-                                                    url,
-                                                    width: 40,
-                                                    height: 40,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                )
-                                                    : const Icon(
-                                                  Icons.picture_as_pdf,
-                                                  color: Colors.white70,
-                                                ),
-                                                title: Text(
-                                                  path.basename(url),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 14,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                trailing: IconButton(
-                                                  icon: const Icon(Icons.close, color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _portfolioUrls.removeAt(index);
-                                                      _validatePortfolio();
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-
-                                        // Show local (user-added) portfolio files
-                                        ...List.generate(_portfolioFiles.length, (index) {
-                                          final file = _portfolioFiles[index];
-                                          final isImage = ['.jpg', '.jpeg', '.png']
-                                              .contains(path.extension(file.path).toLowerCase());
-                                          return Padding(
-                                            padding: const EdgeInsets.only(bottom: 8),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFF2E2E2E),
-                                                borderRadius: BorderRadius.circular(12),
-                                              ),
-                                              child: ListTile(
-                                                leading: isImage
-                                                    ? ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  child: Image.file(
-                                                    file,
-                                                    width: 40,
-                                                    height: 40,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                )
-                                                    : const Icon(
-                                                  Icons.picture_as_pdf,
-                                                  color: Colors.white70,
-                                                ),
-                                                title: Text(
-                                                  path.basename(file.path),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Inter',
-                                                    fontSize: 14,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                trailing: IconButton(
-                                                  icon: const Icon(Icons.close, color: Colors.white),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _portfolioFiles.removeAt(index);
-                                                      _validatePortfolio();
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                      ],
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Upload Portfolio',
+                                      style: TextStyle(
+                                        color: Color(0xFFD8D8D8),
+                                        fontSize: 16,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                // Column(
-                                //   crossAxisAlignment: CrossAxisAlignment.start,
-                                //   children: [
-                                //     const Text(
-                                //       'Upload Portfolio',
-                                //       style: TextStyle(
-                                //         color: Color(0xFFD8D8D8),
-                                //         fontSize: 16,
-                                //         fontFamily: 'Inter',
-                                //         fontWeight: FontWeight.w600,
-                                //       ),
-                                //     ),
-                                //     const SizedBox(height: 10),
-                                //     GestureDetector(
-                                //       onTap: () {
-                                //         _showFileSourceSelection();
-                                //       },
-                                //       child: Container(
-                                //         width: double.infinity,
-                                //         height: 120,
-                                //         decoration: BoxDecoration(
-                                //           color: const Color(0xFF2E2E2E),
-                                //           borderRadius: BorderRadius.circular(
-                                //             12,
-                                //           ),
-                                //           border: Border.all(
-                                //             color: _portfolioFiles.isNotEmpty
-                                //                 ? Colors.green
-                                //                 : Colors.grey.withOpacity(0.4),
-                                //             width: 1.5,
-                                //           ),
-                                //         ),
-                                //         child: _portfolioFiles.isEmpty
-                                //             ? Row(
-                                //                 mainAxisAlignment:
-                                //                     MainAxisAlignment.center,
-                                //                 children: const [
-                                //                   Icon(
-                                //                     Icons.upload_file_rounded,
-                                //                     color: Colors.white70,
-                                //                   ),
-                                //                   SizedBox(width: 10),
-                                //                   Text(
-                                //                     'Tap to Upload Portfolio',
-                                //                     style: TextStyle(
-                                //                       color: Colors.white70,
-                                //                       fontSize: 15,
-                                //                       fontWeight:
-                                //                           FontWeight.w500,
-                                //                       fontFamily: 'Inter',
-                                //                     ),
-                                //                   ),
-                                //                 ],
-                                //               )
-                                //             : Center(
-                                //                 child: Text(
-                                //                   '${_portfolioFiles.length} file(s) selected',
-                                //                   style: const TextStyle(
-                                //                     color: Colors.white,
-                                //                     fontSize: 15,
-                                //                     fontWeight: FontWeight.w500,
-                                //                     fontFamily: 'Inter',
-                                //                   ),
-                                //                 ),
-                                //               ),
-                                //       ),
-                                //     ),
-                                //     if (_portfolioFiles.isNotEmpty)
-                                //       Padding(
-                                //         padding: const EdgeInsets.only(top: 10),
-                                //         child: Column(
-                                //           children: List.generate(
-                                //             _portfolioFiles.length,
-                                //             (index) {
-                                //               final file =
-                                //                   _portfolioFiles[index];
-                                //               final isImage =
-                                //                   [
-                                //                     '.jpg',
-                                //                     '.jpeg',
-                                //                     '.png',
-                                //                   ].contains(
-                                //                     path
-                                //                         .extension(file.path)
-                                //                         .toLowerCase(),
-                                //                   );
-                                //               return Padding(
-                                //                 padding: const EdgeInsets.only(
-                                //                   bottom: 8,
-                                //                 ),
-                                //                 child: Container(
-                                //                   decoration: BoxDecoration(
-                                //                     color: const Color(
-                                //                       0xFF2E2E2E,
-                                //                     ),
-                                //                     borderRadius:
-                                //                         BorderRadius.circular(
-                                //                           12,
-                                //                         ),
-                                //                   ),
-                                //                   child: ListTile(
-                                //                     leading: isImage
-                                //                         ? ClipRRect(
-                                //                             borderRadius:
-                                //                                 BorderRadius.circular(
-                                //                                   8,
-                                //                                 ),
-                                //                             child: Image.file(
-                                //                               file,
-                                //                               width: 40,
-                                //                               height: 40,
-                                //                               fit: BoxFit.cover,
-                                //                             ),
-                                //                           )
-                                //                         : const Icon(
-                                //                             Icons
-                                //                                 .picture_as_pdf,
-                                //                             color:
-                                //                                 Colors.white70,
-                                //                           ),
-                                //                     title: Text(
-                                //                       path.basename(file.path),
-                                //                       style: const TextStyle(
-                                //                         color: Colors.white,
-                                //                         fontFamily: 'Inter',
-                                //                         fontSize: 14,
-                                //                       ),
-                                //                       overflow:
-                                //                           TextOverflow.ellipsis,
-                                //                     ),
-                                //                     trailing: IconButton(
-                                //                       icon: const Icon(
-                                //                         Icons.close,
-                                //                         color: Colors.white,
-                                //                       ),
-                                //                       onPressed: () {
-                                //                         setState(() {
-                                //                           _portfolioFiles
-                                //                               .removeAt(index);
-                                //                           _validatePortfolio();
-                                //                         });
-                                //                       },
-                                //                     ),
-                                //                   ),
-                                //                 ),
-                                //               );
-                                //             },
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     if (_showPortfolioError)
-                                //       Padding(
-                                //         padding: const EdgeInsets.only(top: 6),
-                                //         child: ShakeWidget(
-                                //           key: Key(_portfolioErrorMessage),
-                                //           duration: const Duration(
-                                //             milliseconds: 700,
-                                //           ),
-                                //           child: Text(
-                                //             _portfolioErrorMessage,
-                                //             style: const TextStyle(
-                                //               fontFamily: 'Inter',
-                                //               fontSize: 12,
-                                //               color: Colors.redAccent,
-                                //               fontWeight: FontWeight.w500,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //   ],
-                                // ),
+                                    const SizedBox(height: 10),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _showFileSourceSelection();
+                                      },
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF2E2E2E),
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: (_portfolioFiles.isNotEmpty || _portfolioUrls.isNotEmpty)
+                                                ? Colors.green
+                                                : Colors.grey.withOpacity(0.4),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: (_portfolioFiles.isEmpty && _portfolioUrls.isEmpty)
+                                            ? Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(
+                                              Icons.upload_file_rounded,
+                                              color: Colors.white70,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Tap to Upload Portfolio',
+                                              style: TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: 'Inter',
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                            : Center(
+                                          child: Text(
+                                            '${_portfolioFiles.length + _portfolioUrls.length} item(s) selected',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: 'Inter',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    if (_portfolioFiles.isNotEmpty || _portfolioUrls.isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Column(
+                                          children: [
+                                            // Display existing portfolio URLs with index
+                                            ...List.generate(_portfolioUrls.length, (index) {
+                                              final url = _portfolioUrls[index];
+                                              final isImage = url.toLowerCase().endsWith('.jpg') ||
+                                                  url.toLowerCase().endsWith('.jpeg') ||
+                                                  url.toLowerCase().endsWith('.png');
+                                              return Padding(
+                                                padding: const EdgeInsets.only(bottom: 8),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF2E2E2E),
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  child: ListTile(
+                                                    leading: isImage
+                                                        ? ClipRRect(
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      child: Image.network(
+                                                        url,
+                                                        width: 40,
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (context, error, stackTrace) =>
+                                                        const Icon(
+                                                          Icons.broken_image,
+                                                          color: Colors.white70,
+                                                        ),
+                                                      ),
+                                                    )
+                                                        : const Icon(
+                                                      Icons.picture_as_pdf,
+                                                      color: Colors.white70,
+                                                    ),
+                                                    title: Text(
+                                                      'portfolio[$index]: ${path.basename(url)}',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontFamily: 'Inter',
+                                                        fontSize: 14,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    trailing: IconButton(
+                                                      icon: const Icon(
+                                                        Icons.close,
+                                                        color: Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _portfolioUrls.removeAt(index);
+                                                          _validatePortfolio();
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                            // Display new portfolio files with index continuing from URLs
+                                            ...List.generate(_portfolioFiles.length, (index) {
+                                              final file = _portfolioFiles[index];
+                                              final isImage = ['.jpg', '.jpeg', '.png']
+                                                  .contains(path.extension(file.path).toLowerCase());
+                                              return Padding(
+                                                padding: const EdgeInsets.only(bottom: 8),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF2E2E2E),
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  child: ListTile(
+                                                    leading: isImage
+                                                        ? ClipRRect(
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      child: Image.file(
+                                                        file,
+                                                        width: 40,
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (context, error, stackTrace) =>
+                                                        const Icon(
+                                                          Icons.broken_image,
+                                                          color: Colors.white70,
+                                                        ),
+                                                      ),
+                                                    )
+                                                        : const Icon(
+                                                      Icons.picture_as_pdf,
+                                                      color: Colors.white70,
+                                                    ),
+                                                    title: Text(
+                                                      'portfolio[${index + _portfolioUrls.length}]: ${path.basename(file.path)}',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontFamily: 'Inter',
+                                                        fontSize: 14,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    trailing: IconButton(
+                                                      icon: const Icon(
+                                                        Icons.close,
+                                                        color: Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _portfolioFiles.removeAt(index);
+                                                          _validatePortfolio();
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                          ],
+                                        ),
+                                      ),
+                                    if (_showPortfolioError)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 6),
+                                        child: ShakeWidget(
+                                          key: Key(_portfolioErrorMessage),
+                                          duration: const Duration(milliseconds: 700),
+                                          child: Text(
+                                            _portfolioErrorMessage,
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 12,
+                                              color: Colors.redAccent,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                )
+
                               ],
                             ),
                           ),
