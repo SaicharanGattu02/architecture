@@ -830,6 +830,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
+
             ),
           ),
       ],
