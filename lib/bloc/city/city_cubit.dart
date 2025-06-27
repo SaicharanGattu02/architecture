@@ -21,4 +21,20 @@ class CityCubit extends Cubit<CityStates> {
       emit(CityFailure(msg: "An error occurred: $e"));
     }
   }
+  Future<void> getArchitectCity(String state) async {
+    emit(CityArchitectLoading());
+    try {
+      final res = await cityRepo.getArchitechCityApi(state);
+      if (res != null) {
+        print('loaded');
+        emit(CityArchitectLoaded(cityList: res));
+      } else {
+        print('failure');
+        emit(CityFailure(msg: "An error occurred: ${res}"));
+      }
+    } catch (e) {
+      print('catch');
+      emit(CityFailure(msg: "An error occurred: $e"));
+    }
+  }
 }

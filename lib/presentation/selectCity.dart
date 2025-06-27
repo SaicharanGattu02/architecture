@@ -18,7 +18,7 @@ class SelectCity extends StatefulWidget {
 class _SelectCityState extends State<SelectCity> {
   @override
   void initState() {
-    context.read<CityCubit>().getCity(widget.state);
+    context.read<CityCubit>().getArchitectCity(widget.state);
     super.initState();
   }
 
@@ -29,15 +29,15 @@ class _SelectCityState extends State<SelectCity> {
       appBar: CustomAppBar1(title: 'Select City', actions: []),
       body: BlocBuilder<CityCubit, CityStates>(
         builder: (context, state) {
-          if (state is CityLoading) {
+          if (state is CityArchitectLoading) {
             return Center(
               child: CircularProgressIndicator(color: Colors.white),
             );
-          } else if (state is CityLoaded) {
+          } else if (state is CityArchitectLoaded) {
             return ListView.builder(
-              itemCount: state.cityList.length,
+              itemCount: state.cityList.data?.length,
               itemBuilder: (context, index) {
-                final city = state.cityList[index];
+                final city = state.cityList.data![index];
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[800],
@@ -47,7 +47,7 @@ class _SelectCityState extends State<SelectCity> {
                   child: ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: 24),
                     title: Text(
-                      city.name,
+                      city,
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     trailing: Icon(
@@ -56,9 +56,9 @@ class _SelectCityState extends State<SelectCity> {
                       size: 20,
                     ),
                     onTap: () {
-                      final selectedCity = city.name;
+                      final selectedCity = city;
                       print('selectedCity: $selectedCity');
-                      context.push("/select_type?city=${selectedCity}");
+                      context.push("/select_type?state=${widget.state}&city=${selectedCity}");
                     },
                   ),
                 );

@@ -1,33 +1,47 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../bloc/categoryType/categoryType_cubit.dart';
+import '../bloc/categoryType/categoryType_states.dart';
 import 'Components/CustomAppButton.dart';
 import 'Components/CutomAppBar.dart';
 
-enum PropertyType { residential, commercial, industrial }
-
 class SelectType extends StatefulWidget {
+  final String state;
   final String city;
 
-  const SelectType({Key? key, required this.city}) : super(key: key);
+  const SelectType({Key? key, required this.state, required this.city})
+    : super(key: key);
 
   @override
   _SelectTypeScreenState createState() => _SelectTypeScreenState();
 }
 
 class _SelectTypeScreenState extends State<SelectType> {
+  String? _selectedCategory;
+  @override
+  void initState() {
+    context.read<CategoryTypeCubit>().getCategoryType(
+      widget.state,
+      widget.city,
+    );
+    super.initState();
+  }
 
-  PropertyType? _selectedType;
-
-  Widget _buildTypeCard(PropertyType type, IconData icon, String label) {
-    final bool isSelected = _selectedType == type;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: () => setState(() => _selectedType = type),
-          child: Stack(
+  Widget _buildTypeCard(String name, IconData icon) {
+    final bool isSelected = _selectedCategory == name;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedCategory = name;
+        });
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
             children: [
               Container(
                 width: 80,
@@ -35,13 +49,16 @@ class _SelectTypeScreenState extends State<SelectType> {
                 decoration: BoxDecoration(
                   color: Colors.grey[850],
                   borderRadius: BorderRadius.circular(16),
+                  border: isSelected
+                      ? Border.all(color: Colors.white, width: 2)
+                      : null,
                 ),
                 child: Center(child: Icon(icon, size: 36, color: Colors.white)),
               ),
               if (isSelected)
                 Positioned(
-                  top: -4,
-                  right: -4,
+                  top: 2,
+                  right: 2,
                   child: Icon(
                     Icons.check_circle,
                     color: Colors.white,
@@ -50,10 +67,10 @@ class _SelectTypeScreenState extends State<SelectType> {
                 ),
             ],
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(label, style: TextStyle(color: Colors.white)),
-      ],
+          const SizedBox(height: 8),
+          Text(name, style: TextStyle(color: Colors.white)),
+        ],
+      ),
     );
   }
 
@@ -62,52 +79,68 @@ class _SelectTypeScreenState extends State<SelectType> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: CustomAppBar1(title: 'Select Type', actions: []),
-      body: Center(
-        child: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: BlocBuilder<CategoryTypeCubit, CategoryTypeStates>(
+        builder: (context, state) {
+          if (state is CategoryTypeLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          } else if (state is CategoryTypeLoaded) {
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
                 children: [
-                  _buildTypeCard(
-                    PropertyType.residential,
-                    Icons.home,
-                    'Residential',
-                  ),
-                  _buildTypeCard(
-                    PropertyType.commercial,
-                    Icons.business,
-                    'Commercial',
-                  ),
-                  _buildTypeCard(
-                    PropertyType.industrial,
-                    Icons.factory,
-                    'Industrial',
+                  Expanded(
+                    child: GridView.builder(
+                      itemCount: state.categoryType.data?.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                      itemBuilder: (context, index) {
+                        final category = state.categoryType.data![index];
+                        return _buildTypeCard(category, Icons.business);
+                      },
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            );
+          } else if (state is CategoryTypeFailure) {
+            return Center(
+              child: Text(state.msg, style: TextStyle(color: Colors.redAccent)),
+            );
+          } else {
+            return const Center(
+              child: Text(
+                'Failed to load categories',
+                style: TextStyle(color: Colors.white70),
+              ),
+            );
+          }
+        },
       ),
-      bottomNavigationBar: _selectedType != null
+      bottomNavigationBar: _selectedCategory != null
           ? SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
                 child: CustomAppButton1(
                   text: 'Find Architects',
                   onPlusTap: () {
-                    final industryType = _selectedType!.name;
+                    final type = _selectedCategory!;
                     context.push(
-                      '/select_architecture?industryType=$industryType&location=${widget.city}',
+                      '/select_architecture?industryType=$type&location=${widget.city}',
                     );
                   },
                 ),
               ),
             )
-          : SizedBox.shrink(),
+          : const SizedBox.shrink(),
     );
   }
 }

@@ -2,8 +2,11 @@ import 'package:architect/models/CitiesModel.dart';
 import 'package:architect/models/SuccessModel.dart';
 import 'package:architect/services/remote_data_source.dart';
 
+import '../../models/ArchitechCityModel.dart';
+
 abstract class CityRepo {
   Future<List<CityModel>?> getCityApi(String state);
+  Future<ArchitechCityModel?> getArchitechCityApi(String state);
 }
 
 
@@ -15,5 +18,9 @@ class CityImpl implements CityRepo {
   @override
   Future<List<CityModel>?> getCityApi(String state) async {
     return await remoteDataSource.getCity(state);
+  }
+  @override
+  Future<ArchitechCityModel?> getArchitechCityApi(String state) async {
+    return await remoteDataSource.geArchitecttCity(state);
   }
 }

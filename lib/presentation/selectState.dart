@@ -19,7 +19,7 @@ class _EnterStateScreenState extends State<EnterState> {
   @override
   void initState() {
     super.initState();
-    context.read<StateCubit>().getState();
+    context.read<StateCubit>().getArchitectState();
   }
 
   @override
@@ -64,11 +64,11 @@ class _EnterStateScreenState extends State<EnterState> {
             const SizedBox(height: 12),
             BlocBuilder<StateCubit, StateStates>(
               builder: (context, state) {
-                if (state is StateLoading) {
+                if (state is StateArchitectLoading) {
                   return const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   );
-                } else if (state is StateLoaded) {
+                } else if (state is StateArchitectLoaded) {
                   return DropdownButtonHideUnderline(
                     child: DropdownButton2<String>(
                       isExpanded: true,
@@ -87,11 +87,11 @@ class _EnterStateScreenState extends State<EnterState> {
                           ),
                         ],
                       ),
-                      items: state.statesList.map((e) {
+                      items: state.statesList.data?.map((String stateName) {
                         return DropdownMenuItem<String>(
-                          value: e.name,
+                          value: stateName,
                           child: Text(
-                            e.name ?? '',
+                            stateName,
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 15,
@@ -100,6 +100,7 @@ class _EnterStateScreenState extends State<EnterState> {
                           ),
                         );
                       }).toList(),
+
                       value: _selectState,
                       onChanged: (String? value) {
                         setState(() {

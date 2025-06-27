@@ -275,7 +275,7 @@ class _OtpVerificationScreenState extends State<Otp> {
           if (state is CreateProfileVerifyOTPSucess) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.go(
-                '/subscription?id=${state.successModel.companyId}&type=${"New"}',
+                '/subscription?id=${state.successModel.data?.id??0}&type=${"New"}',
               );
             });
           } else if (state is CreateProfileError) {

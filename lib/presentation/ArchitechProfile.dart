@@ -195,7 +195,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                               TextButton.icon(
                                 onPressed: () {
                                   context.push(
-                                    '/architecture_details?id=${state.architechProfileModel.data?.id ?? 0}',
+                                    '/architecture_details?id=${state.architechProfileModel.data?.id ?? 0}&type=${"Architech"}',
                                   );
                                 },
                                 icon: Icon(

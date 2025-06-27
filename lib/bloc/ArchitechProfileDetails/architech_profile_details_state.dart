@@ -9,24 +9,21 @@ abstract class ArchitechProfileDetailsState extends Equatable {
   List<Object?> get props => [];
 }
 
-class ArchitechProfileDetailsIntailly extends ArchitechProfileDetailsState {
+class ArchitechProfileDetailsIntailly extends ArchitechProfileDetailsState {}
 
-}
-
-class ArchitechProfileDetailsLoading extends ArchitechProfileDetailsState {
-
-}
+class ArchitechProfileDetailsLoading extends ArchitechProfileDetailsState {}
+// class UserArchitechProfileDetailsLoading extends ArchitechProfileDetailsState {}
 
 class ArchitechProfileDetailsLoaded extends ArchitechProfileDetailsState {
-
   final ArchitechProfileModel architechProfileModel;
   ArchitechProfileDetailsLoaded({required this.architechProfileModel});
-
 }
+// class UserArchitechProfileDetailsLoaded extends ArchitechProfileDetailsState {
+//   final ArchitechProfileModel architechProfileModel;
+//   UserArchitechProfileDetailsLoaded({required this.architechProfileModel});
+// }
 
 class ArchitechProfileDetailsError extends ArchitechProfileDetailsState {
-
   final String message;
   ArchitechProfileDetailsError({required this.message});
-
 }

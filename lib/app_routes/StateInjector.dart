@@ -16,6 +16,8 @@ import '../bloc/add_edit_post/add_edit_post_cubit.dart';
 import '../bloc/add_edit_post/add_edit_post_repository.dart';
 import '../bloc/architect_list/architect_cubit.dart';
 import '../bloc/architect_list/architect_repository.dart';
+import '../bloc/categoryType/categoryType_cubit.dart';
+import '../bloc/categoryType/categoryType_repository.dart';
 import '../bloc/city/city_repository.dart';
 import '../bloc/create_payment/create_payment_repository.dart';
 import '../bloc/create_posted/create_post_cubit.dart';
@@ -105,6 +107,10 @@ class StateInjector {
       create: (context) =>
           CreatePaymentImpl(remoteDataSource: context.read<RemoteDataSource>()),
     ),
+    RepositoryProvider<CategoryTypeRepo>(
+      create: (context) =>
+          CategoryTypeImpl(remoteDataSource: context.read<RemoteDataSource>()),
+    ),
   ];
 
   static final blocProviders = <BlocProvider>[
@@ -163,6 +169,10 @@ class StateInjector {
     BlocProvider<CreatePaymentCubit>(
       create: (context) =>
           CreatePaymentCubit(context.read<CreatePaymentRepository>()),
+    ),
+    BlocProvider<CategoryTypeCubit>(
+      create: (context) =>
+          CategoryTypeCubit(context.read<CategoryTypeRepo>()),
     ),
     BlocProvider<InternetStatusBloc>(create: (context) => InternetStatusBloc()),
   ];

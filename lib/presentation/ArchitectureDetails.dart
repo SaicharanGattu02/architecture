@@ -12,7 +12,9 @@ import 'Components/debugPrint.dart';
 
 class ArchitectureDetails extends StatefulWidget {
   final int id;
-  const ArchitectureDetails({Key? key, required this.id}) : super(key: key);
+  final String type;
+  const ArchitectureDetails({Key? key, required this.id, required this.type})
+    : super(key: key);
 
   @override
   State<ArchitectureDetails> createState() => _ArchitectureDetailsState();
@@ -38,11 +40,18 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
   @override
   void initState() {
     super.initState();
-    context.read<ArchitechProfileDetailsCubit>().getArchitechProfileDetails(
-      widget.id,
-    );
-  }
 
+    debugPrint("cbvxbtype:${widget.type}");
+    if (widget.type == "Architech") {
+      context.read<ArchitechProfileDetailsCubit>().getArchitechProfileDetails(
+        widget.id,
+      );
+    } else {
+      context
+          .read<ArchitechProfileDetailsCubit>()
+          .getUserArchitechProfileDetails(widget.id);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

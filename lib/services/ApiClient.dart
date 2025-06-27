@@ -27,11 +27,14 @@ class ApiClient {
     '/api/resend-login-otp',
     '/api/states',
     '/api/get-architects',
-    // '/api/get-architect-by-id',
+    '/api/customer-side-get-architect-by-id/',
     '/api/plans',
     '/api/company/resend-otp',
     '/api/company/additional-info',
     '/api/create-payment',
+    '/api/architect-states',
+    '/api/architect-state',
+    '/api/architect-industries',
   ];
 
   static void setupInterceptors() {

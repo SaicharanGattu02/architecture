@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +22,6 @@ class SelectArchitecture extends StatefulWidget {
 class _SelectArchitectureScreenState extends State<SelectArchitecture> {
   @override
   void initState() {
-
     context.read<ArchitectCubit>().getArchitect(
       widget.industryType,
       widget.location,
@@ -34,15 +34,20 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: primarycolor,
-      appBar: CustomAppBar1(title: 'Architecture', actions: [Padding(
-        padding: const EdgeInsets.only(right: 20.0),
-        child: IconButton(
-          onPressed: () {
-            context.go('/onboarding');
-          },
-          icon: Icon(Icons.home, color: Colors.white),
-        ),
-      ),]),
+      appBar: CustomAppBar1(
+        title: 'Architecture',
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: IconButton(
+              onPressed: () {
+                context.go('/onboarding');
+              },
+              icon: Icon(Icons.home, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
       body: BlocBuilder<ArchitectCubit, ArchitectState>(
         builder: (context, state) {
           if (state is ArchitectLoading) {
@@ -51,7 +56,7 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
             );
           } else if (state is ArchitectLoaded) {
             if (state.architectModel.data?.architechData == null ||
-                state.architectModel.data?.architechData?.length==0) {
+                state.architectModel.data?.architechData?.length == 0) {
               return const Center(
                 child: Text(
                   'No Architects available',
@@ -64,10 +69,11 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
               child: ListView.builder(
                 itemCount: state.architectModel.data?.architechData?.length,
                 itemBuilder: (context, index) {
-                  final architechList=state.architectModel.data?.architechData![index];
+                  final architechList =
+                      state.architectModel.data?.architechData![index];
                   return GestureDetector(
                     onTap: () {
-                      context.push('/architecture_details?id=${architechList?.id ?? 0}');
+                      context.push('/architecture_details?id=${architechList?.id ?? 0}&type=${"User"}',);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(16),
@@ -80,16 +86,35 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
+
                             height: 100,
                             width: w * 0.25,
                             decoration: BoxDecoration(
-                              color: Colors.white24, // Placeholder color
+                              color: Color(0xffD9D9D9),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: const Icon(
-                              Icons.image,
-                              size: 48,
-                              color: Colors.white30,
+                            child: CachedNetworkImage(
+                              imageUrl: architechList?.logo ?? "",
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                              placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: primarycolor,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                "assets/profile.png",
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -97,19 +122,21 @@ class _SelectArchitectureScreenState extends State<SelectArchitecture> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                 Text(
-                                   architechList?.companyName??"",
+                                Text(
+                                  architechList?.companyName ?? "",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,fontFamily: 'Inter'
+                                    color: Colors.white,
+                                    fontFamily: 'Inter',
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                 Text(
-                                   architechList?.companyEmail??"",
+                                Text(
+                                  architechList?.companyEmail ?? "",
                                   style: TextStyle(
-                                    color: Colors.white70,fontFamily: 'Inter',
+                                    color: Colors.white70,
+                                    fontFamily: 'Inter',
                                     fontSize: 14,
                                   ),
                                 ),

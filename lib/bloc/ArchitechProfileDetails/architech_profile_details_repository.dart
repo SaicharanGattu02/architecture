@@ -4,6 +4,7 @@ import '../../services/remote_data_source.dart';
 
 abstract class ArchitechProfileDetailsRepository {
   Future<ArchitechProfileModel?> getArchitechProfileDetails(int id);
+  Future<ArchitechProfileModel?> getUserArchitechProfileDetails(int id);
 }
 
 class ArchitechProfileDetailsImpl implements ArchitechProfileDetailsRepository {
@@ -12,5 +13,8 @@ class ArchitechProfileDetailsImpl implements ArchitechProfileDetailsRepository {
 
   Future<ArchitechProfileModel?> getArchitechProfileDetails(int id) async {
     return await remoteDataSource.getArchitechProfileDetails(id);
+  }
+  Future<ArchitechProfileModel?> getUserArchitechProfileDetails(int id) async {
+    return await remoteDataSource.getUserArchitechProfileDetails(id);
   }
 }

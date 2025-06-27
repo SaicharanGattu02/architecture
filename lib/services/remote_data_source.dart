@@ -3,8 +3,11 @@ import 'package:architect/models/ActiveSubscriptionmodel.dart';
 import 'package:architect/models/SubscriptionModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import '../models/ArchitechCityModel.dart';
 import '../models/ArchitechProfileModel.dart';
+import '../models/ArchitechStatesModel.dart';
 import '../models/ArchitectModel.dart';
+import '../models/CategoryTypeModel.dart';
 import '../models/CitiesModel.dart';
 import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
@@ -26,7 +29,13 @@ abstract class RemoteDataSource {
   Future<SuccessModel?> deletePost(id);
   Future<SubscriptionModel?> getsubplans();
   Future<List<StatesModel>?> getStates();
+  Future<ArchitechStatesModel?> getArchitechStates();
   Future<List<CityModel>?> getCity(String state);
+  Future<ArchitechCityModel?> geArchitecttCity(String state);
+  Future<CategoryTypeModel?> getArchitectCategoryType(
+    String state,
+    String cities,
+  );
   Future<Activesubscriptionmodel?> activeSubplans(int id);
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> resendLoginOtp(Map<String, dynamic> data);
@@ -47,6 +56,7 @@ abstract class RemoteDataSource {
     Map<String, dynamic> data,
   );
   Future<SuccessModel?> createPayment(Map<String, dynamic> data);
+  Future<ArchitechProfileModel?> getUserArchitechProfileDetails(int id);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -450,6 +460,24 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<ArchitechStatesModel?> getArchitechStates() async {
+    try {
+      Response res = await ApiClient.get("${APIEndpointUrls.architec_states}");
+
+      if (res.statusCode == 200) {
+        debugPrint('getArchitechStates Response: ${res.data}');
+
+        return ArchitechStatesModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getArchitechStates: $e');
+      return null;
+    }
+  }
+
+  @override
   Future<List<CityModel>?> getCity(String state) async {
     try {
       Response res = await ApiClient.get(
@@ -465,6 +493,46 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error getCity: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<ArchitechCityModel?> geArchitecttCity(String state) async {
+    try {
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.architec_cities}/${state}/cities",
+      );
+      if (res.statusCode == 200) {
+        debugPrint('get ArchitectCity: ${res.data}');
+        return ArchitechCityModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getUserPosts: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<CategoryTypeModel?> getArchitectCategoryType(
+    String state,
+    String cities,
+  ) async {
+    try {
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.architec_category_type}/$state/$cities",
+      );
+
+      if (res.statusCode == 200) {
+        debugPrint('get Architect Category Type: ${res.data}');
+        return CategoryTypeModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error get Architect Category Type: $e');
       return null;
     }
   }
@@ -488,7 +556,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<UserPosteDetailsModel?> getUserPostDetails(int id) async {
     try {
-      Response res = await ApiClient.get("${APIEndpointUrls.user_posts_detail}/${id}");
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.user_posts_detail}/${id}",
+      );
       if (res.statusCode == 200) {
         debugPrint('get getUserPostDetails: ${res.data}');
         return UserPosteDetailsModel.fromJson(res.data);
@@ -533,6 +603,25 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error getArchitech Profile Details: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<ArchitechProfileModel?> getUserArchitechProfileDetails(int id) async {
+    try {
+      Response res = await ApiClient.get(
+        '${APIEndpointUrls.user_architech_by_id}/$id',
+      );
+
+      if (res.statusCode == 200) {
+        debugPrint('get User Architech Profile Details: ${res.data}');
+        return ArchitechProfileModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error get User Architech Profile Details: $e');
       return null;
     }
   }

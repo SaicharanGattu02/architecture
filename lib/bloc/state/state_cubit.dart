@@ -22,4 +22,17 @@ class StateCubit extends Cubit<StateStates> {
       emit(StateFailure(msg: "An error occurred: $e"));
     }
   }
+  Future<void> getArchitectState() async {
+    emit(StateArchitectLoading());
+    try {
+      final  res = await stateRepo.getArchietctStateApi();
+      if (res != null) {
+        emit(StateArchitectLoaded(statesList: res));
+      } else {
+        emit(StateFailure(msg: "No states found."));
+      }
+    } catch (e) {
+      emit(StateFailure(msg: "An error occurred: $e"));
+    }
+  }
 }

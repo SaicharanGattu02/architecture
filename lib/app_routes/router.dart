@@ -73,8 +73,12 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/select_type',
       pageBuilder: (context, state) {
+        final states = state.uri.queryParameters['state'] ?? "";
         final city = state.uri.queryParameters['city'] ?? "";
-        return buildSlideTransitionPage(SelectType(city: city), state);
+        return buildSlideTransitionPage(
+          SelectType(state: states, city: city),
+          state,
+        );
       },
     ),
     GoRoute(
@@ -93,7 +97,11 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) {
         final idString = state.uri.queryParameters['id'];
         final id = int.tryParse(idString ?? '') ?? 0;
-        return buildSlideTransitionPage(ArchitectureDetails(id: id), state);
+        final type = state.uri.queryParameters['type'] ?? "";
+        return buildSlideTransitionPage(
+          ArchitectureDetails(id: id, type: type),
+          state,
+        );
       },
     ),
     GoRoute(
@@ -129,7 +137,10 @@ final GoRouter appRouter = GoRouter(
         final idParam = state.uri.queryParameters['id'];
         final int id = int.tryParse(idParam ?? '') ?? 0;
         final type = state.uri.queryParameters['type'] ?? "";
-        return buildSlideTransitionPage(Subscription(id: id,type: type,), state);
+        return buildSlideTransitionPage(
+          Subscription(id: id, type: type),
+          state,
+        );
       },
     ),
 
@@ -154,7 +165,10 @@ final GoRouter appRouter = GoRouter(
         final idString = state.uri.queryParameters['id'];
         final id = int.tryParse(idString ?? '') ?? 0;
         final type = state.uri.queryParameters['type'] ?? "";
-        return buildSlideTransitionPage(ArchitectProfileSetup(id: id,type: type,), state);
+        return buildSlideTransitionPage(
+          ArchitectProfileSetup(id: id, type: type),
+          state,
+        );
       },
     ),
     GoRoute(
