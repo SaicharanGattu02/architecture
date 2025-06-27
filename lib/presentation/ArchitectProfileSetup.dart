@@ -102,22 +102,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     super.dispose();
   }
 
-  // bool _validatePortfolio() {
-  //   if (widget.type == "Edit" && _portfolioUrls.isNotEmpty) {
-  //     // In update mode, allow validation to pass if there are existing portfolio URLs
-  //     _portfolioErrorMessage = '';
-  //     _showPortfolioError = false;
-  //     return true;
-  //   }
-  //   if (_portfolioFiles.isEmpty) {
-  //     _portfolioErrorMessage = 'Please upload at least one portfolio file';
-  //     _showPortfolioError = true;
-  //     return false;
-  //   }
-  //   _portfolioErrorMessage = '';
-  //   _showPortfolioError = false;
-  //   return true;
-  // }
   bool _validatePortfolio() {
     if (_portfolioFiles.isEmpty && _portfolioUrls.isEmpty) {
       _portfolioErrorMessage = 'Please upload at least one portfolio item';
@@ -128,6 +112,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     _showPortfolioError = false;
     return true;
   }
+
   bool _validateDescription() {
     final text = _descriptionController.text.trim();
     if (text.isEmpty) {
@@ -276,25 +261,20 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         'industry_type': _selectedIndustryType!.toLowerCase(),
       };
 
-      // ✅ Add indexed specializations
       for (int i = 0; i < selectedSpecializations.length; i++) {
         data['specializations[$i]'] = selectedSpecializations[i];
       }
-      // Add portfolio items
       if (widget.type == "New") {
-        // For new profile, send only new files
         for (int i = 0; i < _portfolioFiles.length; i++) {
           data['portfolio[$i]'] = _portfolioFiles[i];
         }
       } else {
-        // For edit profile, send remaining URLs and new files
         int portfolioIndex = 0;
-        // Add remaining existing URLs
+
         for (int i = 0; i < _portfolioUrls.length; i++) {
           data['portfolio[$portfolioIndex]'] = _portfolioUrls[i];
           portfolioIndex++;
         }
-        // Add new files
         for (int i = 0; i < _portfolioFiles.length; i++) {
           data['portfolio[$portfolioIndex]'] = _portfolioFiles[i];
           portfolioIndex++;
@@ -1353,85 +1333,121 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                         height: 120,
                                         decoration: BoxDecoration(
                                           color: const Color(0xFF2E2E2E),
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           border: Border.all(
-                                            color: (_portfolioFiles.isNotEmpty || _portfolioUrls.isNotEmpty)
+                                            color:
+                                                (_portfolioFiles.isNotEmpty ||
+                                                    _portfolioUrls.isNotEmpty)
                                                 ? Colors.green
                                                 : Colors.grey.withOpacity(0.4),
                                             width: 1.5,
                                           ),
                                         ),
-                                        child: (_portfolioFiles.isEmpty && _portfolioUrls.isEmpty)
+                                        child:
+                                            (_portfolioFiles.isEmpty &&
+                                                _portfolioUrls.isEmpty)
                                             ? Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: const [
-                                            Icon(
-                                              Icons.upload_file_rounded,
-                                              color: Colors.white70,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Text(
-                                              'Tap to Upload Portfolio',
-                                              style: TextStyle(
-                                                color: Colors.white70,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500,
-                                                fontFamily: 'Inter',
-                                              ),
-                                            ),
-                                          ],
-                                        )
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: const [
+                                                  Icon(
+                                                    Icons.upload_file_rounded,
+                                                    color: Colors.white70,
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    'Tap to Upload Portfolio',
+                                                    style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily: 'Inter',
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                             : Center(
-                                          child: Text(
-                                            '${_portfolioFiles.length + _portfolioUrls.length} item(s) selected',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: 'Inter',
-                                            ),
-                                          ),
-                                        ),
+                                                child: Text(
+                                                  '${_portfolioFiles.length + _portfolioUrls.length} item(s) selected',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: 'Inter',
+                                                  ),
+                                                ),
+                                              ),
                                       ),
                                     ),
-                                    if (_portfolioFiles.isNotEmpty || _portfolioUrls.isNotEmpty)
+                                    if (_portfolioFiles.isNotEmpty ||
+                                        _portfolioUrls.isNotEmpty)
                                       Padding(
                                         padding: const EdgeInsets.only(top: 10),
                                         child: Column(
                                           children: [
                                             // Display existing portfolio URLs with index
-                                            ...List.generate(_portfolioUrls.length, (index) {
+                                            ...List.generate(_portfolioUrls.length, (
+                                              index,
+                                            ) {
                                               final url = _portfolioUrls[index];
-                                              final isImage = url.toLowerCase().endsWith('.jpg') ||
-                                                  url.toLowerCase().endsWith('.jpeg') ||
-                                                  url.toLowerCase().endsWith('.png');
+                                              final isImage =
+                                                  url.toLowerCase().endsWith(
+                                                    '.jpg',
+                                                  ) ||
+                                                  url.toLowerCase().endsWith(
+                                                    '.jpeg',
+                                                  ) ||
+                                                  url.toLowerCase().endsWith(
+                                                    '.png',
+                                                  );
                                               return Padding(
-                                                padding: const EdgeInsets.only(bottom: 8),
+                                                padding: const EdgeInsets.only(
+                                                  bottom: 8,
+                                                ),
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    color: const Color(0xFF2E2E2E),
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    color: const Color(
+                                                      0xFF2E2E2E,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
                                                   child: ListTile(
                                                     leading: isImage
                                                         ? ClipRRect(
-                                                      borderRadius: BorderRadius.circular(8),
-                                                      child: Image.network(
-                                                        url,
-                                                        width: 40,
-                                                        height: 40,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (context, error, stackTrace) =>
-                                                        const Icon(
-                                                          Icons.broken_image,
-                                                          color: Colors.white70,
-                                                        ),
-                                                      ),
-                                                    )
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  8,
+                                                                ),
+                                                            child: Image.network(
+                                                              url,
+                                                              width: 40,
+                                                              height: 40,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder:
+                                                                  (
+                                                                    context,
+                                                                    error,
+                                                                    stackTrace,
+                                                                  ) => const Icon(
+                                                                    Icons
+                                                                        .broken_image,
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
+                                                            ),
+                                                          )
                                                         : const Icon(
-                                                      Icons.picture_as_pdf,
-                                                      color: Colors.white70,
-                                                    ),
+                                                            Icons
+                                                                .picture_as_pdf,
+                                                            color:
+                                                                Colors.white70,
+                                                          ),
                                                     title: Text(
                                                       'portfolio[$index]: ${path.basename(url)}',
                                                       style: const TextStyle(
@@ -1439,7 +1455,8 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                                         fontFamily: 'Inter',
                                                         fontSize: 14,
                                                       ),
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     trailing: IconButton(
                                                       icon: const Icon(
@@ -1448,7 +1465,8 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                                       ),
                                                       onPressed: () {
                                                         setState(() {
-                                                          _portfolioUrls.removeAt(index);
+                                                          _portfolioUrls
+                                                              .removeAt(index);
                                                           _validatePortfolio();
                                                         });
                                                       },
@@ -1458,37 +1476,66 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                               );
                                             }),
                                             // Display new portfolio files with index continuing from URLs
-                                            ...List.generate(_portfolioFiles.length, (index) {
-                                              final file = _portfolioFiles[index];
-                                              final isImage = ['.jpg', '.jpeg', '.png']
-                                                  .contains(path.extension(file.path).toLowerCase());
+                                            ...List.generate(_portfolioFiles.length, (
+                                              index,
+                                            ) {
+                                              final file =
+                                                  _portfolioFiles[index];
+                                              final isImage =
+                                                  [
+                                                    '.jpg',
+                                                    '.jpeg',
+                                                    '.png',
+                                                  ].contains(
+                                                    path
+                                                        .extension(file.path)
+                                                        .toLowerCase(),
+                                                  );
                                               return Padding(
-                                                padding: const EdgeInsets.only(bottom: 8),
+                                                padding: const EdgeInsets.only(
+                                                  bottom: 8,
+                                                ),
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    color: const Color(0xFF2E2E2E),
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    color: const Color(
+                                                      0xFF2E2E2E,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                   ),
                                                   child: ListTile(
                                                     leading: isImage
                                                         ? ClipRRect(
-                                                      borderRadius: BorderRadius.circular(8),
-                                                      child: Image.file(
-                                                        file,
-                                                        width: 40,
-                                                        height: 40,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (context, error, stackTrace) =>
-                                                        const Icon(
-                                                          Icons.broken_image,
-                                                          color: Colors.white70,
-                                                        ),
-                                                      ),
-                                                    )
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  8,
+                                                                ),
+                                                            child: Image.file(
+                                                              file,
+                                                              width: 40,
+                                                              height: 40,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder:
+                                                                  (
+                                                                    context,
+                                                                    error,
+                                                                    stackTrace,
+                                                                  ) => const Icon(
+                                                                    Icons
+                                                                        .broken_image,
+                                                                    color: Colors
+                                                                        .white70,
+                                                                  ),
+                                                            ),
+                                                          )
                                                         : const Icon(
-                                                      Icons.picture_as_pdf,
-                                                      color: Colors.white70,
-                                                    ),
+                                                            Icons
+                                                                .picture_as_pdf,
+                                                            color:
+                                                                Colors.white70,
+                                                          ),
                                                     title: Text(
                                                       'portfolio[${index + _portfolioUrls.length}]: ${path.basename(file.path)}',
                                                       style: const TextStyle(
@@ -1496,7 +1543,8 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                                         fontFamily: 'Inter',
                                                         fontSize: 14,
                                                       ),
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     trailing: IconButton(
                                                       icon: const Icon(
@@ -1505,7 +1553,8 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                                       ),
                                                       onPressed: () {
                                                         setState(() {
-                                                          _portfolioFiles.removeAt(index);
+                                                          _portfolioFiles
+                                                              .removeAt(index);
                                                           _validatePortfolio();
                                                         });
                                                       },
@@ -1522,7 +1571,9 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                         padding: const EdgeInsets.only(top: 6),
                                         child: ShakeWidget(
                                           key: Key(_portfolioErrorMessage),
-                                          duration: const Duration(milliseconds: 700),
+                                          duration: const Duration(
+                                            milliseconds: 700,
+                                          ),
                                           child: Text(
                                             _portfolioErrorMessage,
                                             style: const TextStyle(
@@ -1535,8 +1586,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                                         ),
                                       ),
                                   ],
-                                )
-
+                                ),
                               ],
                             ),
                           ),
