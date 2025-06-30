@@ -54,7 +54,7 @@ class _OnboardingState extends State<Onboarding> {
                     color: Colors.white,
                     text: 'Find My Architect',
                     onPlusTap: () {
-                      context.push('/enter_state');
+                      context.push('/select_city');
                     },
                   ),
                   CustomAppButton(

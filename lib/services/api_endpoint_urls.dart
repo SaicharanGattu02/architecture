@@ -4,7 +4,6 @@ class APIEndpointUrls {
   static const String apiUrl = 'api/';
 
 
-  /// Auth URls
 
   /// Architecture Urls
   static const String register = '${apiUrl}register';
@@ -24,6 +23,8 @@ class APIEndpointUrls {
   static const String architech_company_additional_info_update = '${apiUrl}company/update-additional-info';
   static const String get_states = '${apiUrl}states';
   static const String get_city = '${apiUrl}states';
+  static const String get_subplans_architecture = '${apiUrl}subscribed-plans-for-architects';
+  static const String get_architecture_payments_history = '${apiUrl}paymens-history';
 
 
   /// User Urls
@@ -33,7 +34,7 @@ class APIEndpointUrls {
   static const String editPost = '${apiUrl}edit-post';
   static const String get_architect = '${apiUrl}get-architects';
   static const String getsubplans = '${apiUrl}plans';
-  static const String get_selected_sub_plans = '${apiUrl}selected-plan';
+  // static const String get_selected_sub_plans = '${apiUrl}selected-plan';
   static const String create_post = '${apiUrl}create-post';
   static const String create_payment = '${apiUrl}create-payment';
   static const String architec_states = '${apiUrl}architect-states';

@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SubscriptionCubit extends Cubit<SubscriptionState> {
   final SubscriptionRepository subscriptionRepository;
 
-  SubscriptionCubit(this.subscriptionRepository) : super(SubscriptionIntailly());
+  SubscriptionCubit(this.subscriptionRepository)
+    : super(SubscriptionIntailly());
 
   Future<void> getsubscriptionplans() async {
     emit(SubscriptionLoading());
@@ -18,23 +19,24 @@ class SubscriptionCubit extends Cubit<SubscriptionState> {
       }
     } catch (e) {
       emit(SubscriptionError(message: "An error occurred: $e"));
-
     }
-
   }
+
   Future<void> getActiveSubscriptionPlan(int id) async {
     emit(ActiveSubscriptionLoading());
     try {
-      final res = await subscriptionRepository.getsubscriptionplans(id);
+      final res = await subscriptionRepository.getSubscriptionPlan(id);
       if (res != null) {
-        emit(ActiveSubscriptionLoaded(activesubscriptionmodel: res));
+        if (res.status == true) {
+          emit(ActiveSubscriptionLoaded(activeSubscriptionModel: res));
+        } else {
+          emit(SubscriptionError(message: "No data available"));
+        }
       } else {
         emit(SubscriptionError(message: "No data available"));
       }
     } catch (e) {
       emit(SubscriptionError(message: "An error occurred: $e"));
-
     }
-
   }
 }

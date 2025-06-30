@@ -51,9 +51,7 @@ class _OtpVerificationScreenState extends State<Otp> {
   }
 
   void onResendPressed() {
-    final Map<String,dynamic> data = {
-      "company_email": widget.mailId
-    };
+    final Map<String, dynamic> data = {"company_email": widget.mailId};
     if (widget.type == "LogInVerify") {
       context.read<LoginOTPCubit>().logInResendOtpApi(data);
     } else {
@@ -74,9 +72,9 @@ class _OtpVerificationScreenState extends State<Otp> {
     });
 
     if (!_showOtpError) {
-      final Map<String,dynamic> data = {
+      final Map<String, dynamic> data = {
         "company_email": widget.mailId,
-        "otp": otp
+        "otp": otp,
       };
       if (widget.type == "LogInVerify") {
         print("login:${widget.type}");
@@ -253,9 +251,12 @@ class _OtpVerificationScreenState extends State<Otp> {
               "",
               expiryTimestamp,
             );
-
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/user_posts');
+              if (state.successModel.data?.subscriber == true) {
+                context.go('/user_posts');
+              } else {
+                context.go('/subscription');
+              }
             });
           } else if (state is LoginOtpError) {
             CustomSnackBar.show(context, state.message);
@@ -275,7 +276,7 @@ class _OtpVerificationScreenState extends State<Otp> {
           if (state is CreateProfileVerifyOTPSucess) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               context.go(
-                '/subscription?id=${state.successModel.data?.id??0}&type=${"New"}',
+                '/subscription?id=${state.successModel.data?.id ?? 0}&type=${"New"}',
               );
             });
           } else if (state is CreateProfileError) {

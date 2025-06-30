@@ -60,29 +60,32 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                 color: Color(0xff010101),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child:  CachedNetworkImage(
+                              child: CachedNetworkImage(
                                 imageUrl:
-                                state.architechProfileModel.data?.logo ??
+                                    state.architechProfileModel.data?.logo ??
                                     "",
-                                imageBuilder: (context, imageProvider) => Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
                                 placeholder: (context, url) => Center(
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                     color: primarycolor,
                                   ),
                                 ),
-                                errorWidget: (context, url, error) => Image.asset(
-                                  "assets/profile.png",
-                                  fit: BoxFit.cover,
-                                ),
-                              )
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                      "assets/profile.png",
+                                      fit: BoxFit.cover,
+                                    ),
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -265,10 +268,41 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                   scale: 5,
                                 ),
                               ),
+                              SizedBox(width: 60,
+                                child: Text(
+                                  'Renew the plan',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xffCCCCCC),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showLogoutDialog(context);
+                          },
+                          child: Column(
+                            spacing: 12,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(26),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff363636),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Image.asset(
+                                  'assets/refresh.png',
+                                  scale: 5,
+                                ),
+                              ),
                               Text(
-                                'Renew the plan',
+                                'History',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xffCCCCCC),
                                 ),
@@ -298,7 +332,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                               Text(
                                 'Log Out',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xffCCCCCC),
                                 ),
@@ -433,7 +467,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                               child: OutlinedButton(
                                 onPressed: () async {
                                   await AuthService.logout();
-                                  context.push("/onboarding");
+                                  context.go("/onboarding");
                                 },
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: primarycolor, // Text color

@@ -9,10 +9,10 @@ import 'Components/CustomAppButton.dart';
 import 'Components/CutomAppBar.dart';
 
 class SelectType extends StatefulWidget {
-  final String state;
+  // final String state;
   final String city;
 
-  const SelectType({Key? key, required this.state, required this.city})
+  const SelectType({Key? key, required this.city})
     : super(key: key);
 
   @override
@@ -24,8 +24,8 @@ class _SelectTypeScreenState extends State<SelectType> {
   @override
   void initState() {
     context.read<CategoryTypeCubit>().getCategoryType(
-      widget.state,
-      widget.city,
+      // widget.state,
+      widget.city
     );
     super.initState();
   }

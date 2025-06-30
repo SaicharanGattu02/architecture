@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../presentation/ArchitechProfile.dart';
 import '../presentation/ArchitectProfileSetup.dart';
 import '../presentation/Components/NoInternet.dart';
+import '../presentation/PaymentsHistory.dart';
 import '../presentation/PostYourRequirement.dart';
 import '../presentation/PostYourRequirementSuccessfully.dart';
 import '../presentation/SplashScreen.dart';
@@ -66,17 +67,17 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/select_city',
       pageBuilder: (context, state) {
-        final states = state.uri.queryParameters['state'] ?? "";
-        return buildSlideTransitionPage(SelectCity(state: states), state);
+        // final states = state.uri.queryParameters['state'] ?? "";
+        return buildSlideTransitionPage(SelectCity(), state);
       },
     ),
     GoRoute(
       path: '/select_type',
       pageBuilder: (context, state) {
-        final states = state.uri.queryParameters['state'] ?? "";
+        // final states = state.uri.queryParameters['state'] ?? "";
         final city = state.uri.queryParameters['city'] ?? "";
         return buildSlideTransitionPage(
-          SelectType(state: states, city: city),
+          SelectType( city: city),
           state,
         );
       },
@@ -149,6 +150,15 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) =>
           buildSlideTransitionPage(PostRequirement(), state),
     ),
+    GoRoute(
+      path: '/payments_history',
+      pageBuilder: (context, state) {
+        final idString = state.uri.queryParameters['id'];
+        final id = int.tryParse(idString ?? '') ?? 0;
+        return buildSlideTransitionPage(PaymentsHistory(id: id), state);
+      },
+    ),
+
     GoRoute(
       path: '/post_your_requirement_success',
       pageBuilder: (context, state) =>

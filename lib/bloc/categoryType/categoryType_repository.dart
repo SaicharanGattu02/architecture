@@ -4,7 +4,7 @@ import 'package:architect/services/remote_data_source.dart';
 import '../../models/CategoryTypeModel.dart';
 
 abstract class CategoryTypeRepo {
-  Future<CategoryTypeModel?> getCategoryTypeApi(String state,String cities);
+  Future<CategoryTypeModel?> getCategoryTypeApi(String cities);
 
 }
 
@@ -13,8 +13,8 @@ class CategoryTypeImpl implements CategoryTypeRepo {
   CategoryTypeImpl({required this.remoteDataSource});
 
   @override
-  Future<CategoryTypeModel?> getCategoryTypeApi(String state,String cities) async {
-    return await remoteDataSource.getArchitectCategoryType(state, cities);
+  Future<CategoryTypeModel?> getCategoryTypeApi(String cities) async {
+    return await remoteDataSource.getArchitectCategoryType( cities);
   }
 }
 

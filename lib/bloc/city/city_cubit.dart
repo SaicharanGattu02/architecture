@@ -21,10 +21,10 @@ class CityCubit extends Cubit<CityStates> {
       emit(CityFailure(msg: "An error occurred: $e"));
     }
   }
-  Future<void> getArchitectCity(String state) async {
+  Future<void> getArchitectCity() async {
     emit(CityArchitectLoading());
     try {
-      final res = await cityRepo.getArchitechCityApi(state);
+      final res = await cityRepo.getArchitechCityApi();
       if (res != null) {
         print('loaded');
         emit(CityArchitectLoaded(cityList: res));

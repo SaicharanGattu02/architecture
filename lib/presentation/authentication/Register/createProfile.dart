@@ -69,11 +69,15 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   }
 
   bool _validateCompany() => _companyController.text.trim().isNotEmpty;
-  bool _validateContactPerson() => _contactPersonController.text.trim().isNotEmpty;
+  bool _validateContactPerson() =>
+      _contactPersonController.text.trim().isNotEmpty;
   bool _validateLocation() => _selectCity != null && _selectCity!.isNotEmpty;
-  bool _validateEmail() => RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_emailController.text.trim());
+  bool _validateEmail() => RegExp(
+    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+  ).hasMatch(_emailController.text.trim());
   bool _validateYear() => _selectedYear != null;
-  bool _validateLogo() => _logoImage != null || (_logoUrl != null && _logoUrl!.isNotEmpty);
+  bool _validateLogo() =>
+      _logoImage != null || (_logoUrl != null && _logoUrl!.isNotEmpty);
 
   bool _validateForm() {
     setState(() {
@@ -96,7 +100,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
-        File? compressedFile = await ImageUtils.compressImage(File(pickedFile.path));
+        File? compressedFile = await ImageUtils.compressImage(
+          File(pickedFile.path),
+        );
         if (compressedFile != null) {
           setState(() {
             if (isLogo) {
@@ -118,7 +124,9 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
     }
     context.pop();
   }
@@ -137,7 +145,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -151,20 +162,36 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                     ),
                     const SizedBox(height: 20),
                     ListTile(
-                      leading: const Icon(Icons.photo_library, color: Colors.white),
+                      leading: const Icon(
+                        Icons.photo_library,
+                        color: Colors.white,
+                      ),
                       title: const Text(
                         'Choose from Gallery',
-                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      onTap: () => _pickImage(ImageSource.gallery, isLogo: isLogo),
+                      onTap: () =>
+                          _pickImage(ImageSource.gallery, isLogo: isLogo),
                     ),
                     ListTile(
-                      leading: const Icon(Icons.camera_alt, color: Colors.white),
+                      leading: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                      ),
                       title: const Text(
                         'Take Photo',
-                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      onTap: () => _pickImage(ImageSource.camera, isLogo: isLogo),
+                      onTap: () =>
+                          _pickImage(ImageSource.camera, isLogo: isLogo),
                     ),
                   ],
                 ),
@@ -226,7 +253,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 14,
+            ),
           ),
           onTap: () => setState(() => validate()),
           onChanged: (_) => setState(() => validate()),
@@ -258,57 +288,65 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       appBar: CustomAppBar1(
-        title: (widget.id != null && widget.id != 0) ? 'Update Profile' : 'Create Profile',
+        title: (widget.id != null && widget.id != 0)
+            ? 'Update Profile'
+            : 'Create Profile',
         actions: [],
       ),
-      body: BlocBuilder<StateCubit, StateStates>(
-        builder: (context, stateState) {
-          return BlocBuilder<CityCubit, CityStates>(
-            builder: (context, cityState) {
-              return BlocBuilder<ArchitechProfileCubit, ArchitechProfileState>(
-                builder: (context, profileState) {
-                  if (stateState is StateLoading || cityState is CityLoading) {
-                    return const Center(child: CircularProgressIndicator(color: Colors.white));
-                  }
+      body: BlocBuilder<CityCubit, CityStates>(
+        builder: (context, cityState) {
+          return BlocBuilder<ArchitechProfileCubit, ArchitechProfileState>(
+            builder: (context, profileState) {
+              if (cityState is CityLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
 
-                  if (widget.id == null || widget.id == 0) {
-                    return _buildForm(context, stateState, cityState);
-                  }
-                  if (profileState is ArchitechProfileLoading) {
-                    return const Center(child: CircularProgressIndicator(color: Colors.white));
-                  } else if (profileState is ArchitechProfileLoaded) {
-                    if (!_isInitialized) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        setState(() {
-                          _isInitialized = true;
-                          final profile = profileState.architechProfileModel.data;
-                          _companyController.text = profile?.companyName ?? "";
-                          _contactPersonController.text = profile?.contactPersonName ?? "";
-                          _emailController.text = profile?.companyEmail ?? "";
-                          _selectState = profile?.state ?? "";
-                          _selectCity = profile?.location ?? "";
-                          _selectedYear = profile?.establishedYear ?? "";
-                          _logoUrl = profile?.logo ?? "";
-                          _coverPhotoUrl = profile?.coverPhoto ?? "";
-                          debugPrint('Logo URL: $_logoUrl');
-                          debugPrint('Cover Photo URL: $_coverPhotoUrl');
-                          if (_selectState != null && _selectState!.isNotEmpty) {
-                            context.read<CityCubit>().getCity(_selectState!);
-                          }
-                        });
-                      });
-                    }
-                    return _buildForm(context, stateState, cityState);
-                  } else if (profileState is ArchitechProfileError) {
-                    return Center(
-                      child: Text(
-                        profileState.message,
-                        style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-                      ),
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator(color: Colors.white));
-                },
+              if (widget.id == null || widget.id == 0) {
+                return _buildForm(context, cityState);
+              }
+              if (profileState is ArchitechProfileLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              } else if (profileState is ArchitechProfileLoaded) {
+                if (!_isInitialized) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {
+                      _isInitialized = true;
+                      final profile = profileState.architechProfileModel.data;
+                      _companyController.text = profile?.companyName ?? "";
+                      _contactPersonController.text =
+                          profile?.contactPersonName ?? "";
+                      _emailController.text = profile?.companyEmail ?? "";
+                      _selectState = profile?.state ?? "";
+                      _selectCity = profile?.location ?? "";
+                      _selectedYear = profile?.establishedYear ?? "";
+                      _logoUrl = profile?.logo ?? "";
+                      _coverPhotoUrl = profile?.coverPhoto ?? "";
+                      debugPrint('Logo URL: $_logoUrl');
+                      debugPrint('Cover Photo URL: $_coverPhotoUrl');
+                      if (_selectState != null && _selectState!.isNotEmpty) {
+                        context.read<CityCubit>().getCity(_selectState!);
+                      }
+                    });
+                  });
+                }
+                return _buildForm(context, cityState);
+              } else if (profileState is ArchitechProfileError) {
+                return Center(
+                  child: Text(
+                    profileState.message,
+                    style: const TextStyle(
+                      color: Colors.redAccent,
+                      fontSize: 16,
+                    ),
+                  ),
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
               );
             },
           );
@@ -323,9 +361,13 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               BlocConsumer<CreateProfileCubit, CreateProfileState>(
                 listener: (context, state) {
                   if (state is CreateProfileSucess) {
-                    context.push("/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}");
+                    context.push(
+                      "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
+                    );
                   } else if (state is UpdateCompanyProfileSucess) {
-                    context.push('/architect_profile_setup?id=${widget.id}&type=${"Edit"}');
+                    context.push(
+                      '/architect_profile_setup?id=${widget.id}&type=${"Edit"}',
+                    );
                   } else if (state is CreateProfileError) {
                     CustomSnackBar.show(context, state.message);
                   }
@@ -333,13 +375,16 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 builder: (context, state) {
                   return CustomAppButton1(
                     isLoading: state is CreateProfileLoading,
-                    text: widget.id != null && widget.id != 0 ? 'Next' : 'Get OTP',
+                    text: widget.id != null && widget.id != 0
+                        ? 'Next'
+                        : 'Get OTP',
                     onPlusTap: () {
                       if (_validateForm()) {
                         final Map<String, dynamic> data = {
                           "company_name": _companyController.text.trim(),
                           "company_email": _emailController.text.trim(),
-                          "contact_person_name": _contactPersonController.text.trim(),
+                          "contact_person_name": _contactPersonController.text
+                              .trim(),
                           "established_year": _selectedYear,
                           "state": _selectState,
                           "location": _selectCity,
@@ -358,7 +403,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           }
                           if (_coverImage != null) {
                             data["cover_photo"] = _coverImage;
-                          } else if (_coverPhotoUrl != null && _coverPhotoUrl!.isNotEmpty) {
+                          } else if (_coverPhotoUrl != null &&
+                              _coverPhotoUrl!.isNotEmpty) {
                             data["cover_photo_url"] = _coverPhotoUrl;
                           }
                           data['company_id'] = widget.id;
@@ -366,9 +412,13 @@ class _CompanyDetailsState extends State<CompanyDetails> {
 
                         debugPrint('Form Data: $data');
                         if (widget.id != null && widget.id != 0) {
-                          context.read<CreateProfileCubit>().updateComapnyProfileApi(data);
+                          context
+                              .read<CreateProfileCubit>()
+                              .updateComapnyProfileApi(data);
                         } else {
-                          context.read<CreateProfileCubit>().createProfileApi(data);
+                          context.read<CreateProfileCubit>().createProfileApi(
+                            data,
+                          );
                         }
                       }
                     },
@@ -410,7 +460,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     );
   }
 
-  Widget _buildForm(BuildContext context, StateStates stateState, CityStates cityState) {
+  Widget _buildForm(BuildContext context, CityStates cityState) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Column(
@@ -464,9 +514,84 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             validate: () => _showEmailError = !_validateEmail(),
           ),
           const SizedBox(height: 16),
-          _buildStateDropdown(stateState),
-          const SizedBox(height: 16),
-          if (_selectState != null && _selectState!.isNotEmpty) _buildCityDropdown(cityState),
+          // _buildStateDropdown(stateState),
+          // const SizedBox(height: 16),
+          // if (_selectState != null && _selectState!.isNotEmpty)
+          //   _buildCityDropdown(cityState),
+          Text(
+            'Select City',
+            style: TextStyle(
+              color: Color(0xffD8D8D8),
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonHideUnderline(
+            child: DropdownButton2<String>(
+              isExpanded: true,
+              hint: const Text(
+                'Select City',
+                style: TextStyle(
+                  fontFamily: 'roboto_serif',
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              items: ['Delhi', 'Mumbai', 'Chennai', 'Hyderabad', 'Bengaluru']
+                  .map(
+                    (city) => DropdownMenuItem<String>(
+                      value: city,
+                      child: Text(
+                        city,
+                        style: const TextStyle(
+                          fontFamily: 'roboto_serif',
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              value: _selectCity,
+              onChanged: (String? value) {
+                setState(() {
+                  _selectCity = value;
+                });
+              },
+              buttonStyleData: ButtonStyleData(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: formfieldColor, width: 0.5),
+                  color: formfieldColor,
+                ),
+              ),
+              iconStyleData: const IconStyleData(
+                icon: Icon(Icons.keyboard_arrow_down_rounded),
+                iconSize: 26,
+                iconEnabledColor: Colors.white70,
+              ),
+              dropdownStyleData: DropdownStyleData(
+                offset: const Offset(0, -6),
+                maxHeight: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: formfieldColor,
+                ),
+              ),
+              menuItemStyleData: const MenuItemStyleData(
+                height: 45,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+              ),
+            ),
+          ),
+
           const SizedBox(height: 16),
           _buildYearDropdown(),
           const SizedBox(height: 16),
@@ -527,7 +652,11 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               isExpanded: true,
               hint: const Text(
                 'Select State',
-                style: TextStyle(fontFamily: 'roboto_serif', fontSize: 16, color: Colors.grey),
+                style: TextStyle(
+                  fontFamily: 'roboto_serif',
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
               items: stateState.statesList.map((e) {
@@ -535,7 +664,11 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   value: e.name,
                   child: Text(
                     e.name ?? "",
-                    style: const TextStyle(fontFamily: 'roboto_serif', fontSize: 15, color: Colors.white),
+                    style: const TextStyle(
+                      fontFamily: 'roboto_serif',
+                      fontSize: 15,
+                      color: Colors.white,
+                    ),
                   ),
                 );
               }).toList(),
@@ -550,7 +683,10 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 });
               },
               buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: formfieldColor, width: 0.5),
@@ -577,81 +713,86 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             ),
           )
         else
-          const Center(child: Text('Failed to load states', style: TextStyle(color: Colors.redAccent))),
+          const Center(
+            child: Text(
+              'Failed to load states',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
       ],
     );
   }
 
-  Widget _buildCityDropdown(CityStates cityState) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select City',
-          style: TextStyle(
-            color: Color(0xffD8D8D8),
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        if (cityState is CityLoaded)
-          DropdownButtonHideUnderline(
-            child: DropdownButton2<String>(
-              isExpanded: true,
-              hint: const Text(
-                'Select City',
-                style: TextStyle(fontFamily: 'roboto_serif', fontSize: 16, color: Colors.grey),
-                overflow: TextOverflow.ellipsis,
-              ),
-              items: cityState.cityList.map((e) {
-                return DropdownMenuItem<String>(
-                  value: e.name,
-                  child: Text(
-                    e.name ?? "",
-                    style: const TextStyle(fontFamily: 'roboto_serif', fontSize: 15, color: Colors.white),
-                  ),
-                );
-              }).toList(),
-              value: _selectCity,
-              onChanged: (String? value) {
-                setState(() {
-                  _selectCity = value;
-                });
-              },
-              buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: formfieldColor, width: 0.5),
-                  color: formfieldColor,
-                ),
-              ),
-              iconStyleData: const IconStyleData(
-                icon: Icon(Icons.keyboard_arrow_down_rounded),
-                iconSize: 26,
-                iconEnabledColor: Colors.white70,
-              ),
-              dropdownStyleData: DropdownStyleData(
-                offset: const Offset(0, -6),
-                maxHeight: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: formfieldColor,
-                ),
-              ),
-              menuItemStyleData: const MenuItemStyleData(
-                height: 45,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-              ),
-            ),
-          )
-        else
-          const Center(child: Text('Failed to load cities', style: TextStyle(color: Colors.redAccent))),
-      ],
-    );
-  }
+  // Widget _buildCityDropdown(CityStates cityState) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const Text(
+  //         'Select City',
+  //         style: TextStyle(
+  //           color: Color(0xffD8D8D8),
+  //           fontSize: 16,
+  //           fontFamily: 'Inter',
+  //           fontWeight: FontWeight.w500,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 8),
+  //       // if (cityState is CityLoaded)
+  //         DropdownButtonHideUnderline(
+  //           child: DropdownButton2<String>(
+  //             isExpanded: true,
+  //             hint: const Text(
+  //               'Select City',
+  //               style: TextStyle(fontFamily: 'roboto_serif', fontSize: 16, color: Colors.grey),
+  //               overflow: TextOverflow.ellipsis,
+  //             ),
+  //             items: cityState.cityList.map((e) {
+  //               return DropdownMenuItem<String>(
+  //                 value: e.name,
+  //                 child: Text(
+  //                   e.name ?? "",
+  //                   style: const TextStyle(fontFamily: 'roboto_serif', fontSize: 15, color: Colors.white),
+  //                 ),
+  //               );
+  //             }).toList(),
+  //             value: _selectCity,
+  //             onChanged: (String? value) {
+  //               setState(() {
+  //                 _selectCity = value;
+  //               });
+  //             },
+  //             buttonStyleData: ButtonStyleData(
+  //               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(10),
+  //                 border: Border.all(color: formfieldColor, width: 0.5),
+  //                 color: formfieldColor,
+  //               ),
+  //             ),
+  //             iconStyleData: const IconStyleData(
+  //               icon: Icon(Icons.keyboard_arrow_down_rounded),
+  //               iconSize: 26,
+  //               iconEnabledColor: Colors.white70,
+  //             ),
+  //             dropdownStyleData: DropdownStyleData(
+  //               offset: const Offset(0, -6),
+  //               maxHeight: 200,
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 color: formfieldColor,
+  //               ),
+  //             ),
+  //             menuItemStyleData: const MenuItemStyleData(
+  //               height: 45,
+  //               padding: EdgeInsets.symmetric(horizontal: 20),
+  //             ),
+  //           ),
+  //         )
+  //       // else
+  //       //   const Center(child: Text('Failed to load cities', style: TextStyle(color: Colors.redAccent))),
+  //     ],
+  //   );
+  // }
 
   Widget _buildYearDropdown() {
     return Column(
@@ -674,19 +815,34 @@ class _CompanyDetailsState extends State<CompanyDetails> {
             isDense: true,
             filled: true,
             fillColor: const Color(0xff363636),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
           ),
-          hint: const Text('Select year', style: TextStyle(color: Colors.white38)),
-          items: List.generate(100, (index) => (DateTime.now().year - index).toString())
-              .map((year) => DropdownMenuItem<String>(
-            value: year,
-            child: Text(year, style: const TextStyle(color: Colors.white)),
-          ))
-              .toList(),
+          hint: const Text(
+            'Select year',
+            style: TextStyle(color: Colors.white38),
+          ),
+          items:
+              List.generate(
+                    100,
+                    (index) => (DateTime.now().year - index).toString(),
+                  )
+                  .map(
+                    (year) => DropdownMenuItem<String>(
+                      value: year,
+                      child: Text(
+                        year,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
+                  .toList(),
           onChanged: (value) {
             setState(() {
               _selectedYear = value;
@@ -702,8 +858,12 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          iconStyleData: const IconStyleData(icon: Icon(Icons.arrow_drop_down, color: Colors.white)),
-          menuItemStyleData: const MenuItemStyleData(overlayColor: MaterialStatePropertyAll(Colors.transparent)),
+          iconStyleData: const IconStyleData(
+            icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
         ),
         if (_showYearError)
           Padding(
@@ -713,7 +873,12 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               duration: const Duration(milliseconds: 700),
               child: const Text(
                 'Please select a year',
-                style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: Colors.redAccent, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
@@ -753,66 +918,81 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               color: const Color(0xFF2E2E2E),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: image != null || (networkImageUrl != null && networkImageUrl.isNotEmpty)
+                color:
+                    image != null ||
+                        (networkImageUrl != null && networkImageUrl.isNotEmpty)
                     ? Colors.green
                     : Colors.grey.withOpacity(0.4),
                 width: 1.5,
               ),
             ),
-            child: image == null && (networkImageUrl == null || networkImageUrl.isEmpty)
+            child:
+                image == null &&
+                    (networkImageUrl == null || networkImageUrl.isEmpty)
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.upload_file_rounded, color: Colors.white70),
-                SizedBox(width: 10),
-                Text(
-                  'Tap to Upload',
-                  style: TextStyle(color: Colors.white70, fontSize: 15, fontWeight: FontWeight.w500),
-                ),
-              ],
-            )
-                : Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: image != null
-                      ? Image.file(
-                    image,
-                    width: double.infinity,
-                    height: 120,
-                    fit: BoxFit.cover,
-                  )
-                      : CachedNetworkImage(
-                    imageUrl: networkImageUrl!,
-                    width: double.infinity,
-                    height: 120,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(color: Colors.white70),
-                    ),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
-                      color: Colors.redAccent,
-                      size: 40,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: onRemove,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.upload_file_rounded, color: Colors.white70),
+                      SizedBox(width: 10),
+                      Text(
+                        'Tap to Upload',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      child: const Icon(Icons.close, color: Colors.white, size: 20),
-                    ),
+                    ],
+                  )
+                : Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: image != null
+                            ? Image.file(
+                                image,
+                                width: double.infinity,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: networkImageUrl!,
+                                width: double.infinity,
+                                height: 120,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                      Icons.error,
+                                      color: Colors.redAccent,
+                                      size: 40,
+                                    ),
+                              ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: onRemove,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
         if (showError)
@@ -830,7 +1010,6 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-
             ),
           ),
       ],

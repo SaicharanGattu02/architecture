@@ -10,7 +10,7 @@ import '../../Components/CutomAppBar.dart';
 
 class Payment extends StatefulWidget {
   final Map<String, dynamic> data;
-  const Payment({Key? key, required this.data}) : super(key: key);
+  const  Payment({Key? key, required this.data}) : super(key: key);
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();

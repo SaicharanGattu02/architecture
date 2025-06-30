@@ -1,6 +1,8 @@
 import 'package:architect/bloc/SubscriptionPlans/subscription_repository.dart';
 import 'package:architect/bloc/city/city_cubit.dart';
 import 'package:architect/bloc/create_payment/create_payment_cubit.dart';
+import 'package:architect/bloc/paymentHistory/paymentHistory_cubit.dart';
+import 'package:architect/bloc/paymentHistory/paymentHistory_repository.dart';
 import 'package:architect/bloc/state/state_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
@@ -111,6 +113,10 @@ class StateInjector {
       create: (context) =>
           CategoryTypeImpl(remoteDataSource: context.read<RemoteDataSource>()),
     ),
+    RepositoryProvider<PaymentHistoryRepo>(
+      create: (context) =>
+          PaymentHistoryImpl(remoteDataSource: context.read<RemoteDataSource>()),
+    ),
   ];
 
   static final blocProviders = <BlocProvider>[
@@ -173,6 +179,10 @@ class StateInjector {
     BlocProvider<CategoryTypeCubit>(
       create: (context) =>
           CategoryTypeCubit(context.read<CategoryTypeRepo>()),
+    ),
+    BlocProvider<PaymentHistoryCubit>(
+      create: (context) =>
+          PaymentHistoryCubit(context.read<PaymentHistoryRepo>()),
     ),
     BlocProvider<InternetStatusBloc>(create: (context) => InternetStatusBloc()),
   ];

@@ -7,10 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../bloc/city/city_states.dart';
 import 'Components/CutomAppBar.dart';
 
-
 class SelectCity extends StatefulWidget {
-  final String state;
-  SelectCity({required this.state});
+  // final String state;
+  // SelectCity({required this.state});
   @override
   State<SelectCity> createState() => _SelectCityState();
 }
@@ -18,7 +17,7 @@ class SelectCity extends StatefulWidget {
 class _SelectCityState extends State<SelectCity> {
   @override
   void initState() {
-    context.read<CityCubit>().getArchitectCity(widget.state);
+    context.read<CityCubit>().getArchitectCity();
     super.initState();
   }
 
@@ -58,7 +57,7 @@ class _SelectCityState extends State<SelectCity> {
                     onTap: () {
                       final selectedCity = city;
                       print('selectedCity: $selectedCity');
-                      context.push("/select_type?state=${widget.state}&city=${selectedCity}");
+                      context.push("/select_type?city=${selectedCity}");
                     },
                   ),
                 );
@@ -76,4 +75,3 @@ class _SelectCityState extends State<SelectCity> {
     );
   }
 }
-

@@ -9,6 +9,7 @@ import '../models/ArchitechStatesModel.dart';
 import '../models/ArchitectModel.dart';
 import '../models/CategoryTypeModel.dart';
 import '../models/CitiesModel.dart';
+import '../models/PaymentHistoryModel.dart';
 import '../models/StatesModel.dart';
 import '../models/SuccessModel.dart';
 import '../models/UserPosteDetailsModel.dart';
@@ -31,12 +32,9 @@ abstract class RemoteDataSource {
   Future<List<StatesModel>?> getStates();
   Future<ArchitechStatesModel?> getArchitechStates();
   Future<List<CityModel>?> getCity(String state);
-  Future<ArchitechCityModel?> geArchitecttCity(String state);
-  Future<CategoryTypeModel?> getArchitectCategoryType(
-    String state,
-    String cities,
-  );
-  Future<Activesubscriptionmodel?> activeSubplans(int id);
+  Future<ArchitechCityModel?> geArchitecttCity();
+  Future<CategoryTypeModel?> getArchitectCategoryType(String cities);
+  Future<ActiveSubscriptionModel?> getActiveSubplans(int id);
   Future<SuccessModel?> loginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> resendLoginOtp(Map<String, dynamic> data);
   Future<SuccessModel?> resendVerifyCompanyOtp(Map<String, dynamic> data);
@@ -57,6 +55,7 @@ abstract class RemoteDataSource {
   );
   Future<SuccessModel?> createPayment(Map<String, dynamic> data);
   Future<ArchitechProfileModel?> getUserArchitechProfileDetails(int id);
+  Future<PaymentHistoryModel?> getArchitechPaymentsHistory(int id);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -442,6 +441,46 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
+  Future<ActiveSubscriptionModel?> getActiveSubplans(int id) async {
+    try {
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.get_subplans_architecture}/${id}",
+      );
+
+      if (res.statusCode == 200) {
+        debugPrint('getArchitech Active Plans Response: ${res.data}');
+
+        return ActiveSubscriptionModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error getArchitech Active Plans Response: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<PaymentHistoryModel?> getArchitechPaymentsHistory(int id) async {
+    try {
+      Response res = await ApiClient.get(
+        "${APIEndpointUrls.get_architecture_payments_history}/${id}",
+      );
+
+      if (res.statusCode == 200) {
+        debugPrint('get Architech payments History  Response: ${res.data}');
+
+        return PaymentHistoryModel.fromJson(res.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error get Architech payments History Plans Response: $e');
+      return null;
+    }
+  }
+
+  @override
   Future<List<StatesModel>?> getStates() async {
     try {
       Response res = await ApiClient.get("${APIEndpointUrls.get_states}");
@@ -498,10 +537,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<ArchitechCityModel?> geArchitecttCity(String state) async {
+  Future<ArchitechCityModel?> geArchitecttCity() async {
     try {
       Response res = await ApiClient.get(
-        "${APIEndpointUrls.architec_cities}/${state}/cities",
+        "${APIEndpointUrls.architec_cities}/cities",
       );
       if (res.statusCode == 200) {
         debugPrint('get ArchitectCity: ${res.data}');
@@ -516,13 +555,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<CategoryTypeModel?> getArchitectCategoryType(
-    String state,
-    String cities,
-  ) async {
+  Future<CategoryTypeModel?> getArchitectCategoryType(String cities) async {
     try {
       Response res = await ApiClient.get(
-        "${APIEndpointUrls.architec_category_type}/$state/$cities",
+        "${APIEndpointUrls.architec_category_type}/$cities",
       );
 
       if (res.statusCode == 200) {
@@ -622,24 +658,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } catch (e) {
       debugPrint('Error get User Architech Profile Details: $e');
-      return null;
-    }
-  }
-
-  @override
-  Future<Activesubscriptionmodel?> activeSubplans(int id) async {
-    try {
-      Response res = await ApiClient.get(
-        "${APIEndpointUrls.get_selected_sub_plans}/Id",
-      );
-      if (res.statusCode == 200) {
-        debugPrint('get Active Subscription plans:${res.data}');
-        return Activesubscriptionmodel.fromJson(res.data);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      debugPrint('Error Subscription plans::$e');
       return null;
     }
   }

@@ -12,10 +12,10 @@ class CategoryTypeCubit extends Cubit<CategoryTypeStates> {
 
   CategoryTypeCubit(this.categoryTypeRepo) : super(CategoryTypeIntially());
 
-  Future<void> getCategoryType(String state,String cities) async {
+  Future<void> getCategoryType(String cities) async {
     emit(CategoryTypeLoading());
     try {
-      final  res = await categoryTypeRepo.getCategoryTypeApi(state, cities);
+      final  res = await categoryTypeRepo.getCategoryTypeApi(cities);
       if (res != null) {
         emit(CategoryTypeLoaded(categoryType:res ));
       } else {

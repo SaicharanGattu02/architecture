@@ -20,8 +20,8 @@ class SubscriptionLoaded extends SubscriptionState {
   SubscriptionLoaded({required this.subscriptionModel});
 }
 class ActiveSubscriptionLoaded extends SubscriptionState {
-  final Activesubscriptionmodel activesubscriptionmodel;
-  ActiveSubscriptionLoaded({required this.activesubscriptionmodel});
+  final ActiveSubscriptionModel activeSubscriptionModel;
+  ActiveSubscriptionLoaded({required this.activeSubscriptionModel});
 }
 
 class SubscriptionError extends SubscriptionState {
