@@ -268,14 +268,12 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                   scale: 5,
                                 ),
                               ),
-                              SizedBox(width: 60,
-                                child: Text(
-                                  'Renew the plan',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xffCCCCCC),
-                                  ),
+                              Text(
+                                'Renew the plan',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xffCCCCCC),
                                 ),
                               ),
                             ],
@@ -283,7 +281,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            showLogoutDialog(context);
+                            context.push('/payments_history');
                           },
                           child: Column(
                             spacing: 12,

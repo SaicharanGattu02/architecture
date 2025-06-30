@@ -190,19 +190,7 @@ class _SubscriptionScreenState extends State<Subscription> {
             appBar: CustomAppBar1(
               title: 'Subscription',
               actions: [
-                GestureDetector(onTap: () {
-                  context.push('/payments_history');
-                },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Image.asset(
-                      'assets/transaction-history.png',
-                      color: Colors.white,
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ),
+
               ],
             ),
             body: Padding(
