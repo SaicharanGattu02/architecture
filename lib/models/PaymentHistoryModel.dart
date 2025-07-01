@@ -54,7 +54,7 @@ class Data {
   String? paidAt;
   String? createdAt;
   String? updatedAt;
-  Null? planName;
+  String? planName;
   int? planDurationDays;
   bool? isActive;
 

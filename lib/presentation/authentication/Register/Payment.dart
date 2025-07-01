@@ -10,7 +10,8 @@ import '../../Components/CutomAppBar.dart';
 
 class Payment extends StatefulWidget {
   final Map<String, dynamic> data;
-  const  Payment({Key? key, required this.data}) : super(key: key);
+  final String type;
+  const  Payment({Key? key, required this.data,required this.type}) : super(key: key);
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
@@ -84,7 +85,13 @@ class _PaymentScreenState extends State<Payment> {
             listener: (context, state) {
               if (state is CreatePaymentSucess) {
                 Future.delayed(const Duration(seconds: 1), () {
-                  context.go('/architect_profile_setup?id=${widget.data['company_id']}&type=New');
+                  if(widget.type=="Renew"){
+                    context.go('/architech_profile');
+
+                  }else{
+                    context.go('/architect_profile_setup?id=${widget.data['company_id']}&type=New');
+                  }
+
                 });
               } else if (state is CreatePaymentError) {
                 CustomSnackBar.show(context, state.message);

@@ -31,7 +31,7 @@ abstract class RemoteDataSource {
   Future<SubscriptionModel?> getsubplans();
   Future<List<StatesModel>?> getStates();
   Future<ArchitechStatesModel?> getArchitechStates();
-  Future<List<CityModel>?> getCity(String state);
+  Future<List<CityModel>?> getCity();
   Future<ArchitechCityModel?> geArchitecttCity();
   Future<CategoryTypeModel?> getArchitectCategoryType(String cities);
   Future<ActiveSubscriptionModel?> getActiveSubplans(int id);
@@ -517,10 +517,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<List<CityModel>?> getCity(String state) async {
+  Future<List<CityModel>?> getCity() async {
     try {
       Response res = await ApiClient.get(
-        "${APIEndpointUrls.get_city}/$state/cities",
+        "${APIEndpointUrls.get_city}/cities",
       );
 
       if (res.statusCode == 200 && res.data is List) {

@@ -43,7 +43,7 @@ class Data {
   String? companyEmail;
   String? contactPersonName;
   String? establishedYear;
-  String? state;
+  Null? state;
   String? location;
   String? logo;
   String? coverPhoto;

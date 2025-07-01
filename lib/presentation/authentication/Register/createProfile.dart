@@ -13,7 +13,6 @@ import 'dart:io';
 import '../../../bloc/ArchitechProfile/architech_profile_cubit.dart';
 import '../../../bloc/ArchitechProfile/architech_profile_state.dart';
 import '../../../bloc/state/state_cubit.dart';
-import '../../../bloc/state/state_states.dart';
 import '../../../utils/ImageUtils.dart';
 import '../../../utils/ShakeWidget.dart';
 import '../../../utils/color_constants.dart';
@@ -55,7 +54,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   bool _showEmailError = false;
   bool _showYearError = false;
   bool _showLogoError = false;
-  String? _selectState;
+  // String? _selectState;
   String? _selectCity;
   bool _isInitialized = false;
 
@@ -320,16 +319,13 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                       _contactPersonController.text =
                           profile?.contactPersonName ?? "";
                       _emailController.text = profile?.companyEmail ?? "";
-                      _selectState = profile?.state ?? "";
+                      // _selectState = profile?.state ?? "";
                       _selectCity = profile?.location ?? "";
                       _selectedYear = profile?.establishedYear ?? "";
                       _logoUrl = profile?.logo ?? "";
                       _coverPhotoUrl = profile?.coverPhoto ?? "";
                       debugPrint('Logo URL: $_logoUrl');
                       debugPrint('Cover Photo URL: $_coverPhotoUrl');
-                      if (_selectState != null && _selectState!.isNotEmpty) {
-                        context.read<CityCubit>().getCity(_selectState!);
-                      }
                     });
                   });
                 }
@@ -386,7 +382,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                           "contact_person_name": _contactPersonController.text
                               .trim(),
                           "established_year": _selectedYear,
-                          "state": _selectState,
+
                           "location": _selectCity,
                         };
 
@@ -632,96 +628,96 @@ class _CompanyDetailsState extends State<CompanyDetails> {
     );
   }
 
-  Widget _buildStateDropdown(StateStates stateState) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select State',
-          style: TextStyle(
-            color: Color(0xffD8D8D8),
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        if (stateState is StateLoaded)
-          DropdownButtonHideUnderline(
-            child: DropdownButton2<String>(
-              isExpanded: true,
-              hint: const Text(
-                'Select State',
-                style: TextStyle(
-                  fontFamily: 'roboto_serif',
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              items: stateState.statesList.map((e) {
-                return DropdownMenuItem<String>(
-                  value: e.name,
-                  child: Text(
-                    e.name ?? "",
-                    style: const TextStyle(
-                      fontFamily: 'roboto_serif',
-                      fontSize: 15,
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              }).toList(),
-              value: _selectState,
-              onChanged: (String? value) {
-                setState(() {
-                  _selectState = value;
-                  _selectCity = null;
-                  if (_selectState != null && _selectState!.isNotEmpty) {
-                    context.read<CityCubit>().getCity(_selectState!);
-                  }
-                });
-              },
-              buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: formfieldColor, width: 0.5),
-                  color: formfieldColor,
-                ),
-              ),
-              iconStyleData: const IconStyleData(
-                icon: Icon(Icons.keyboard_arrow_down_rounded),
-                iconSize: 26,
-                iconEnabledColor: Colors.white70,
-              ),
-              dropdownStyleData: DropdownStyleData(
-                offset: const Offset(0, -6),
-                maxHeight: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: formfieldColor,
-                ),
-              ),
-              menuItemStyleData: const MenuItemStyleData(
-                height: 45,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-              ),
-            ),
-          )
-        else
-          const Center(
-            child: Text(
-              'Failed to load states',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-          ),
-      ],
-    );
-  }
+  // Widget _buildStateDropdown(StateStates stateState) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const Text(
+  //         'Select State',
+  //         style: TextStyle(
+  //           color: Color(0xffD8D8D8),
+  //           fontSize: 16,
+  //           fontFamily: 'Inter',
+  //           fontWeight: FontWeight.w500,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 8),
+  //       if (stateState is StateLoaded)
+  //         DropdownButtonHideUnderline(
+  //           child: DropdownButton2<String>(
+  //             isExpanded: true,
+  //             hint: const Text(
+  //               'Select State',
+  //               style: TextStyle(
+  //                 fontFamily: 'roboto_serif',
+  //                 fontSize: 16,
+  //                 color: Colors.grey,
+  //               ),
+  //               overflow: TextOverflow.ellipsis,
+  //             ),
+  //             items: stateState.statesList.map((e) {
+  //               return DropdownMenuItem<String>(
+  //                 value: e.name,
+  //                 child: Text(
+  //                   e.name ?? "",
+  //                   style: const TextStyle(
+  //                     fontFamily: 'roboto_serif',
+  //                     fontSize: 15,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               );
+  //             }).toList(),
+  //             value: _selectState,
+  //             onChanged: (String? value) {
+  //               setState(() {
+  //                 _selectState = value;
+  //                 _selectCity = null;
+  //                 if (_selectState != null && _selectState!.isNotEmpty) {
+  //                   context.read<CityCubit>().getCity(_selectState!);
+  //                 }
+  //               });
+  //             },
+  //             buttonStyleData: ButtonStyleData(
+  //               padding: const EdgeInsets.symmetric(
+  //                 horizontal: 16,
+  //                 vertical: 6,
+  //               ),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(10),
+  //                 border: Border.all(color: formfieldColor, width: 0.5),
+  //                 color: formfieldColor,
+  //               ),
+  //             ),
+  //             iconStyleData: const IconStyleData(
+  //               icon: Icon(Icons.keyboard_arrow_down_rounded),
+  //               iconSize: 26,
+  //               iconEnabledColor: Colors.white70,
+  //             ),
+  //             dropdownStyleData: DropdownStyleData(
+  //               offset: const Offset(0, -6),
+  //               maxHeight: 200,
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(12),
+  //                 color: formfieldColor,
+  //               ),
+  //             ),
+  //             menuItemStyleData: const MenuItemStyleData(
+  //               height: 45,
+  //               padding: EdgeInsets.symmetric(horizontal: 20),
+  //             ),
+  //           ),
+  //         )
+  //       else
+  //         const Center(
+  //           child: Text(
+  //             'Failed to load states',
+  //             style: TextStyle(color: Colors.redAccent),
+  //           ),
+  //         ),
+  //     ],
+  //   );
+  // }
 
   // Widget _buildCityDropdown(CityStates cityState) {
   //   return Column(

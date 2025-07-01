@@ -1,10 +1,10 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:architect/services/SecureStorageService.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 import '../services/AuthService.dart';
-
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -14,7 +14,6 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-
   @override
   void initState() {
     super.initState();
@@ -23,11 +22,17 @@ class _SplashState extends State<Splash> {
 
   Future<void> _initialize() async {
     final token = await AuthService.getAccessToken();
+    bool? subscriber = await SecureStorageService.instance.getBool(
+      'subscriber',
+    );
+    int? companyId = await SecureStorageService.instance.getInt('companyId');
     Future.delayed(Duration(seconds: 4), () {
       if (token == null || token.isEmpty) {
         context.pushReplacement('/onboarding');
-      } else {
+      } else if (subscriber == true) {
         context.pushReplacement('/user_posts');
+      } else {
+        context.go('/subscription?id=${companyId}&type=${"New"}');
       }
     });
   }
@@ -72,11 +77,7 @@ class _SplashState extends State<Splash> {
               // FadeIn Divider
               FadeIn(
                 duration: const Duration(milliseconds: 1000),
-                child: Container(
-                  height: 2,
-                  width: 60,
-                  color: Colors.white30,
-                ),
+                child: Container(height: 2, width: 60, color: Colors.white30),
               ),
 
               const SizedBox(height: 12),
@@ -101,4 +102,3 @@ class _SplashState extends State<Splash> {
     );
   }
 }
-

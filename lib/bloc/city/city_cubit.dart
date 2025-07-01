@@ -8,10 +8,10 @@ import 'city_states.dart';
 class CityCubit extends Cubit<CityStates> {
   CityRepo cityRepo;
   CityCubit(this.cityRepo) : super(CityIntially());
-  Future<void> getCity(String state) async {
+  Future<void> getCity() async {
     emit(CityLoading());
     try {
-      final List<CityModel>? res = await cityRepo.getCityApi(state);
+      final List<CityModel>? res = await cityRepo.getCityApi();
       if (res != null) {
         emit(CityLoaded(cityList: res));
       } else {

@@ -2,6 +2,7 @@ import 'package:architect/bloc/CreateProfile/create_profile_cubit.dart';
 import 'package:architect/bloc/CreateProfile/create_profile_state.dart';
 import 'package:architect/bloc/login/login_cubit.dart';
 import 'package:architect/bloc/login/login_state.dart';
+import 'package:architect/services/SecureStorageService.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -245,19 +246,21 @@ class _OtpVerificationScreenState extends State<Otp> {
                 DateTime.now().millisecondsSinceEpoch ~/ 1000;
             final int expiryTimestamp =
                 currentTimestamp + (state.successModel.expiresIn ?? 0);
-
             await AuthService.saveTokens(
               state.successModel.accessToken ?? "",
               "",
               expiryTimestamp,
             );
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (state.successModel.data?.subscriber == true) {
-                context.go('/user_posts');
-              } else {
-                context.go('/subscription');
-              }
-            });
+
+            SecureStorageService.instance.setBool('subscriber', state.successModel.data?.subscriber??false);
+            SecureStorageService.instance.setInt('companyId', state.successModel.data?.id??0);
+            if (state.successModel.data?.subscriber == true) {
+              context.go('/user_posts');
+            } else {
+              context.go(
+                '/subscription?id=${state.successModel.data?.id ?? 0}&type=${"New"}',
+              );
+            }
           } else if (state is LoginOtpError) {
             CustomSnackBar.show(context, state.message);
           }

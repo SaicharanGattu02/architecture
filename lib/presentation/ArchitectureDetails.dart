@@ -273,7 +273,7 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                                   ),
                                   SizedBox(width: 4),
                                   Text(
-                                    '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+                                    '${state.architechProfileModel.data?.location ?? ""}',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white70,
@@ -497,7 +497,7 @@ class _ArchitectureDetailsState extends State<ArchitectureDetails> {
                         const SizedBox(height: 8),
                         _buildInfoTile(
                           Icons.location_on,
-                          '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+                          '${state.architechProfileModel.data?.location ?? ""}',
                         ),
                       ],
                     ),

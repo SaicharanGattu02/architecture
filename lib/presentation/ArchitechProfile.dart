@@ -281,7 +281,9 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            context.push('/payments_history');
+                            context.push(
+                              '/payments_history?id=${state.architechProfileModel.data?.id ?? 0}',
+                            );
                           },
                           child: Column(
                             spacing: 12,

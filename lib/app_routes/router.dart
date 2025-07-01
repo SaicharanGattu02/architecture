@@ -76,10 +76,7 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) {
         // final states = state.uri.queryParameters['state'] ?? "";
         final city = state.uri.queryParameters['city'] ?? "";
-        return buildSlideTransitionPage(
-          SelectType( city: city),
-          state,
-        );
+        return buildSlideTransitionPage(SelectType(city: city), state);
       },
     ),
     GoRoute(
@@ -117,7 +114,8 @@ final GoRouter appRouter = GoRouter(
       path: '/payment',
       builder: (context, state) {
         final Map<String, dynamic> data = state.extra as Map<String, dynamic>;
-        return Payment(data: data);
+        final type = state.uri.queryParameters['type'] ?? "";
+        return Payment(data: data, type: type);
       },
     ),
 

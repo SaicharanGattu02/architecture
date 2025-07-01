@@ -56,9 +56,10 @@ class _SubscriptionScreenState extends State<Subscription> {
   Widget build(BuildContext context) {
     return BlocBuilder<SubscriptionCubit, SubscriptionState>(
       builder: (context, state) {
-        if (state is SubscriptionLoading || state is ActiveSubscriptionLoading) {
+        if (state is SubscriptionLoading ||
+            state is ActiveSubscriptionLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is SubscriptionLoaded ) {
+        } else if (state is SubscriptionLoaded) {
           final plans = state.subscriptionModel.data;
           return Scaffold(
             backgroundColor: primarycolor,
@@ -187,12 +188,7 @@ class _SubscriptionScreenState extends State<Subscription> {
           final activePlans = state.activeSubscriptionModel.data;
           return Scaffold(
             backgroundColor: primarycolor,
-            appBar: CustomAppBar1(
-              title: 'Subscription',
-              actions: [
-
-              ],
-            ),
+            appBar: CustomAppBar1(title: 'Subscription', actions: []),
             body: Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Column(
@@ -328,7 +324,7 @@ class _SubscriptionScreenState extends State<Subscription> {
                             "amount": selectedPlan.price ?? "0",
                             "company_id": widget.id,
                           };
-                          context.push('/payment', extra: data);
+                          context.push('/payment?type=${widget.type}', extra: data);
                         },
                       ),
                     ),
