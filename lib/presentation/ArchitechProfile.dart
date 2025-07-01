@@ -177,7 +177,7 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
                                       SizedBox(width: 4),
                                       Expanded(
                                         child: Text(
-                                          '${state.architechProfileModel.data?.state ?? ""}, ${state.architechProfileModel.data?.location ?? ""}',
+                                          '${state.architechProfileModel.data?.location ?? ""}',
                                           style: TextStyle(
                                             color: Colors.white70,
                                             fontSize: 14,

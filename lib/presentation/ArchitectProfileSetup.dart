@@ -1,5 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http; // For http.get
+import 'package:path_provider/path_provider.dart';
 import 'package:architect/utils/color_constants.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_state.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_cubit.dart';
@@ -41,6 +43,22 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         widget.id,
       );
     }
+  }
+
+  Future<List<File>> downloadExistingPortfolioFiles(List<String> urls) async {
+    List<File> files = [];
+    final tempDir = await getTemporaryDirectory();
+
+    for (String url in urls) {
+      final filename = url.split('/').last;
+      final filePath = '${tempDir.path}/$filename';
+      final response = await http.get(Uri.parse(url));
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+      files.add(file);
+    }
+
+    return files;
   }
 
   final TextEditingController _descriptionController = TextEditingController();
@@ -210,7 +228,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
     return true;
   }
 
-  bool _validateForm() {
+  Future<bool> _validateForm() async {
     print("Validating form...");
 
     final descriptionValid = _validateDescription();
@@ -264,22 +282,43 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
       for (int i = 0; i < selectedSpecializations.length; i++) {
         data['specializations[$i]'] = selectedSpecializations[i];
       }
+
       if (widget.type == "New") {
         for (int i = 0; i < _portfolioFiles.length; i++) {
           data['portfolio[$i]'] = _portfolioFiles[i];
         }
       } else {
-        int portfolioIndex = 0;
+        List<File> allPortfolioFiles = [];
 
-        for (int i = 0; i < _portfolioUrls.length; i++) {
-          data['portfolio[$portfolioIndex]'] = _portfolioUrls[i];
-          portfolioIndex++;
+        if (_portfolioUrls.isNotEmpty) {
+          final downloadedFiles = await downloadExistingPortfolioFiles(
+            _portfolioUrls,
+          );
+          allPortfolioFiles.addAll(downloadedFiles);
         }
-        for (int i = 0; i < _portfolioFiles.length; i++) {
-          data['portfolio[$portfolioIndex]'] = _portfolioFiles[i];
-          portfolioIndex++;
+        allPortfolioFiles.addAll(_portfolioFiles);
+
+        for (int i = 0; i < allPortfolioFiles.length; i++) {
+          data['portfolio[$i]'] = allPortfolioFiles[i];
         }
       }
+
+      // if (widget.type == "New") {
+      //   for (int i = 0; i < _portfolioFiles.length; i++) {
+      //     data['portfolio[$i]'] = _portfolioFiles[i];
+      //   }
+      // }
+      // else {
+      //   int portfolioIndex = 0;
+      //   for (int i = 0; i < _portfolioUrls.length; i++) {
+      //     data['portfolio[$portfolioIndex]'] = _portfolioUrls[i];
+      //     portfolioIndex++;
+      //   }
+      //   for (int i = 0; i < _portfolioFiles.length; i++) {
+      //     data['portfolio[$portfolioIndex]'] = _portfolioFiles[i];
+      //     portfolioIndex++;
+      //   }
+      // }
 
       if (widget.type == "New") {
         debugPrint('create Data: $data');

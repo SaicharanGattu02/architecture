@@ -130,6 +130,7 @@ class MyApp extends StatelessWidget {
           ),
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
+
         ),
       ),
     );

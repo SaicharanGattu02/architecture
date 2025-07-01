@@ -119,24 +119,45 @@ class AuthService {
   // }
 
   /// Logout and clear tokens, redirect to sign-in screen
+  // static Future<void> logout() async {
+  //   await _storage.deleteAll(); // clear all tokens
+  //   debugPrint('Tokens cleared, user logged out');
+  //
+  //   final context = navigatorKey.currentContext;
+  //   if (context != null) {
+  //     GoRouter.of(context).go('/onboarding');
+  //   } else {
+  //     debugPrint('Context is null, scheduling GoRouter navigation after frame');
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       final postFrameContext = navigatorKey.currentContext;
+  //       if (postFrameContext != null) {
+  //         GoRouter.of(postFrameContext).go('/onboarding');
+  //       } else {
+  //         debugPrint('Still no context available after frame');
+  //         // Optional: consider forcing rebuild or restarting app
+  //       }
+  //     });
+  //   }
+  // }
   static Future<void> logout() async {
     await _storage.deleteAll(); // clear all tokens
     debugPrint('Tokens cleared, user logged out');
 
-    final context = navigatorKey.currentContext;
-    if (context != null) {
-      GoRouter.of(context).go('/onboarding');
-    } else {
-      debugPrint('Context is null, scheduling GoRouter navigation after frame');
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final postFrameContext = navigatorKey.currentContext;
-        if (postFrameContext != null) {
-          GoRouter.of(postFrameContext).go('/onboarding');
+    // Use a post-frame callback with a short delay
+    Future.microtask(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(
+          const Duration(milliseconds: 100),
+        ); // ensures context is ready
+        final context = navigatorKey.currentContext;
+
+        if (context != null) {
+          debugPrint('Navigating to /onboarding');
+          GoRouter.of(context).go('/onboarding');
         } else {
-          debugPrint('Still no context available after frame');
-          // Optional: consider forcing rebuild or restarting app
+          debugPrint('Navigation context still null after delay');
         }
       });
-    }
+    });
   }
 }
