@@ -88,7 +88,7 @@ class _SelectTypeScreenState extends State<SelectType> {
           } else if (state is CategoryTypeLoaded) {
             return Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
+              child: Column(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: GridView.builder(

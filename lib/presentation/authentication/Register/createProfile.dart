@@ -361,7 +361,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                       "/otp?mailId=${_emailController.text.trim()}&type=${"ProfileVerify"}",
                     );
                   } else if (state is UpdateCompanyProfileSucess) {
-                    context.push(
+                    context.pushReplacement(
                       '/architect_profile_setup?id=${widget.id}&type=${"Edit"}',
                     );
                   } else if (state is CreateProfileError) {

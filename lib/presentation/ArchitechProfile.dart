@@ -25,7 +25,6 @@ class _ArchitechProfileState extends State<ArchitechProfile> {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: primarycolor,
       appBar: CustomAppBar1(title: 'Profile', actions: []),

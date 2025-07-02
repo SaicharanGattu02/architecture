@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
@@ -197,10 +198,10 @@ final GoRouter appRouter = GoRouter(
 );
 
 Page<dynamic> buildSlideTransitionPage(Widget child, GoRouterState state) {
-  // if (Platform.isIOS) {
-  //   // Use default Cupertino transition on iOS
-  //   return CupertinoPage(key: state.pageKey, child: child);
-  // }
+  if (Platform.isIOS) {
+    // Use default Cupertino transition on iOS
+    return CupertinoPage(key: state.pageKey, child: child);
+  }
 
   return CustomTransitionPage(
     key: state.pageKey,

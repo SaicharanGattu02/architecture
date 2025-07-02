@@ -1,4 +1,4 @@
-package com.example.architect
+package com.tect.architect
 
 import io.flutter.embedding.android.FlutterActivity
 

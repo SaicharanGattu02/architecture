@@ -1667,7 +1667,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                   if (state is ArchitechAditionalInfoSucess) {
                     context.go('/profile_created');
                   } else if (state is ArchitechAditionalInfoUpdateSucess) {
-                    context.go('/architech_profile');
+                    context.go('/user_posts');
                   } else if (state is ArchitechAditionalInfoError) {
                     CustomSnackBar.show(context, state.message);
                   }
