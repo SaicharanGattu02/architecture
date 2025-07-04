@@ -15,6 +15,7 @@ import '../bloc/ArchitechAditionalInfo/architech_aditional_info_cubit.dart';
 import '../bloc/ArchitechAditionalInfo/architech_aditional_info_state.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_cubit.dart';
 import '../bloc/ArchitechProfileDetails/architech_profile_details_state.dart';
+import '../bloc/user_posts/user_posts_cubit.dart';
 import '../utils/ImageUtils.dart';
 import '../utils/ShakeWidget.dart';
 import 'Components/CustomAppButton.dart';
@@ -1667,6 +1668,7 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
                   if (state is ArchitechAditionalInfoSucess) {
                     context.go('/profile_created');
                   } else if (state is ArchitechAditionalInfoUpdateSucess) {
+                    context.read<UserPostsCubit>().getUserPosts();
                     context.go('/user_posts');
                   } else if (state is ArchitechAditionalInfoError) {
                     CustomSnackBar.show(context, state.message);

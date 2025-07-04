@@ -12,8 +12,7 @@ class SelectType extends StatefulWidget {
   // final String state;
   final String city;
 
-  const SelectType({Key? key, required this.city})
-    : super(key: key);
+  const SelectType({Key? key, required this.city}) : super(key: key);
 
   @override
   _SelectTypeScreenState createState() => _SelectTypeScreenState();
@@ -25,7 +24,7 @@ class _SelectTypeScreenState extends State<SelectType> {
   void initState() {
     context.read<CategoryTypeCubit>().getCategoryType(
       // widget.state,
-      widget.city
+      widget.city,
     );
     super.initState();
   }
@@ -88,24 +87,28 @@ class _SelectTypeScreenState extends State<SelectType> {
           } else if (state is CategoryTypeLoaded) {
             return Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: GridView.builder(
-                      itemCount: state.categoryType.data?.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                          ),
-                      itemBuilder: (context, index) {
-                        final category = state.categoryType.data![index];
-                        return _buildTypeCard(category, Icons.business);
-                      },
+              child: Center(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: GridView.builder(
+                        itemCount: state.categoryType.data?.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                            ),
+                        itemBuilder: (context, index) {
+                          final category = state.categoryType.data![index];
+                          return _buildTypeCard(category, Icons.business);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           } else if (state is CategoryTypeFailure) {

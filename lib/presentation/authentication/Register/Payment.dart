@@ -11,16 +11,18 @@ import '../../Components/CutomAppBar.dart';
 class Payment extends StatefulWidget {
   final Map<String, dynamic> data;
   final String type;
-  const  Payment({Key? key, required this.data,required this.type}) : super(key: key);
+  const Payment({Key? key, required this.data, required this.type})
+    : super(key: key);
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<Payment> {
-  String _method = 'RazorPay';
+  String _method = 'Cash';
 
-  final List<String> _paymentMethods = ['GooglePay', 'RazorPay', 'PhonePay'];
+  // final List<String> _paymentMethods = ['GooglePay', 'RazorPay', 'PhonePay'];
+  final List<String> _paymentMethods = ['Cash'];
 
   Widget _buildOption(String label) {
     final bool selected = _method == label;
@@ -85,13 +87,13 @@ class _PaymentScreenState extends State<Payment> {
             listener: (context, state) {
               if (state is CreatePaymentSucess) {
                 Future.delayed(const Duration(seconds: 1), () {
-                  if(widget.type=="Renew"){
+                  if (widget.type == "Renew") {
                     context.go('/architech_profile');
-
-                  }else{
-                    context.go('/architect_profile_setup?id=${widget.data['company_id']}&type=New');
+                  } else {
+                    context.go(
+                      '/architect_profile_setup?id=${widget.data['company_id']}&type=New',
+                    );
                   }
-
                 });
               } else if (state is CreatePaymentError) {
                 CustomSnackBar.show(context, state.message);
@@ -107,7 +109,9 @@ class _PaymentScreenState extends State<Payment> {
                     "payment_method": _method,
                     "status": "completed",
                   };
-                  context.read<CreatePaymentCubit>().createPaymentApi(updatedData);
+                  context.read<CreatePaymentCubit>().createPaymentApi(
+                    updatedData,
+                  );
                   print("selectedPlan data: $updatedData");
                 },
               );
@@ -118,4 +122,3 @@ class _PaymentScreenState extends State<Payment> {
     );
   }
 }
-

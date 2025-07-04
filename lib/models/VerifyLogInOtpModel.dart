@@ -43,7 +43,7 @@ class Data {
   String? companyEmail;
   String? contactPersonName;
   String? establishedYear;
-  Null? state;
+  String? state;
   String? location;
   String? logo;
   String? coverPhoto;
@@ -100,7 +100,10 @@ class Data {
     numberOfProjects = json['number_of_projects'];
     contactNumber = json['contact_number'];
     whatsappNumber = json['whatsapp_number'];
-    specializations = json['specializations'].cast<String>();
+    specializations = json['specializations'] != null
+        ? List<String>.from(json['specializations'])
+        : [];
+
     portfolio = json['portfolio'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
