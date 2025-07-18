@@ -276,7 +276,6 @@ class _ArchitectProfileSetupState extends State<ArchitectProfileSetup> {
         'number_of_projects': _projectsController.text.trim(),
         'contact_number': _contactController.text.trim(),
         'whatsapp_number': _whatsappController.text.trim(),
-        'document': _documentFile,
         'industry_type': _selectedIndustryType!.toLowerCase(),
       };
 
